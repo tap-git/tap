@@ -22,13 +22,9 @@ package tap.core;
 import static org.junit.Assert.*;
 
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import tap.core.*;
-
 
 
 public class PipePlanTests {

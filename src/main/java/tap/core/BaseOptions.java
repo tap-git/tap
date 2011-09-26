@@ -26,11 +26,11 @@ import java.io.IOException;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.util.GenericOptionsParser;
 import org.joda.time.*;
-import org.joda.time.base.BaseDateTime;
 import org.joda.time.format.*;
 import org.kohsuke.args4j.*;
 
 
+@SuppressWarnings("deprecation")
 public class BaseOptions {
     @Option(name = "-i", aliases = { "--input" }, usage = "Input root")
     public String input;

@@ -30,7 +30,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 
-import tap.core.Pipe.Formats;
 import tap.formats.avro.AvroGroupPartitioner;
 import tap.formats.avro.TapAvroSerialization;
 

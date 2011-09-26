@@ -1,10 +1,10 @@
 package tap.core;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.avro.Schema;
-import org.apache.avro.Schema.Type;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericData.Record;
 import org.apache.avro.mapred.AvroKey;
@@ -13,10 +13,10 @@ import org.apache.hadoop.mapred.JobConf;
 import org.junit.Before;
 import org.junit.Test;
 
-import tap.core.Phase;
 import tap.formats.avro.AvroGroupPartitioner;
 
 
+@SuppressWarnings("deprecation")
 public class AvroGroupPartitionerTests {
 
     private AvroGroupPartitioner<Record, Record> partitioner;
@@ -24,10 +24,8 @@ public class AvroGroupPartitionerTests {
     private Record valRec;
     private AvroKey<Record> key;
     private AvroValue<Record> value;
-    @SuppressWarnings("deprecation")
     private JobConf conf;
 
-    @SuppressWarnings("deprecation")
     @Before
     public void setup() {
         partitioner = new AvroGroupPartitioner<GenericData.Record, GenericData.Record>();

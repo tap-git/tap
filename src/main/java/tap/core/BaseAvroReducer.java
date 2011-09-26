@@ -26,6 +26,7 @@ import org.apache.avro.mapred.*;
 import org.apache.hadoop.mapred.*;
 
 /** Base class for a combiner or a reducer */
+@SuppressWarnings("deprecation")
 abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implements Reducer<AvroKey<K>, AvroValue<V>, KO, VO> {
 
     private ColReducer<V, OUT> reducer;
@@ -38,7 +39,7 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
 
     protected abstract AvroCollector<OUT> getCollector(OutputCollector<KO, VO> c);
 
-    @SuppressWarnings({ "unchecked", "deprecation" })
+    @SuppressWarnings({ "unchecked" })
     @Override
     public void configure(JobConf conf) {
         this.reducer = getReducer(conf);

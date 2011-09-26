@@ -26,6 +26,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.mapred.*;
 
+@SuppressWarnings("deprecation")
 public class Pipe<T> {
 
     private Phase producer;
@@ -46,13 +47,13 @@ public class Pipe<T> {
                 conf.setInputFormat(TextInputFormat.class);                
             }
         },
-        JSON_FORMAT {
+        JSON_FORMAT {            
             @Override
             public void setupOutput(JobConf conf) {
                 conf.setOutputFormat(TextOutputFormat.class);                
                 conf.setOutputKeyClass(String.class);
             }
-
+            
             @Override
             public void setupInput(JobConf conf) {
                 conf.setInputFormat(TextInputFormat.class);                

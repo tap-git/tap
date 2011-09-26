@@ -24,7 +24,6 @@ import java.io.IOException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.mapred.*;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.util.ReflectionUtils;
@@ -33,6 +32,7 @@ import org.apache.hadoop.util.ReflectionUtils;
  * Bridge between a {@link org.apache.hadoop.mapred.Reducer} and an {@link AvroReducer} used when combining. When combining, map
  * output pairs must be split before they're collected.
  */
+@SuppressWarnings("deprecation")
 class CombinerBridge<K, V> extends BaseAvroReducer<K, V, V, AvroKey<K>, AvroValue<V>> {
 
     private Schema schema;
@@ -53,23 +53,22 @@ class CombinerBridge<K, V> extends BaseAvroReducer<K, V, V, AvroKey<K>, AvroValu
         this.sortBy = conf.get(Phase.SORT_BY);
     }
     
-    @SuppressWarnings("unchecked")
-    private class Collector<V> extends AvroCollector<V> {
+    private class Collector<VC> extends AvroCollector<VC> {
         //private final AvroWrapper<V> wrapper = new AvroWrapper<V>(null);
         private final AvroKey<K> keyWrapper = new AvroKey<K>(null);
-        private final AvroValue<V> valueWrapper = new AvroValue<V>(null);
-        private final KeyExtractor<K,V> extractor;
+        private final AvroValue<VC> valueWrapper = new AvroValue<VC>(null);
+        private final KeyExtractor<K,VC> extractor;
         private final K key;
-        private OutputCollector<AvroKey<K>, AvroValue<V>> collector;
+        private OutputCollector<AvroKey<K>, AvroValue<VC>> collector;
 
-        public Collector(OutputCollector<AvroKey<K>, AvroValue<V>> collector, KeyExtractor<K,V> extractor) {
+        public Collector(OutputCollector<AvroKey<K>, AvroValue<VC>> collector, KeyExtractor<K,VC> extractor) {
             this.collector = collector;
             this.extractor = extractor;
             key = extractor.getProtypeKey();
             keyWrapper.datum(key);
         }
 
-        public void collect(V datum) throws IOException {
+        public void collect(VC datum) throws IOException {
             extractor.setKey(datum, key);
             valueWrapper.datum(datum);
             collector.collect(keyWrapper, valueWrapper);
@@ -79,6 +78,7 @@ class CombinerBridge<K, V> extends BaseAvroReducer<K, V, V, AvroKey<K>, AvroValu
     @Override
     protected AvroCollector<V> getCollector(OutputCollector<AvroKey<K>, AvroValue<V>> collector) {
         KeyExtractor<GenericData.Record, V> extractor = new ReflectionKeyExtractor<V>(schema, groupBy, sortBy);
+        //XXX fix this typing: the collector returns GenericData.Record, not K! should be Collector<V>
         return new Collector(collector, extractor);
     }
 

@@ -25,6 +25,7 @@ import org.apache.avro.mapred.AvroCollector;
 import org.apache.hadoop.mapred.Counters.Counter;
 import org.apache.hadoop.mapred.*;
 
+@SuppressWarnings("deprecation")
 public class TapContext<OUT> {
 
     private Reporter reporter;
