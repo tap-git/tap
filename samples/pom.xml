@@ -61,6 +61,25 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-maven-plugin</artifactId>
+                <version>1.5.1</version>
+                <executions>
+                    <execution>
+                        <id>schemas</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>schema</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/share/</sourceDirectory>
+                            <testSourceDirectory>${project.basedir}/share/</testSourceDirectory>
+                        </configuration>                        
+                    </execution>
+
+                </executions>
             </plugin>            
         </plugins>
     </build>
