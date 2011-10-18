@@ -24,6 +24,7 @@ import java.io.*;
 import org.apache.avro.Schema;
 import org.apache.avro.io.*;
 import org.apache.avro.mapred.*;
+import org.apache.avro.reflect.ReflectDatumWriter;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.hadoop.conf.Configuration;
@@ -101,7 +102,8 @@ public class TapAvroSerialization<T> extends Configured implements Serialization
         boolean isMap = conf.getBoolean("mapred.task.is.map", false);
         Schema schema = !isMap ? AvroJob.getOutputSchema(conf) : Schema.parse(AvroKey.class.isAssignableFrom(c) ? conf
                 .get(Phase.MAP_OUT_KEY_SCHEMA) : conf.get(Phase.MAP_OUT_VALUE_SCHEMA));
-        return new AvroWrapperSerializer(new SpecificDatumWriter<T>(schema));
+        // return new AvroWrapperSerializer(new SpecificDatumWriter<T>(schema));
+        return new AvroWrapperSerializer(new ReflectDatumWriter<T>(schema));
     }
 
     private class AvroWrapperSerializer implements Serializer<AvroWrapper<T>> {

@@ -39,6 +39,9 @@ public class RecordUtils {
 
     @SuppressWarnings("unchecked")
     private static Object deepCopy(Object o) throws InstantiationException, IllegalAccessException {
+        if(o == null)
+            return null;
+        
         if (o instanceof Utf8){
             Utf8 old = (Utf8)o;
             int len = old.getByteLength();
@@ -61,9 +64,9 @@ public class RecordUtils {
         } else if (o instanceof Integer || o instanceof String || o instanceof Long || o instanceof Double || o instanceof Float) {
             return o;
         } else {
-            //copy;
-            //RecordUtils.copy(copy, o);
-            return o;
+            Object copy = o.getClass().newInstance();
+            RecordUtils.copy(o, copy);
+            return copy;
         }
 
     }
