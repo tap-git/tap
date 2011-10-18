@@ -73,7 +73,7 @@ public class TapAvroSerialization<T> extends Configured implements Serialization
         }
 
         public void open(InputStream in) {
-            this.decoder = FACTORY.createBinaryDecoder(in, decoder);
+            this.decoder = FACTORY.directBinaryDecoder(in, null);
         }
 
         public AvroWrapper<T> deserialize(AvroWrapper<T> wrapper) throws IOException {
@@ -116,7 +116,7 @@ public class TapAvroSerialization<T> extends Configured implements Serialization
 
         public void open(OutputStream out) {
             this.out = out;
-            this.encoder = new EncoderFactory().binaryEncoder(out, null);
+            this.encoder = new EncoderFactory().directBinaryEncoder(out, null);
         }
 
         public void serialize(AvroWrapper<T> wrapper) throws IOException {
