@@ -48,12 +48,14 @@ public class WordCount extends Configured implements Tool {
         
         return 0;
     }
+
     /*
     public static class CountRec {
         public String word;
         public int count;
     }
     */
+    
 
     public static class Mapper extends BaseMapper<String,CountRecord> {
         @Override

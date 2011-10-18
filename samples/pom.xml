@@ -17,7 +17,6 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
                 <configuration>
                     <version>2.3.2</version>
                     <source>1.6</source>
@@ -57,6 +56,9 @@
                                 <excludes>
                                     <exclude>junit:junit</exclude>
                                     <exclude>org.apache.hadoop:hadoop-core</exclude>
+                                    <exclude>org.codehaus.jackson:jackson-mapper-asl</exclude>
+                                    <exclude>org.codehaus.jackson:jackson-core-asl</exclude>
+                                    
                                 </excludes>
                             </artifactSet>
                         </configuration>
@@ -66,7 +68,7 @@
             <plugin>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro-maven-plugin</artifactId>
-                <version>1.5.1</version>
+                <version>1.5.4</version>
                 <executions>
                     <execution>
                         <id>schemas</id>
