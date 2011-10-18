@@ -49,17 +49,15 @@ public class WordCount extends Configured implements Tool {
         return 0;
     }
 
-    /*
     public static class CountRec {
         public String word;
         public int count;
     }
-    */
     
 
-    public static class Mapper extends BaseMapper<String,CountRecord> {
+    public static class Mapper extends BaseMapper<String,CountRec> {
         @Override
-        public void map(String line, CountRecord out, TapContext<CountRecord> context) {
+        public void map(String line, CountRec out, TapContext<CountRec> context) {
             StringTokenizer tokenizer = new StringTokenizer(line);
             while (tokenizer.hasMoreTokens()) {
                 out.word = tokenizer.nextToken();
@@ -69,12 +67,12 @@ public class WordCount extends Configured implements Tool {
         }        
     }
 
-    public static class Reducer extends BaseReducer<CountRecord,CountRecord> {
+    public static class Reducer extends BaseReducer<CountRec,CountRec> {
 
         @Override
-        public void reduce(Iterable<CountRecord> in, CountRecord out, TapContext<CountRecord> context) {
+        public void reduce(Iterable<CountRec> in, CountRec out, TapContext<CountRec> context) {
             out.count = 0;
-            for (CountRecord rec : in) {
+            for (CountRec rec : in) {
                 out.word = rec.word;
                 out.count += rec.count;
             }
