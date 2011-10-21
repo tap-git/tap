@@ -2,18 +2,17 @@ The Tap Framework
 Tap is a new framework for batch and streaming big data programming in Java. It's designed to make it easy to write programs using an OO-style, programming with POJOs. It comes with support for working with pipelines - determining file dependencies and running the phases needed to emit the corresponding results. The framework is still in alpha test, but we'd love you to try it and give us feedback.
 
 Key concepts:
-* a Pipe - defines a set of inter-related phases (i.e., Hadoop jobs) that produce final outputs. This is represented by an instance of the class ColPipe.
-* a Phase - defines a single map/reduce pair that transforms an input to an output. This will include a phase that joins multiple inputs to produce a single output. This is represented by an instance of the class ColPhase.
-* a File - defines a single input or output file, with a given output type. This is represented by an instance of the class ColFile.
+* a Pipe - defines a set of inter-related phases (i.e., Hadoop jobs) that produce final outputs. This is represented by an instance of the class Pipe.
+* a Phase - defines a single map/reduce pair that transforms an input to an output. This will include a phase that joins multiple inputs to produce a single output. This is represented by an instance of the class Phase.
 
 Creating a Pipe
 Tap uses a fluid/builder syntax much like jMock, in which you can apply multiple changes to a single object. You first need to create a pipe:
-Assembly analysis = new Assembly(getClass()).named("analysis");
+Tap analysis = new Tap(getClass()).named("analysis");
 
 You define the input and output pipes (files) that are important to you, e.g.,
 
-Pipe<LogRecord> input = ColFile.of(LogRecord.class).at(o.input+"/"+timePath);
-Pipe<ReportRecord> output = ColFile.of(ReportRecord.class).at(o.output+"/"+timePath);
+Pipe<LogRecord> input = Pipe<LogRecord>(o.input+"/"+timePath);
+Pipe<ReportRecord> output = Pipe.of(ReportRecord.class).at(o.output+"/"+timePath);
 
 You also need to declare the final outputs that your pipeline needs to produce:
 analysis.produces(output);
@@ -26,7 +25,7 @@ Mappers and reducers in Tap work on objects, both for input and output. A mapper
 
 public static class AnalysisMapper extends BaseMapper<LogRecord, ReportRecord> {
     @Override
-    public void map(LogRecord in, ReportRecord out, ColContext< ReportRecord> context) {
+    public void map(LogRecord in, ReportRecord out, TapContext< ReportRecord> context) {
         out.id = in.id;
         for (String str : in.comments) {
             out.str = str;
@@ -39,7 +38,7 @@ public static class AnalysisMapper extends BaseMapper<LogRecord, ReportRecord> {
 A reducer looks like this:
 public static class AnalysisReducer extends BaseReducer<ReportRecord, ReportRecord> {
     @Override
-    public void reduce(Iterable<ReportRecord> in, ReportRecord out, ColContext<ReportRecord> context) {
+    public void reduce(Iterable<ReportRecord> in, ReportRecord out, TapContext<ReportRecord> context) {
         ReportRecord out = null;
         for (ReportRecord rec : in) {
             if (out == null) {
