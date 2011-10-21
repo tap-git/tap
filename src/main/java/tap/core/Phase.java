@@ -375,16 +375,16 @@ public class Phase {
         if (mainReads != null && mainReads.size() > 0) {
             Path[] inPaths = new Path[mainReads.size()];
             int i = 0;
-            for (Pipe file : mainReads) {
-                inPaths[i++] = new Path(file.getPath());
-                Object myProto = file.getPrototype();
+            for (Pipe pipe : mainReads) {
+                inPaths[i++] = new Path(pipe.getPath());
+                Object myProto = pipe.getPrototype();
                 if (myProto == null) {
-                    errors.add(new PhaseError("Files need non-null prototypes " + file));
+                    errors.add(new PhaseError("Pipes need non-null prototypes: " + pipe.getPath()));
                 }
                 else if (proto != null) {
                     if (myProto.getClass() != proto.getClass()) {
                         errors.add(new PhaseError("Inconsistent prototype classes for inputs: " + myProto.getClass() + " vs "
-                                + proto.getClass() + " for " + file));
+                                + proto.getClass() + " for " + pipe.getPath()));
                     }
                 }
                 else {

@@ -1,13 +1,9 @@
 package tap.core;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.util.StringTokenizer;
 
 import junit.framework.Assert;
-import tap.core.*;
-
 import org.junit.Test;
 
 public class AssemblyTests {
@@ -26,8 +22,7 @@ public class AssemblyTests {
 		File infile = new File("share/decameron.txt");
 		System.out.println(infile.getAbsolutePath());
 
-		String args[] = { "-i", "share/decameron.txt", "-o", "/tmp/out",
-				"-f" };
+		String args[] = { "-i", "share/decameron.txt", "-o", "/tmp/out", "-f" };
 		Assert.assertEquals(5, args.length);
 		BaseOptions o = new BaseOptions();
 		int result = o.parse(wordcount, args);
@@ -50,6 +45,44 @@ public class AssemblyTests {
 		wordcount.dryRun();
 
 		wordcount.execute();
+	}
+
+	// Job failing..... @Test
+	public void summation() {
+		/* Set up a basic pipeline of map reduce */
+		Assembly summation = new Assembly(getClass())
+				.named("tap.core.AssemblyTests");
+		/*
+		 * Parse options - just use the standard options - input and output
+		 * location, time window, etc.
+		 */
+
+		String args[] = { "-o", "/tmp/wordcount", "-i", "/tmp/out", "-f" };
+		Assert.assertEquals(5, args.length);
+		BaseOptions o = new BaseOptions();
+		int result = o.parse(summation, args);
+		Assert.assertEquals(0, result);
+		Assert.assertNotNull("must specify input directory", o.input);
+		Assert.assertNotNull("must specify output directory", o.output);
+
+		Pipe<AssemblyTests> input = new Pipe<AssemblyTests>(o.input);
+		input.setPrototype(this);
+
+		Pipe<OutputLog> output = new Pipe<OutputLog>(o.output);
+		output.setPrototype(new OutputLog());
+
+		summation.produces(output);
+
+		Phase sum = new Phase().reads(input).writes(output)
+				.map(SummationMapper.class).groupBy("word")
+				.reduce(SummationReducer.class);
+
+		if (o.forceRebuild)
+			summation.forceRebuild();
+
+		summation.dryRun();
+
+		summation.execute();
 	}
 
 	public static class Mapper extends BaseMapper<String, AssemblyTests> {

@@ -38,6 +38,9 @@ public class KeyComparator<T> extends Configured implements RawComparator<AvroWr
         super.setConf(conf);
         if (conf != null) {
             String schemaJson = conf.get(Phase.MAP_OUT_KEY_SCHEMA);
+            if (null == schemaJson) {
+            	throw new java.lang.IllegalArgumentException("Schema " + Phase.MAP_OUT_KEY_SCHEMA + " not found in configuration.");
+            }
             schema = Schema.parse(schemaJson);
         }
     }
