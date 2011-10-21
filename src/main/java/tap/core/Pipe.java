@@ -19,242 +19,249 @@
  */
 package tap.core;
 
+import tap.formats.*;
+
 import java.io.IOException;
 
 import org.apache.avro.mapred.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.mapred.*;
+import java.lang.reflect.*;
 
 @SuppressWarnings("deprecation")
 public class Pipe<T> {
 
-    private Phase producer;
-    private String path;
-    private T prototype;
-    private Formats format = Formats.AVRO_FORMAT;
+	private Phase producer;
+	private String path;
+	private T prototype;
+	private Formats format = Formats.AVRO_FORMAT;
+	private boolean isCompressed = false;
+	private String uncompressedPath;
+	private Class<T> pipeType;
 
-    public static enum Formats {
-        STRING_FORMAT {
-            @Override
-            public void setupOutput(JobConf conf) {
-                conf.setOutputFormat(TextOutputFormat.class);
-                conf.setOutputKeyClass(String.class);
-            }
-            
-            @Override
-            public void setupInput(JobConf conf) {
-                conf.setInputFormat(TextInputFormat.class);                
-            }
-        },
-        JSON_FORMAT {            
-            @Override
-            public void setupOutput(JobConf conf) {
-                conf.setOutputFormat(TextOutputFormat.class);                
-                conf.setOutputKeyClass(String.class);
-            }
-            
-            @Override
-            public void setupInput(JobConf conf) {
-                conf.setInputFormat(TextInputFormat.class);                
-            }
-        },
-        AVRO_FORMAT {
-            @Override
-            public void setupOutput(JobConf conf) {
-                conf.setOutputFormat(AvroOutputFormat.class);
-                conf.setOutputKeyClass(AvroWrapper.class);
-            }
+	@Deprecated
+	public Pipe(T prototype) {
+		this.prototype = prototype;
+	}
 
-            @Override
-            public void setupInput(JobConf conf) {
-                conf.setInputFormat(AvroInputFormat.class);        
-            }
-        };
+	public Pipe(String path) {
+		this.path = path;
 
-        public abstract void setupOutput(JobConf conf);
+		determineCompression();
+		determineFormat();
+	}
 
-        public abstract void setupInput(JobConf conf);
-    }
+	private void determineCompression() {
+		if (this.path.endsWith(".gz")) {
+			this.isCompressed = true;
+			this.uncompressedPath = this.path.replaceAll(".gz$", "");
+		} else if (this.path.endsWith(".lzo")){
+			this.isCompressed = true;
+			this.uncompressedPath = this.path.replaceAll(".lzo$", "");
+		} else {
+			this.uncompressedPath = path;
+		}
+	}
 
-    @Deprecated
-    public Pipe(T prototype) {
-        this.prototype = prototype;
-    }
+	/*
+	 * determine pipe's format based on file extension and configure pipe
+	 * automatically
+	 */
+	private void determineFormat() {
+		for (Formats f : Formats.values()) {
+			if (f.getFileFormat().matches(this.uncompressedPath)) {
+				f.getFileFormat().setPipeFormat(this);
+			}
+		}
+		if (this.getFormat().equals(Formats.UNKNOWN_FORMAT)) {
+			// open file, read first couple lines
+		}
+	}
 
-    public Pipe(String path) {
-        this.path = path;
-    }
+	public boolean exists(Configuration conf) {
+		Path dfsPath = new Path(path);
+		try {
+			FileSystem fs = dfsPath.getFileSystem(conf);
+			return fs.exists(dfsPath);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    public boolean exists(Configuration conf) {
-        Path dfsPath = new Path(path);
-        try {
-            FileSystem fs = dfsPath.getFileSystem(conf); 
-            return fs.exists(dfsPath);
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public boolean isObsolete(Configuration conf) {
+		Path dfsPath = new Path(path);
+		try {
+			FileSystem fs = dfsPath.getFileSystem(conf);
+			// this needs to be smart - we should encode in the file metadata
+			// the dependents and their dates used
+			// so we can verify that any existing antecedent is not newer and
+			// declare victory...
+			if (fs.exists(dfsPath)) {
+				FileStatus[] statuses = fs.listStatus(dfsPath);
+				for (FileStatus status : statuses) {
+					if (!status.isDir()) {
+						if (getFormat() != Formats.AVRO_FORMAT
+								|| status.getPath().toString()
+										.endsWith(".avro")) {
+							return false; // may check for extension for other
+											// types
+						}
+					} else {
+						if (!status.getPath().toString().endsWith("/_logs")
+								&& !status.getPath().toString()
+										.endsWith("/_temporary")) {
+							return false;
+						}
+					}
+				}
+			}
+			return true; // needs more work!
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    public boolean isObsolete(Configuration conf) {
-        Path dfsPath = new Path(path);
-        try {
-            FileSystem fs = dfsPath.getFileSystem(conf); 
-            // this needs to be smart - we should encode in the file metadata the dependents and their dates used
-            // so we can verify that any existing antecedent is not newer and declare victory...
-            if (fs.exists(dfsPath)) {
-                FileStatus[] statuses = fs.listStatus(dfsPath);
-                for (FileStatus status : statuses) {
-                    if (!status.isDir()) {
-                        if (format!=Formats.AVRO_FORMAT || status.getPath().toString().endsWith(".avro")) {
-                            return false; // may check for extension for other types
-                        }
-                    } else {
-                        if (!status.getPath().toString().endsWith("/_logs") && !status.getPath().toString().endsWith("/_temporary")) {
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true; // needs more work!
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public Phase getProducer() {
+		return producer;
+	}
 
-    public Phase getProducer() {
-        return producer;
-    }
+	public void setProducer(Phase producer) {
+		this.producer = producer;
+	}
 
-    public void setProducer(Phase producer) {
-        this.producer = producer;
-    }
+	public String getPath() {
+		return path;
+	}
 
-    public String getPath() {
-        return path;
-    }
+	public Pipe<T> at(String path) {
+		this.path = path;
+		return this;
+	}
 
-    public Pipe<T> at(String path) {
-        this.path = path;
-        return this;
-    }
+	@Override
+	public String toString() {
+		return path + ":" + super.toString();
+	}
 
-    @Override
-    public String toString() {
-        return path + ":" + super.toString();
-    }
+	public void clearAndPrepareOutput(Configuration conf) {
+		try {
+			Path dfsPath = new Path(path);
+			FileSystem fs = dfsPath.getFileSystem(conf);
+			if (fs.exists(dfsPath)) {
+				FileStatus[] statuses = fs.listStatus(dfsPath);
+				for (FileStatus status : statuses) {
+					if (status.isDir()) {
+						if (!status.getPath().toString().endsWith("/_logs")
+								&& !status.getPath().toString()
+										.endsWith("/_temporary")) {
+							throw new IllegalArgumentException(
+									"Trying to overwrite directory with child directories: "
+											+ path);
+						}
+					}
+				}
+			} else {
+				fs.mkdirs(dfsPath);
+			}
+			fs.delete(dfsPath, true);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    public void clearAndPrepareOutput(Configuration conf) {
-        try {
-            Path dfsPath = new Path(path);
-            FileSystem fs = dfsPath.getFileSystem(conf);
-            if (fs.exists(dfsPath)) {
-                FileStatus[] statuses = fs.listStatus(dfsPath);
-                for (FileStatus status : statuses) {
-                    if (status.isDir()) {
-                        if (!status.getPath().toString().endsWith("/_logs") && !status.getPath().toString().endsWith("/_temporary")) {
-                            throw new IllegalArgumentException("Trying to overwrite directory with child directories: " + path);
-                        }
-                    }
-                }
-            } else {            
-                fs.mkdirs(dfsPath);
-            }
-            fs.delete(dfsPath, true);
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public static <T> Pipe<T> of(Class<? extends T> ofClass) {
+		try {
+			return new Pipe<T>(ofClass.newInstance());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    public static <T> Pipe<T> of(Class<? extends T> ofClass) {
-        try {
-            return new Pipe<T>(ofClass.newInstance());
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public static <T> Pipe<T> of(T prototype) {
+		return new Pipe<T>(prototype);
+	}
 
-    public static <T> Pipe<T> of(T prototype) {
-        return new Pipe<T>(prototype);
-    }
+	public T getPrototype() {
+		return prototype;
+	}
 
-    public T getPrototype() {
-        return prototype;
-    }
-    
-    void setPrototype(T prototype) {
-        this.prototype = prototype;
-    }
+	void setPrototype(T prototype) {
+		this.prototype = prototype;
+	}
 
-    public void delete(JobConf conf) {
-        clearAndPrepareOutput(conf);
-    }
+	public void delete(JobConf conf) {
+		clearAndPrepareOutput(conf);
+	}
 
-    public Pipe stringFormat() {
-        this.format = Formats.STRING_FORMAT;
-        this.prototype = (T)new String();
-        return this;
-    }
+	public Pipe stringFormat() {
+		this.setFormat(Formats.STRING_FORMAT);
+		this.prototype = (T) new String();
+		return this;
+	}
 
-    public Pipe jsonFormat() {
-        this.format = Formats.JSON_FORMAT;
-        return this;
-    }
+	public Pipe jsonFormat() {
+		this.setFormat(Formats.JSON_FORMAT);
+		return this;
+	}
 
-    public Pipe avroFormat() {
-        this.format = Formats.AVRO_FORMAT;
-        return this;
-    }
-    
-    public void setupOutput(JobConf conf) {
-        format.setupOutput(conf);
-    }
+	public Pipe avroFormat() {
+		this.setFormat(Formats.AVRO_FORMAT);
+		return this;
+	}
 
-    public long getTimestamp(JobConf conf) {
-        try {
-            Path dfsPath = new Path(path);
-            FileSystem fs = dfsPath.getFileSystem(conf);
-            return fs.getFileStatus(dfsPath).getModificationTime();            
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public void setupOutput(JobConf conf) {
+		getFormat().getFileFormat().setupOutput(conf);
+	}
 
-    public void setupInput(JobConf conf) {
-        format.setupInput(conf);        
-    }
-    
-    // files at the same location are deemed equal, however
-    // ColPipe needs to warn if there are inconsistencies
+	public void setupInput(JobConf conf) {
+		getFormat().getFileFormat().setupInput(conf);
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Pipe other = (Pipe) obj;
-        if (path == null) {
-            if (other.path != null)
-                return false;
-        }
-        else if (!path.equals(other.path))
-            return false;
-        return true;
-    }
-    
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((path == null) ? 0x123c67ce : path.hashCode());
-        return result;
-    }
+	public long getTimestamp(JobConf conf) {
+		try {
+			Path dfsPath = new Path(path);
+			FileSystem fs = dfsPath.getFileSystem(conf);
+			return fs.getFileStatus(dfsPath).getModificationTime();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	// files at the same location are deemed equal, however
+	// ColPipe needs to warn if there are inconsistencies
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Pipe other = (Pipe) obj;
+		if (path == null) {
+			if (other.path != null)
+				return false;
+		} else if (!path.equals(other.path))
+			return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((path == null) ? 0x123c67ce : path.hashCode());
+		return result;
+	}
+
+	public Formats getFormat() {
+		return format;
+	}
+
+	public void setFormat(Formats format) {
+		this.format = format;
+	}
 }
