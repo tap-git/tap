@@ -169,6 +169,9 @@ public class Phase {
         return this;
     }
 
+    /*
+     * Specify the Mapper class
+     */
     public Phase map(Class<? extends Mapper>... mappers) {
         this.mappers = mappers;
         return this;
@@ -179,6 +182,9 @@ public class Phase {
         return this;
     }
 
+    /*
+     * Specify the Reducer class
+     */
     public Phase reduce(Class<? extends ColReducer>... reducers) {
         this.reducers = reducers;
         return this;

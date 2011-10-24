@@ -79,6 +79,9 @@ public class Pipe<T> {
 		}
 	}
 
+	/*
+	 * Probe HDFS to determine if this.path exists.
+	 */
 	public boolean exists(Configuration conf) {
 		Path dfsPath = new Path(path);
 		try {
@@ -134,6 +137,9 @@ public class Pipe<T> {
 		return path;
 	}
 
+	/*
+	 * Set pipe's path.
+	 */
 	public Pipe<T> at(String path) {
 		this.path = path;
 		return this;
@@ -178,6 +184,9 @@ public class Pipe<T> {
 		}
 	}
 
+	/*
+	 * Construct new Pipe<T> and set pipe's prototype.
+	 */
 	public static <T> Pipe<T> of(T prototype) {
 		return new Pipe<T>(prototype);
 	}

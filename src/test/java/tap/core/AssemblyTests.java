@@ -6,10 +6,10 @@ import java.util.StringTokenizer;
 import junit.framework.Assert;
 import org.junit.Test;
 
-public class AssemblyTests {
-	public String word;
-	public int count;
+import tap.formats.Formats;
 
+public class AssemblyTests {
+	
 	@Test
 	public void wordCount() {
 
@@ -31,8 +31,8 @@ public class AssemblyTests {
 		Assert.assertNotNull("must specify output directory", o.output);
 
 		Pipe input = new Pipe(o.input).stringFormat();
-		Pipe<AssemblyTests> counts = new Pipe<AssemblyTests>(o.output);
-		counts.setPrototype(this);
+		Pipe<CountRec> counts = new Pipe<CountRec>(o.output);
+		counts.setPrototype(new CountRec());
 
 		wordcount.produces(counts);
 
@@ -47,11 +47,12 @@ public class AssemblyTests {
 		wordcount.execute();
 	}
 
-	// Job failing..... @Test
+	// Job failing.....
+	@Test
 	public void summation() {
 		/* Set up a basic pipeline of map reduce */
 		Assembly summation = new Assembly(getClass())
-				.named("tap.core.AssemblyTests");
+				.named("summation");
 		/*
 		 * Parse options - just use the standard options - input and output
 		 * location, time window, etc.
@@ -65,8 +66,8 @@ public class AssemblyTests {
 		Assert.assertNotNull("must specify input directory", o.input);
 		Assert.assertNotNull("must specify output directory", o.output);
 
-		Pipe<AssemblyTests> input = new Pipe<AssemblyTests>(o.input);
-		input.setPrototype(this);
+		Pipe<CountRec> input = new Pipe<CountRec>(o.input);
+		input.setPrototype(new CountRec());
 
 		Pipe<OutputLog> output = new Pipe<OutputLog>(o.output);
 		output.setPrototype(new OutputLog());
@@ -74,7 +75,7 @@ public class AssemblyTests {
 		summation.produces(output);
 
 		Phase sum = new Phase().reads(input).writes(output)
-				.map(SummationMapper.class).groupBy("word")
+				.map(SummationMapper.class).groupBy("count")
 				.reduce(SummationReducer.class);
 
 		if (o.forceRebuild)
@@ -85,10 +86,10 @@ public class AssemblyTests {
 		summation.execute();
 	}
 
-	public static class Mapper extends BaseMapper<String, AssemblyTests> {
+	public static class Mapper extends BaseMapper<String, CountRec> {
 		@Override
-		public void map(String line, AssemblyTests out,
-				TapContext<AssemblyTests> context) {
+		public void map(String line, CountRec out,
+				TapContext<CountRec> context) {
 			StringTokenizer tokenizer = new StringTokenizer(line);
 			while (tokenizer.hasMoreTokens()) {
 				out.word = tokenizer.nextToken();
@@ -99,13 +100,13 @@ public class AssemblyTests {
 	}
 
 	public static class Reducer extends
-			BaseReducer<AssemblyTests, AssemblyTests> {
+			BaseReducer<CountRec, CountRec> {
 
 		@Override
-		public void reduce(Iterable<AssemblyTests> in, AssemblyTests out,
-				TapContext<AssemblyTests> context) {
+		public void reduce(Iterable<CountRec> in, CountRec out,
+				TapContext<CountRec> context) {
 			out.count = 0;
-			for (AssemblyTests rec : in) {
+			for (CountRec rec : in) {
 				out.word = rec.word;
 				out.count += rec.count;
 			}
