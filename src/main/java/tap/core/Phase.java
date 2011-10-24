@@ -30,6 +30,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 
+import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
+
 import tap.formats.avro.AvroGroupPartitioner;
 import tap.formats.avro.TapAvroSerialization;
 
@@ -365,7 +367,8 @@ public class Phase {
                 valueSchema = reduceout;
             }
             output.setupOutput(conf);
-            conf.set(AvroJob.OUTPUT_SCHEMA, valueSchema.toString());
+            if(valueSchema != null)
+                conf.set(AvroJob.OUTPUT_SCHEMA, valueSchema.toString());
         }
 
         if (deflateLevel != null)
@@ -481,6 +484,9 @@ public class Phase {
     }
 
     public static Schema getSchema(Object proto) {
+        if(proto instanceof ProtobufWritable)
+            return null;
+        
         try {
             Field schemaField = proto.getClass().getField("SCHEMA$");
             return (Schema) schemaField.get(null);

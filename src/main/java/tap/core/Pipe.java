@@ -22,9 +22,13 @@ package tap.core;
 import java.io.IOException;
 
 import org.apache.avro.mapred.*;
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.mapred.*;
+
+import com.google.protobuf.Message;
+import com.twitter.elephantbird.mapreduce.output.LzoProtobufB64LineOutputFormat;
 
 @SuppressWarnings("deprecation")
 public class Pipe<T> {
@@ -33,6 +37,7 @@ public class Pipe<T> {
     private String path;
     private T prototype;
     private Formats format = Formats.AVRO_FORMAT;
+    private Class protoClass;
 
     public static enum Formats {
         STRING_FORMAT {
@@ -70,11 +75,34 @@ public class Pipe<T> {
             public void setupInput(JobConf conf) {
                 conf.setInputFormat(AvroInputFormat.class);        
             }
+        },
+        PROTOBUF_FORMAT {
+            @Override
+            public void setupOutput(JobConf conf) {
+                // throw new NotImplementedException();
+            }
+
+            @Override
+            public void setupInput(JobConf conf) {
+                throw new NotImplementedException();
+            }
+            
+            @Override
+            @SuppressWarnings("unchecked")
+            public <M extends Message> void setupProtoOutput(JobConf conf, Class<M> protoClass) {
+                // conf.setOutputFormat(LzoProtobufB64LineOutputFormat.getOutputFormatClass(protoClass, conf));
+                conf.setOutputFormat((Class<? extends OutputFormat>)
+                    LzoProtobufB64LineOutputFormat.getOutputFormatClass(protoClass, conf));
+            }
         };
 
         public abstract void setupOutput(JobConf conf);
 
         public abstract void setupInput(JobConf conf);
+        
+        public <M extends Message> void setupProtoOutput(JobConf conf, Class<M> protoClass) {
+            throw new NotImplementedException();
+        }
     }
 
     @Deprecated
@@ -210,8 +238,18 @@ public class Pipe<T> {
         return this;
     }
     
+    public <M extends Message> Pipe protobufOutputFormat(Class<M> protoClass) {
+        this.format = Formats.PROTOBUF_FORMAT;
+        this.protoClass = protoClass;
+        return this;
+    }
+    
     public void setupOutput(JobConf conf) {
-        format.setupOutput(conf);
+        if(protoClass != null) {
+            format.setupProtoOutput(conf, protoClass);
+        } else {
+            format.setupOutput(conf);
+        }
     }
 
     public long getTimestamp(JobConf conf) {

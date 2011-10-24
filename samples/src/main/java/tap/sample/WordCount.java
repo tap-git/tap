@@ -7,6 +7,8 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
+
 import tap.core.*;
 
 public class WordCount extends Configured implements Tool {
@@ -31,7 +33,7 @@ public class WordCount extends Configured implements Tool {
         }
 
         Pipe input = new Pipe(o.input).stringFormat();
-        Pipe counts = new Pipe(o.output);
+        Pipe counts = new Pipe(o.output).protobufOutputFormat(Protos.CountRec.class);
         wordcount.produces(counts);
         
         Phase count = new Phase().reads(input).writes(counts).map(Mapper.class).
@@ -67,15 +69,28 @@ public class WordCount extends Configured implements Tool {
         }        
     }
 
-    public static class Reducer extends BaseReducer<CountRec,CountRec> {
-
+    public static class Reducer extends BaseReducer<CountRec,ProtobufWritable<Protos.CountRec>> {
+        
+        // ProtobufWritable<Protos.CountRec> protoWritable = ProtobufWritable.newInstance(Protos.CountRec.class);
+        
         @Override
-        public void reduce(Iterable<CountRec> in, CountRec out, TapContext<CountRec> context) {
-            out.count = 0;
+        public void reduce(Iterable<CountRec> in,
+                ProtobufWritable<Protos.CountRec> out,
+                TapContext<ProtobufWritable<Protos.CountRec>> context) {
+            
+            String word = null;
+            int count = 0;
             for (CountRec rec : in) {
-                out.word = rec.word;
-                out.count += rec.count;
+                if(word == null)
+                    word = rec.word;
+                count += rec.count;
             }
+            
+            out.setConverter(Protos.CountRec.class);
+            out.set(Protos.CountRec.newBuilder()
+                    .setWord(word)
+                    .setCount(count)
+                    .build());
             context.write(out);
         }
         
