@@ -1,6 +1,7 @@
 package tap.formats.avro;
 
 import org.apache.avro.mapred.AvroInputFormat;
+import org.apache.avro.mapred.AvroJob;
 import org.apache.avro.mapred.AvroOutputFormat;
 import org.apache.avro.mapred.AvroWrapper;
 import org.apache.hadoop.mapred.JobConf;
@@ -19,6 +20,7 @@ public class AvroFormat extends FileFormat {
 
 	public void setupInput(JobConf conf) {
 		conf.setInputFormat(AvroInputFormat.class);
+		conf.set(AvroJob.INPUT_IS_REFLECT, "true");
 	}
 
 	public String fileExtension() {
