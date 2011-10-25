@@ -5,7 +5,8 @@ import java.io.IOException;
 import com.twitter.elephantbird.mapreduce.io.BinaryBlockWriter;
 import com.twitter.elephantbird.mapreduce.io.BinaryWritable;
 
-import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.hadoop.mapred.RecordWriter;
+import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
 /**
@@ -13,7 +14,7 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
  * a ProtobufBlockWriter or similar.
  */
 public class LzoBinaryBlockRecordWriter<M, W extends BinaryWritable<M>>
-    extends RecordWriter<M, W> {
+    implements RecordWriter<M, W> {
 
   private BinaryBlockWriter<M> writer_;
 
@@ -22,13 +23,14 @@ public class LzoBinaryBlockRecordWriter<M, W extends BinaryWritable<M>>
   }
 
   public void write(M nullWritable, W protoWritable)
-      throws IOException, InterruptedException {
+      throws IOException {
     writer_.write(protoWritable.get());
     // the counters are not accessible
   }
 
-  public void close(TaskAttemptContext taskAttemptContext)
-      throws IOException, InterruptedException {
+  @Override
+  public void close(Reporter reporter)
+      throws IOException {
     writer_.finish();
     writer_.close();
   }

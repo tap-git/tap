@@ -8,7 +8,9 @@ import com.twitter.elephantbird.util.LzoUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+// import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapred.FileOutputFormat;
+import org.apache.hadoop.mapred.JobConf;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -23,12 +25,12 @@ public abstract class LzoOutputFormat<K, V> extends FileOutputFormat<K, V> {
   /**
    * Helper method to create lzo output file needed to create RecordWriter
    */
-  protected DataOutputStream getOutputStream(TaskAttemptContext job)
-                  throws IOException, InterruptedException {
-    Configuration conf = job.getConfiguration();
+  protected DataOutputStream getOutputStream(JobConf conf, String name)
+                  throws IOException {
     LzopCodec codec = new LzopCodec();
-    Path path = getDefaultWorkFile(job, codec.getDefaultExtension());
-
+    
+    Path path = getPathForCustomFile(conf, name + codec.getDefaultExtension()); 
+    
     return LzoUtils.getIndexedLzoOutputStream(conf, path);
   }
 }

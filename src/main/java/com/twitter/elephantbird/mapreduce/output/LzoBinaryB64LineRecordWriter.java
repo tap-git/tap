@@ -9,7 +9,8 @@ import com.twitter.elephantbird.util.Codecs;
 import com.twitter.elephantbird.util.Protobufs;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.hadoop.mapred.RecordWriter;
+import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
 /**
@@ -17,8 +18,7 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
  * Writes data as base64 encoded serialized protocol buffers, one per line.
  */
 
-public class LzoBinaryB64LineRecordWriter<M, W extends BinaryWritable<M>>
-    extends RecordWriter<M, W> {
+public class LzoBinaryB64LineRecordWriter<M, W extends BinaryWritable<M>> implements RecordWriter<M, W> {
 
   private final BinaryConverter<M> converter;
   private final DataOutputStream out;
@@ -32,15 +32,15 @@ public class LzoBinaryB64LineRecordWriter<M, W extends BinaryWritable<M>>
 
   @Override
   public void write(M nullWritable, W writable)
-      throws IOException, InterruptedException {
+      throws IOException {
     byte[] b64Bytes = base64.encode(converter.toBytes(writable.get()));
     out.write(b64Bytes);
     out.write(Protobufs.NEWLINE_UTF8_BYTE);
   }
 
   @Override
-  public void close(TaskAttemptContext taskAttemptContext)
-      throws IOException, InterruptedException {
+  public void close(Reporter reporter)
+      throws IOException {
     out.close();
   }
 }

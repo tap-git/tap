@@ -3,8 +3,11 @@ package com.twitter.elephantbird.mapreduce.output;
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.util.Progressable;
 
 import com.google.protobuf.Message;
 import com.twitter.elephantbird.mapreduce.io.ProtobufBlockWriter;
@@ -52,13 +55,13 @@ public class LzoProtobufBlockOutputFormat<M extends Message> extends LzoOutputFo
   }
 
   @Override
-  public RecordWriter<M, ProtobufWritable<M>> getRecordWriter(TaskAttemptContext job)
-  throws IOException, InterruptedException {
+  public RecordWriter<M, ProtobufWritable<M>> getRecordWriter(FileSystem ignore, JobConf job,
+          String name, Progressable prog) throws IOException {
     if (typeRef_ == null) { // i.e. if not set by a subclass
-      typeRef_ = Protobufs.getTypeRef(job.getConfiguration(), LzoProtobufBlockOutputFormat.class);
+      typeRef_ = Protobufs.getTypeRef(job, LzoProtobufBlockOutputFormat.class);
     }
 
     return new LzoBinaryBlockRecordWriter<M, ProtobufWritable<M>>(
-        new ProtobufBlockWriter<M>(getOutputStream(job), typeRef_.getRawClass()));
+        new ProtobufBlockWriter<M>(getOutputStream(job, name), typeRef_.getRawClass()));
   }
 }
