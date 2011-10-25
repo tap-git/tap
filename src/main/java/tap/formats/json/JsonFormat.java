@@ -1,26 +1,10 @@
 package tap.formats.json;
 
-import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.TextInputFormat;
-import org.apache.hadoop.mapred.TextOutputFormat;
-
 import tap.core.Pipe;
-import tap.formats.FileFormat;
 import tap.formats.Formats;
+import tap.formats.text.TextFormat;
 
-@SuppressWarnings("deprecation")
-public class JsonFormat extends FileFormat {
-
-	@Override
-	public void setupOutput(JobConf conf) {
-		conf.setOutputFormat(TextOutputFormat.class);
-		conf.setOutputKeyClass(String.class);
-	}
-
-	@Override
-	public void setupInput(JobConf conf) {
-		conf.setInputFormat(TextInputFormat.class);
-	}
+public class JsonFormat extends TextFormat {
 
 	@Override
 	public String fileExtension() {
@@ -30,6 +14,20 @@ public class JsonFormat extends FileFormat {
 	@Override
 	public void setPipeFormat(Pipe pipe) {
 		pipe.setFormat(Formats.JSON_FORMAT);
+	}
+
+	/**
+	 * matches if starts with open bracket { (ignoring whitespace)
+	 */
+	@Override
+	public boolean signature(byte[] header) {
+		if (super.signature(header)) {
+			String s = new String(header);
+			if (s.trim().startsWith("{")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

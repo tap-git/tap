@@ -1,4 +1,4 @@
-package tap.formats.avro;
+package tap.formats.tapproto;
 
 import java.util.Arrays;
 
@@ -13,31 +13,29 @@ import tap.formats.FileFormat;
 import tap.formats.Formats;
 
 @SuppressWarnings("deprecation")
-public class AvroFormat extends FileFormat {
+public class TapprotoFormat extends FileFormat {
 
-	public static final byte FILE_SIGNATURE[] = {0x4F,0x62,0x6A,0x01};
+	private static final byte FILE_SIGNATURE[] = "tapproto".getBytes();
 		
 	public void setupOutput(JobConf conf) {
-		conf.setOutputFormat(AvroOutputFormat.class);
-		conf.setOutputKeyClass(AvroWrapper.class);
+		// @TODO: protobuf
 	}
 
 	public void setupInput(JobConf conf) {
-		conf.setInputFormat(AvroInputFormat.class);
-		conf.set(AvroJob.INPUT_IS_REFLECT, "true");
+		// @TODO: protobuf
 	}
 
 	public String fileExtension() {
-		return ".avro";
+		return ".proto";
 	}
 
 	@Override
 	public void setPipeFormat(Pipe pipe) {
-		pipe.setFormat(Formats.AVRO_FORMAT);
+		pipe.setFormat(Formats.TAPPROTO_FORMAT);
 	}
 	
 	/**
-	 * Compare file signature of Avro type file (uncompressed)
+	 * Compare file signature of Tapproto type file
 	 */
 	@Override
 	public boolean signature(byte[] header) {

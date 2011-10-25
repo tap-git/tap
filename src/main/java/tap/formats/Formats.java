@@ -4,9 +4,16 @@ import tap.formats.avro.AvroFormat;
 import tap.formats.json.JsonFormat;
 import tap.formats.record.RecordFormat;
 import tap.formats.unknown.UnknownFormat;
+import tap.formats.tapproto.TapprotoFormat;
 import tap.formats.text.TextFormat;
 
 public enum Formats {
+	TAPPROTO_FORMAT {
+		@Override
+		public FileFormat getFileFormat() {
+			return new TapprotoFormat();
+		}
+	},
 	AVRO_FORMAT {
 		@Override
 		public FileFormat getFileFormat() {
