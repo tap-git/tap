@@ -46,6 +46,10 @@ public class Pipe<T> {
 	}
 
 	public Pipe(String path) {
+	    setPath(path);
+	}
+	
+	private void setPath(String path) {
 		this.path = path;
 
 		determineCompression();
@@ -141,7 +145,7 @@ public class Pipe<T> {
 	 * Set pipe's path.
 	 */
 	public Pipe<T> at(String path) {
-		this.path = path;
+	    setPath(path);
 		return this;
 	}
 
