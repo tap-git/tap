@@ -26,6 +26,8 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.util.ReflectionUtils;
 
+import com.twitter.elephantbird.mapreduce.output.LzoOutputFormat;
+
 /**
  * Bridge between a {@link org.apache.hadoop.mapred.Reducer} and an {@link AvroReducer}.
  */
@@ -33,11 +35,13 @@ import org.apache.hadoop.util.ReflectionUtils;
 class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OUT>, NullWritable> {
 
     private boolean isTextOutput = false;
+    private boolean isProtoOutput = false;
 
     @Override
     public void configure(JobConf conf) {
         super.configure(conf);
         isTextOutput = conf.getOutputFormat() instanceof TextOutputFormat;
+        isProtoOutput = conf.getOutputFormat() instanceof LzoOutputFormat;
     }
 
     @Override
@@ -59,6 +63,8 @@ class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OU
         public void collect(Object datum) throws IOException {
             if (isTextOutput) {
                 out.collect(datum, NullWritable.get());
+            } else if(isProtoOutput) {
+                out.collect(NullWritable.get(), datum);
             }
             else {
                 wrapper.datum((OUT) datum);
