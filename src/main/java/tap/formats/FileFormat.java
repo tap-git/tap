@@ -19,6 +19,10 @@ public abstract class FileFormat {
 	public boolean matches(String path) {
 		return path.endsWith(fileExtension());
 	}
+	
+	public boolean signature(byte[] header) {
+		return false;
+	}
 
 	public abstract void setPipeFormat(Pipe pipe) ;
 

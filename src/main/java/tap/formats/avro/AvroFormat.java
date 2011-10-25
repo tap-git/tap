@@ -1,5 +1,7 @@
 package tap.formats.avro;
 
+import java.util.Arrays;
+
 import org.apache.avro.mapred.AvroInputFormat;
 import org.apache.avro.mapred.AvroOutputFormat;
 import org.apache.avro.mapred.AvroWrapper;
@@ -28,6 +30,16 @@ public class AvroFormat extends FileFormat {
 	@Override
 	public void setPipeFormat(Pipe pipe) {
 		pipe.setFormat(Formats.AVRO_FORMAT);
+	}
+	
+	/**
+	 * Compare file signature of Avro type file (uncompressed)
+	 */
+	@Override
+	public boolean signature(byte[] header) {
+		
+		byte[] pattern = {0x4F,0x62,0x6A,0x01}; 
+		return Arrays.equals(pattern,header);
 	}
 
 }
