@@ -11,7 +11,7 @@ import com.twitter.elephantbird.util.TypeRef;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Counter;
-import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapred.InputSplit;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +33,8 @@ public class LzoBinaryBlockRecordReader<M, W extends BinaryWritable<M>> extends 
 
   private final BinaryBlockReader<M> reader_;
 
-  private Counter recordsReadCounter;
-  private Counter recordErrorsCounter;
+  // private Counter recordsReadCounter;
+  // private Counter recordErrorsCounter;
 
   public LzoBinaryBlockRecordReader(TypeRef<M> typeRef, BinaryBlockReader<M> reader, W binaryWritable) {
     key_ = new LongWritable();
@@ -51,12 +51,12 @@ public class LzoBinaryBlockRecordReader<M, W extends BinaryWritable<M>> extends 
   }
 
   @Override
-  public LongWritable getCurrentKey() throws IOException, InterruptedException {
+  public LongWritable createKey() {
     return key_;
   }
 
   @Override
-  public W getCurrentValue() throws IOException, InterruptedException {
+  public W createValue() {
     return value_;
   }
 
@@ -66,13 +66,12 @@ public class LzoBinaryBlockRecordReader<M, W extends BinaryWritable<M>> extends 
   }
 
   @Override
-  public void initialize(InputSplit genericSplit, TaskAttemptContext context)
-                                     throws IOException, InterruptedException {
-    String group = "LzoBlocks of " + typeRef_.getRawClass().getName();
-    recordsReadCounter = HadoopUtils.getCounter(context, group, "Records Read");
-    recordErrorsCounter = HadoopUtils.getCounter(context, group, "Errors");
+  public void initialize(InputSplit genericSplit, Configuration job) throws IOException {
+    // String group = "LzoBlocks of " + typeRef_.getRawClass().getName();
+    // recordsReadCounter = HadoopUtils.getCounter(context, group, "Records Read");
+    // recordErrorsCounter = HadoopUtils.getCounter(context, group, "Errors");
 
-    super.initialize(genericSplit, context);
+    super.initialize(genericSplit, job);
   }
 
   @Override
@@ -89,10 +88,9 @@ public class LzoBinaryBlockRecordReader<M, W extends BinaryWritable<M>> extends 
    *
    * @return true if a key/value pair was read
    * @throws IOException
-   * @throws InterruptedException
    */
   @Override
-  public boolean nextKeyValue() throws IOException, InterruptedException {
+  public boolean next(LongWritable key, W value) throws IOException {
     // If we are past the end of the file split, tell the reader not to read any more new blocks.
     // Then continue reading until the last of the reader's already-parsed values are used up.
     // The next split will start at the next sync point and no records will be missed.
@@ -117,11 +115,11 @@ public class LzoBinaryBlockRecordReader<M, W extends BinaryWritable<M>> extends 
       key_.set(pos_);
       pos_ = getLzoFilePos();
       if (value_.get() != null) {
-        recordsReadCounter.increment(1);
+        // recordsReadCounter.increment(1);
         return true;
       }
       errorTracker.incErrors(decodeException);
-      recordErrorsCounter.increment(1);
+      // recordErrorsCounter.increment(1);
       // continue
     }
   }

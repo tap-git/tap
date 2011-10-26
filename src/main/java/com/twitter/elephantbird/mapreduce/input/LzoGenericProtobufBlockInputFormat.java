@@ -4,8 +4,10 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.mapreduce.InputSplit;
-import org.apache.hadoop.mapreduce.RecordReader;
+import org.apache.hadoop.mapred.InputSplit;
+import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.RecordReader;
+import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +31,7 @@ public class LzoGenericProtobufBlockInputFormat extends LzoInputFormat<LongWrita
   }
 
   @Override
-  public RecordReader<LongWritable, BytesWritable> createRecordReader(InputSplit split,
-      TaskAttemptContext taskAttempt) throws IOException, InterruptedException {
-
+  public LzoRecordReader<LongWritable, BytesWritable> createRecordReader(JobConf job) throws IOException {
     return new LzoGenericProtobufBlockRecordReader();
   }
 }

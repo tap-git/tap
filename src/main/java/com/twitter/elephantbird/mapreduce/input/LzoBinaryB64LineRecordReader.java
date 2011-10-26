@@ -15,7 +15,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counter;
-import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapred.InputSplit;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.util.LineReader;
 
@@ -39,10 +39,12 @@ public class  LzoBinaryB64LineRecordReader<M, W extends BinaryWritable<M>> exten
   private final Base64 base64_ = Codecs.createStandardBase64();
   private final BinaryConverter<M> converter_;
 
+  /*
   private Counter linesReadCounter;
   private Counter emptyLinesCounter;
   private Counter recordsReadCounter;
   private Counter recordErrorsCounter;
+  */
 
   protected LzoBinaryB64LineRecordReader(TypeRef<M> typeRef, W protobufWritable, BinaryConverter<M> protoConverter) {
     typeRef_ = typeRef;
@@ -58,12 +60,12 @@ public class  LzoBinaryB64LineRecordReader<M, W extends BinaryWritable<M>> exten
   }
 
   @Override
-  public LongWritable getCurrentKey() throws IOException, InterruptedException {
+  public LongWritable createKey() {
     return key_;
   }
 
   @Override
-  public W getCurrentValue() throws IOException, InterruptedException {
+  public W createValue() {
     return value_;
   }
 
@@ -73,14 +75,13 @@ public class  LzoBinaryB64LineRecordReader<M, W extends BinaryWritable<M>> exten
   }
 
   @Override
-  public void initialize(InputSplit genericSplit, TaskAttemptContext context)
-                                      throws IOException, InterruptedException {
-    String group = "LzoB64Lines of " + typeRef_.getRawClass().getName();
-    linesReadCounter = HadoopUtils.getCounter(context, group, "Lines Read");
-    recordsReadCounter = HadoopUtils.getCounter(context, group, "Records Read");
-    recordErrorsCounter = HadoopUtils.getCounter(context, group, "Errors");
-    emptyLinesCounter = HadoopUtils.getCounter(context, group, "Empty Lines");
-    super.initialize(genericSplit, context);
+  public void initialize(InputSplit genericSplit, Configuration job) throws IOException {
+    // String group = "LzoB64Lines of " + typeRef_.getRawClass().getName();
+    // linesReadCounter = HadoopUtils.getCounter(context, group, "Lines Read");
+    // recordsReadCounter = HadoopUtils.getCounter(context, group, "Records Read");
+    // recordErrorsCounter = HadoopUtils.getCounter(context, group, "Errors");
+    // emptyLinesCounter = HadoopUtils.getCounter(context, group, "Empty Lines");
+    super.initialize(genericSplit, job);
   }
 
   @Override
@@ -98,10 +99,9 @@ public class  LzoBinaryB64LineRecordReader<M, W extends BinaryWritable<M>> exten
    *
    * @return true if a key/value pair was read
    * @throws IOException
-   * @throws InterruptedException
    */
   @Override
-  public boolean nextKeyValue() throws IOException, InterruptedException {
+  public boolean next(LongWritable key, W value) throws IOException {
     // Since the lzop codec reads everything in lzo blocks, we can't stop if pos == end.
     // Instead we wait for the next block to be read in, when pos will be > end.
     while (pos_ <= end_) {
@@ -111,10 +111,10 @@ public class  LzoBinaryB64LineRecordReader<M, W extends BinaryWritable<M>> exten
       if (newSize == 0) {
         return false;
       }
-      linesReadCounter.increment(1);
+      // linesReadCounter.increment(1);
       pos_ = getLzoFilePos();
       if (line_.getLength() == 0 || line_.charAt(0) == '\n') {
-        emptyLinesCounter.increment(1);
+        // emptyLinesCounter.increment(1);
         continue;
       }
 
@@ -131,12 +131,12 @@ public class  LzoBinaryB64LineRecordReader<M, W extends BinaryWritable<M>> exten
       }
 
       if (protoValue == null) {
-        recordErrorsCounter.increment(1);
+        // recordErrorsCounter.increment(1);
         errorTracker.incErrors(decodeException);
         continue;
       }
 
-      recordsReadCounter.increment(1);
+      // recordsReadCounter.increment(1);
       value_.set(protoValue);
       return true;
     }

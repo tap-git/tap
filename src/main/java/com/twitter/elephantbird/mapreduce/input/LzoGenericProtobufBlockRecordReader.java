@@ -40,12 +40,12 @@ public class LzoGenericProtobufBlockRecordReader extends LzoRecordReader<LongWri
   }
 
   @Override
-  public LongWritable getCurrentKey() throws IOException, InterruptedException {
+  public LongWritable createKey() {
     return key_;
   }
 
   @Override
-  public BytesWritable getCurrentValue() throws IOException, InterruptedException {
+  public BytesWritable createValue() {
     return value_;
   }
 
@@ -61,7 +61,7 @@ public class LzoGenericProtobufBlockRecordReader extends LzoRecordReader<LongWri
   }
 
   @Override
-  public boolean nextKeyValue() throws IOException, InterruptedException {
+  public boolean next(LongWritable key, BytesWritable value) throws IOException {
     // If we are past the end of the file split, tell the reader not to read any more new blocks.
     // Then continue reading until the last of the reader's already-parsed values are used up.
     // The next split will start at the next sync point and no records will be missed.

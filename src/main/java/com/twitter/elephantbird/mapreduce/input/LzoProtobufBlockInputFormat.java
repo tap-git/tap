@@ -7,9 +7,12 @@ import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
 import com.twitter.elephantbird.util.Protobufs;
 import com.twitter.elephantbird.util.TypeRef;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.mapreduce.InputSplit;
-import org.apache.hadoop.mapreduce.RecordReader;
+import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.mapred.InputSplit;
+import org.apache.hadoop.mapred.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
 /**
@@ -58,10 +61,9 @@ public class LzoProtobufBlockInputFormat<M extends Message> extends LzoInputForm
   }
 
   @Override
-  public RecordReader<LongWritable, ProtobufWritable<M>> createRecordReader(InputSplit split,
-      TaskAttemptContext taskAttempt) throws IOException, InterruptedException {
+  protected LzoRecordReader<LongWritable, ProtobufWritable<M>> createRecordReader( JobConf job) throws IOException {
     if (typeRef_ == null) {
-      typeRef_ = Protobufs.getTypeRef(taskAttempt.getConfiguration(), LzoProtobufBlockInputFormat.class);
+      typeRef_ = Protobufs.getTypeRef(job, LzoProtobufBlockInputFormat.class);
     }
     return new LzoProtobufBlockRecordReader<M>(typeRef_);
   }

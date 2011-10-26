@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 public abstract class LzoOutputFormat<K, V> extends FileOutputFormat<K, V> {
 
   public static final Logger LOG = LogManager.getLogger(LzoOutputFormat.class);
+  public static final String EXT = ".tapproto";
 
   /**
    * Helper method to create lzo output file needed to create RecordWriter
@@ -34,7 +35,7 @@ public abstract class LzoOutputFormat<K, V> extends FileOutputFormat<K, V> {
       // return LzoUtils.getIndexedLzoOutputStream(conf, path);
     
       // Path file = getPathForCustomFile(conf, name + ".protobuf"); 
-      Path file = getTaskOutputPath(conf, name);
+      Path file = getTaskOutputPath(conf, name + EXT);
       FileSystem fs = file.getFileSystem(conf);
       return fs.create(file, false);
   }

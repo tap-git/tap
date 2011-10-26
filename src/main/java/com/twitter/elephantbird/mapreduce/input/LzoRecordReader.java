@@ -9,10 +9,10 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.io.compress.CompressionCodecFactory;
-import org.apache.hadoop.mapreduce.InputSplit;
-import org.apache.hadoop.mapreduce.RecordReader;
+import org.apache.hadoop.mapred.InputSplit;
+import org.apache.hadoop.mapred.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapred.FileSplit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * <code>elephantbird.mapred.input.bad.record.threshold</code>.
  * A value of 0 disables error handling. <p>
  */
-public abstract class LzoRecordReader<K, V> extends RecordReader<K, V> {
+public abstract class LzoRecordReader<K, V> implements RecordReader<K, V> {
   private static final Logger LOG = LoggerFactory.getLogger(LzoRecordReader.class);
 
   public static final String BAD_RECORD_THRESHOLD_CONF_KEY = "elephantbird.mapred.input.bad.record.threshold";
@@ -59,13 +59,12 @@ public abstract class LzoRecordReader<K, V> extends RecordReader<K, V> {
     return fileIn_.getPos();
   }
 
-  @Override
-  public void initialize(InputSplit genericSplit, TaskAttemptContext context) throws IOException, InterruptedException {
+  // @Override
+  public void initialize(InputSplit genericSplit, Configuration job) throws IOException {
     FileSplit split = (FileSplit) genericSplit;
     start_ = split.getStart();
     end_ = start_ + split.getLength();
     final Path file = split.getPath();
-    Configuration job = context.getConfiguration();
 
     errorTracker = new InputErrorTracker(job);
 
