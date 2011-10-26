@@ -23,11 +23,12 @@ import tap.formats.*;
 
 import java.io.IOException;
 
-import org.apache.avro.mapred.*;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.*;
-import org.apache.hadoop.mapred.*;
-import java.lang.reflect.*;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+//import org.apache.hadoop.fs.*;
+import org.apache.hadoop.mapred.JobConf;
 
 @SuppressWarnings("deprecation")
 public class Pipe<T> {
@@ -96,6 +97,11 @@ public class Pipe<T> {
 		}
 	}
 
+	/**
+	 * Determine if file(s) in path are obsolete. Used in generating a work plan.
+	 * @param conf Job configuration
+	 * @return True if obsolete
+	 */
 	public boolean isObsolete(Configuration conf) {
 		Path dfsPath = new Path(path);
 		try {
@@ -108,6 +114,7 @@ public class Pipe<T> {
 				FileStatus[] statuses = fs.listStatus(dfsPath);
 				for (FileStatus status : statuses) {
 					if (!status.isDir()) {
+						// TODO add other types?
 						if (getFormat() != Formats.AVRO_FORMAT
 								|| status.getPath().toString()
 										.endsWith(".avro")) {

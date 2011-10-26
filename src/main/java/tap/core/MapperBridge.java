@@ -20,13 +20,20 @@
 package tap.core;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.*;
 import org.apache.avro.io.*;
 import org.apache.avro.mapred.*;
 import org.apache.avro.specific.SpecificDatumReader;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.LocalFileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.*;
@@ -78,6 +85,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase imp
                     inSchema = Phase.getSchema((IN)ReflectionUtils.newInstance(inClass, conf));
                 }
             }
+            sniffFileFormat(conf);
         }
         catch (Exception e) {
             if (e instanceof RuntimeException) throw (RuntimeException)e;
@@ -86,6 +94,26 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase imp
 
         mapper.setConf(conf);
     }
+
+	/**
+	 * Open file and read header to determine file format
+	 * @param conf
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	private void sniffFileFormat(JobConf conf) throws IOException,
+			FileNotFoundException {
+		{
+			Path path = new Path(conf.get("map.input.file"));
+			FileSystem fs = path.getFileSystem(conf);
+			LocalFileSystem lfs = fs.getLocal(conf);
+			File file = lfs.pathToFile(path);
+			InputStream inputStream = new FileInputStream(file);
+			byte[] header = new byte[1000];
+			inputStream.read(header);
+			inputStream.close();
+		}
+	}
 
     @SuppressWarnings("unchecked")
     private class Collector<K> extends AvroCollector<OUT> {
