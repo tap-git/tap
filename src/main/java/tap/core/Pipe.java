@@ -28,6 +28,7 @@ import org.apache.hadoop.fs.*;
 import org.apache.hadoop.mapred.*;
 
 import com.google.protobuf.Message;
+import com.twitter.elephantbird.mapreduce.input.LzoProtobufB64LineInputFormat;
 import com.twitter.elephantbird.mapreduce.output.LzoProtobufB64LineOutputFormat;
 
 @SuppressWarnings("deprecation")
@@ -37,72 +38,70 @@ public class Pipe<T> {
     private String path;
     private T prototype;
     private Formats format = Formats.AVRO_FORMAT;
-    private Class protoClass;
+    private Class<?> protoClass;
 
     public static enum Formats {
         STRING_FORMAT {
             @Override
-            public void setupOutput(JobConf conf) {
+            public void setupOutput(JobConf conf, Class<?> ignore) {
                 conf.setOutputFormat(TextOutputFormat.class);
                 conf.setOutputKeyClass(String.class);
             }
             
             @Override
-            public void setupInput(JobConf conf) {
+            public void setupInput(JobConf conf, Class<?> ignore) {
                 conf.setInputFormat(TextInputFormat.class);                
             }
         },
         JSON_FORMAT {            
             @Override
-            public void setupOutput(JobConf conf) {
+            public void setupOutput(JobConf conf, Class<?> ignore) {
                 conf.setOutputFormat(TextOutputFormat.class);                
                 conf.setOutputKeyClass(String.class);
             }
             
             @Override
-            public void setupInput(JobConf conf) {
+            public void setupInput(JobConf conf, Class<?> ignroe) {
                 conf.setInputFormat(TextInputFormat.class);                
             }
         },
         AVRO_FORMAT {
             @Override
-            public void setupOutput(JobConf conf) {
+            public void setupOutput(JobConf conf, Class<?> ignore) {
                 conf.setOutputFormat(AvroOutputFormat.class);
                 conf.setOutputKeyClass(AvroWrapper.class);
             }
 
             @Override
-            public void setupInput(JobConf conf) {
+            public void setupInput(JobConf conf, Class<?> ignore) {
                 conf.setInputFormat(AvroInputFormat.class);        
             }
         },
         PROTOBUF_FORMAT {
             @Override
-            public void setupOutput(JobConf conf) {
-                // throw new NotImplementedException();
+            @SuppressWarnings("unchecked")
+            public void setupOutput(JobConf conf, Class<?> protoClass) {
+                setupOutputImpl(conf, protoClass);
             }
-
             @Override
-            public void setupInput(JobConf conf) {
-                throw new NotImplementedException();
+            public void setupInput(JobConf conf, Class<?> protoClass) {
+                setupInput(conf, protoClass);
             }
             
-            @Override
-            @SuppressWarnings("unchecked")
-            public <M extends Message> void setupProtoOutput(JobConf conf, Class<M> protoClass) {
-                // conf.setOutputFormat(LzoProtobufB64LineOutputFormat.getOutputFormatClass(protoClass, conf));
+            private <M extends Message> void setupOutputImpl(JobConf conf, Class<?> protoClass) {
                 conf.setOutputFormat((Class<? extends OutputFormat>)
-                    LzoProtobufB64LineOutputFormat.getOutputFormatClass(protoClass, conf));
+                    LzoProtobufB64LineOutputFormat.getOutputFormatClass((Class<M>) protoClass, conf));
+            }
+
+            private <M extends Message> void setupInputImpl(JobConf conf, Class<?> protoClass) {
+                conf.setInputFormat((Class<? extends InputFormat>)
+                    LzoProtobufB64LineInputFormat.getInputFormatClass((Class<M>) protoClass, conf));
             }
         };
 
-        public abstract void setupOutput(JobConf conf);
+        public abstract void setupOutput(JobConf conf, Class<?> protoClass);
 
-        public abstract void setupInput(JobConf conf);
-        
-        public <M extends Message> void setupProtoOutput(JobConf conf, Class<M> protoClass) {
-            throw new NotImplementedException();
-        }
+        public abstract void setupInput(JobConf conf, Class<?> protoClass);
     }
 
     @Deprecated
@@ -198,6 +197,12 @@ public class Pipe<T> {
     }
 
     public static <T> Pipe<T> of(Class<? extends T> ofClass) {
+        if(Message.class.isAssignableFrom(ofClass)) {
+            Pipe<T> pipe = new Pipe<T>((T)null);
+            pipe.protoClass = ofClass;
+            return pipe;
+        }
+            
         try {
             return new Pipe<T>(ofClass.newInstance());
         }
@@ -238,18 +243,13 @@ public class Pipe<T> {
         return this;
     }
     
-    public <M extends Message> Pipe protobufOutputFormat(Class<M> protoClass) {
+    public <M extends Message> Pipe protoFormat() {
         this.format = Formats.PROTOBUF_FORMAT;
-        this.protoClass = protoClass;
         return this;
     }
     
     public void setupOutput(JobConf conf) {
-        if(protoClass != null) {
-            format.setupProtoOutput(conf, protoClass);
-        } else {
-            format.setupOutput(conf);
-        }
+        format.setupOutput(conf, protoClass != null ? protoClass : prototype == null ? null : prototype.getClass());        
     }
 
     public long getTimestamp(JobConf conf) {
@@ -264,7 +264,7 @@ public class Pipe<T> {
     }
 
     public void setupInput(JobConf conf) {
-        format.setupInput(conf);        
+        format.setupInput(conf, protoClass != null ? protoClass : prototype == null ? null : prototype.getClass());        
     }
     
     // files at the same location are deemed equal, however

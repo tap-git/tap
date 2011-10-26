@@ -33,7 +33,7 @@ public class WordCountProtobuf extends Configured implements Tool {
         }
 
         Pipe input = new Pipe(o.input).stringFormat();
-        Pipe counts = new Pipe(o.output).protobufOutputFormat(Protos.CountRec.class);
+        Pipe counts = Pipe.of(Protos.CountRec.class).at(o.output).protoFormat();
         wordcount.produces(counts);
         
         Phase count = new Phase().reads(input).writes(counts).map(Mapper.class).
