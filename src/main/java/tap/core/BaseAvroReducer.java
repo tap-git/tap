@@ -25,6 +25,8 @@ import java.util.Iterator;
 import org.apache.avro.mapred.*;
 import org.apache.hadoop.mapred.*;
 
+import tap.util.ObjectFactory;
+
 /** Base class for a combiner or a reducer */
 @SuppressWarnings("deprecation")
 abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implements Reducer<AvroKey<K>, AvroValue<V>, KO, VO> {
@@ -44,7 +46,7 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
     public void configure(JobConf conf) {
         this.reducer = getReducer(conf);
         try {
-            this.out = (OUT) Class.forName(conf.get(Phase.REDUCE_OUT_CLASS)).newInstance();
+            this.out = (OUT) ObjectFactory.newInstance(Class.forName(conf.get(Phase.REDUCE_OUT_CLASS)));
         }
         catch (RuntimeException e) {
             throw e;

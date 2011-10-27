@@ -17,12 +17,12 @@ public class AvroFormat extends FileFormat {
 
 	public static final byte FILE_SIGNATURE[] = {0x4F,0x62,0x6A,0x01};
 		
-	public void setupOutput(JobConf conf) {
+	public void setupOutput(JobConf conf, Class<?> ignore) {
 		conf.setOutputFormat(AvroOutputFormat.class);
 		conf.setOutputKeyClass(AvroWrapper.class);
 	}
 
-	public void setupInput(JobConf conf) {
+	public void setupInput(JobConf conf, Class<?> ignore) {
 		conf.setInputFormat(AvroInputFormat.class);
 		conf.set(AvroJob.INPUT_IS_REFLECT, "true");
 	}

@@ -6,7 +6,13 @@ import org.apache.avro.mapred.AvroInputFormat;
 import org.apache.avro.mapred.AvroJob;
 import org.apache.avro.mapred.AvroOutputFormat;
 import org.apache.avro.mapred.AvroWrapper;
+import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.OutputFormat;
+
+import com.google.protobuf.Message;
+import com.twitter.elephantbird.mapreduce.input.LzoProtobufB64LineInputFormat;
+import com.twitter.elephantbird.mapreduce.output.LzoProtobufB64LineOutputFormat;
 
 import tap.core.Pipe;
 import tap.formats.FileFormat;
@@ -17,14 +23,24 @@ public class TapprotoFormat extends FileFormat {
 
 	private static final byte FILE_SIGNATURE[] = "tapproto".getBytes();
 		
-	public void setupOutput(JobConf conf) {
-		// @TODO: protobuf
+	public void setupOutput(JobConf conf, Class<?> protoClass) {
+	    setupOutputImpl(conf, protoClass);
 	}
 
-	public void setupInput(JobConf conf) {
-		// @TODO: protobuf
+	public void setupInput(JobConf conf, Class<?> protoClass) {
+	    setupInputImpl(conf, protoClass);
 	}
 
+    private <M extends Message> void setupOutputImpl(JobConf conf, Class<?> protoClass) {
+        conf.setOutputFormat((Class<? extends OutputFormat>)
+            LzoProtobufB64LineOutputFormat.getOutputFormatClass((Class<M>) protoClass, conf));
+    }
+
+    private <M extends Message> void setupInputImpl(JobConf conf, Class<?> protoClass) {
+        conf.setInputFormat((Class<? extends InputFormat>)
+            LzoProtobufB64LineInputFormat.getInputFormatClass((Class<M>) protoClass, conf));
+    }
+	
 	public String fileExtension() {
 		return ".proto";
 	}

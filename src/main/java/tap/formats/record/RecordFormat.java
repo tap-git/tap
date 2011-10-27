@@ -12,13 +12,13 @@ import tap.formats.Formats;
 public class RecordFormat extends FileFormat {
 
 	@Override
-	public void setupOutput(JobConf conf) {
+	public void setupOutput(JobConf conf, Class<?> ignore) {
 		conf.setOutputFormat(TextOutputFormat.class);
 		conf.setOutputKeyClass(String.class);
 	}
 
 	@Override
-	public void setupInput(JobConf conf) {
+	public void setupInput(JobConf conf, Class<?> ignore) {
 		conf.setInputFormat(TextInputFormat.class);  
 	}
 

@@ -9,10 +9,10 @@ import tap.formats.Formats;
 @SuppressWarnings("deprecation")
 public class UnknownFormat extends FileFormat {
 
-	public void setupOutput(JobConf conf) {
+	public void setupOutput(JobConf conf, Class<?> ignore) {
 	}
 
-	public void setupInput(JobConf conf) {    
+	public void setupInput(JobConf conf, Class<?> ignore) {    
     }
 
 	public String fileExtension() {

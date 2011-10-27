@@ -33,6 +33,12 @@ import org.apache.hadoop.mapred.JobConf;
 import tap.formats.avro.AvroGroupPartitioner;
 import tap.formats.avro.TapAvroSerialization;
 
+import org.apache.avro.protobuf.ProtobufData;
+
+import com.google.protobuf.Message;
+
+import tap.util.ObjectFactory;
+
 @SuppressWarnings("deprecation")
 public class Phase {
 
@@ -326,7 +332,7 @@ public class Phase {
                     // not available - try to get it from the reducer
                     if (reducerClass == null) {
                         mapOutClass = reduceOutClass;
-                        mapValueSchema = getSchema(reduceOutClass.newInstance());
+                        mapValueSchema = getSchema(ObjectFactory.newInstance(reduceOutClass));
                     } else {
                         // can't get it from reducer input - that's just
                         // Iterable
@@ -339,7 +345,7 @@ public class Phase {
                     }
                 }
             } else {
-                mapValueSchema = getSchema(mapOutClass.newInstance());
+                mapValueSchema = getSchema(ObjectFactory.newInstance(mapOutClass));
             }
             if (mapValueSchema != null)
                 conf.set(MAP_OUT_VALUE_SCHEMA, mapValueSchema.toString());
@@ -442,7 +448,7 @@ public class Phase {
             reduceOutClass = reduceOutProto.getClass();
         } else {
             try {
-                reduceOutProto = reduceOutClass.newInstance();
+                reduceOutProto = ObjectFactory.newInstance(reduceOutClass);
                 Object fileProto = mainWrites.get(0).getPrototype();
                 if (fileProto == null) {
                     mainWrites.get(0).setPrototype(reduceOutProto); // store
@@ -468,7 +474,7 @@ public class Phase {
             // default reducer - use mapper output
             reduceOutClass = mapOutClass;
             try {
-                reduceOutProto = reduceOutClass.newInstance();
+                reduceOutProto = ObjectFactory.newInstance(reduceOutClass);
                 reduceout = getSchema(reduceOutProto);
             } catch (Exception e) {
                 errors.add(new PhaseError(e,
@@ -540,8 +546,7 @@ public class Phase {
                                         // TODO: handle cases beyond Object
                                         // where output isn't defined
                                         mapInClass = paramTypes[0];
-                                        mapin = getSchema(paramTypes[0]
-                                                .newInstance());
+                                        mapin = getSchema(ObjectFactory.newInstance(paramTypes[0]));
                                     }
                                     mapOutClass = paramTypes[1];
                                     foundIn = m.getDeclaringClass();
@@ -563,6 +568,8 @@ public class Phase {
     }
 
     public static Schema getSchema(Object proto) {
+        if(proto instanceof Message)
+            return ProtobufData.get().getSchema(proto.getClass());
         try {
             Field schemaField = proto.getClass().getField("SCHEMA$");
             return (Schema) schemaField.get(null);

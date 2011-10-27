@@ -30,6 +30,8 @@ import org.apache.hadoop.fs.Path;
 //import org.apache.hadoop.fs.*;
 import org.apache.hadoop.mapred.JobConf;
 
+import tap.util.ObjectFactory;
+
 @SuppressWarnings("deprecation")
 public class Pipe<T> {
 
@@ -192,7 +194,7 @@ public class Pipe<T> {
 
     public static <T> Pipe<T> of(Class<? extends T> ofClass) {
         try {
-            return new Pipe<T>(ofClass.newInstance());
+            return new Pipe<T>(ObjectFactory.newInstance(ofClass));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -232,13 +234,18 @@ public class Pipe<T> {
         this.setFormat(Formats.AVRO_FORMAT);
         return this;
     }
+    
+    public Pipe protoFormat() {
+        this.setFormat(Formats.TAPPROTO_FORMAT);
+        return this;
+    }
 
     public void setupOutput(JobConf conf) {
-        getFormat().getFileFormat().setupOutput(conf);
+        getFormat().getFileFormat().setupOutput(conf, prototype == null ? null : prototype.getClass());
     }
 
     public void setupInput(JobConf conf) {
-        getFormat().getFileFormat().setupInput(conf);
+        getFormat().getFileFormat().setupInput(conf, prototype == null ? null : prototype.getClass());
     }
 
     public long getTimestamp(JobConf conf) {

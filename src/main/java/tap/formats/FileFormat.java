@@ -6,9 +6,9 @@ import tap.core.Pipe;
 @SuppressWarnings("deprecation")
 public abstract class FileFormat {
 
-	public abstract void setupOutput(JobConf conf);
+	public abstract void setupOutput(JobConf conf, Class<?> protoClass);
 
-	public abstract void setupInput(JobConf conf);
+	public abstract void setupInput(JobConf conf, Class<?> protoClass);
 
 	// file extension
 	public abstract String fileExtension();

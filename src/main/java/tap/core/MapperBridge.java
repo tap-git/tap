@@ -44,6 +44,9 @@ import tap.formats.FileFormat;
 import tap.formats.Formats;
 import tap.formats.avro.JsonToGenericRecord;
 
+import com.twitter.elephantbird.mapreduce.input.LzoInputFormat;
+import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
+
 @SuppressWarnings("deprecation")
 public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
         implements org.apache.hadoop.mapred.Mapper<KEY, VALUE, KO, VO> {
@@ -58,6 +61,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     private boolean isTextInput = false;
     private boolean isStringInput = false;
     private boolean isJsonInput = false;
+    private boolean isProtoInput = false;
     private Schema inSchema;
     private int parseErrors = 0;
     private BinaryEncoder encoder = null;
@@ -90,6 +94,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
                             .newInstance(inClass, conf));
                 }
             }
+            isProtoInput = conf.getInputFormat() instanceof LzoInputFormat;
             FileFormat ff = sniffFileFormat(conf);
             // TODO now use FileFormat to generate exception?
         } catch (Exception e) {
@@ -202,6 +207,8 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
             mapper.map((IN) value, out, context);
         } else if (isStringInput) {
             mapper.map((IN) ((Text) value).toString(), out, context);
+        } else if (isProtoInput) {
+            mapper.map((IN) ((ProtobufWritable) value).get(), out, context);           
         } else if (isJsonInput) {
             String json = ((Text) value).toString();
             if (shouldSkip(json))
