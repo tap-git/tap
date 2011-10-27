@@ -71,17 +71,22 @@ public abstract class LzoRecordReader<K, V> implements RecordReader<K, V> {
     LOG.info("input split: " + file + " " + start_ + ":" + end_);
 
     FileSystem fs = file.getFileSystem(job);
+    
+    // NUKE the LZO!
+    /*
     CompressionCodecFactory compressionCodecs = new CompressionCodecFactory(job);
     final CompressionCodec codec = compressionCodecs.getCodec(file);
     if (codec == null) {
       throw new IOException("No codec for file " + file + " found, cannot run");
     }
+    */
 
     // Open the file and seek to the start of the split.
     fileIn_ = fs.open(split.getPath());
 
     // Creates input stream and also reads the file header.
-    createInputReader(codec.createInputStream(fileIn_), job);
+    // createInputReader(codec.createInputStream(fileIn_), job);
+    createInputReader(fileIn_, job);
 
     if (start_ != 0) {
       fileIn_.seek(start_);

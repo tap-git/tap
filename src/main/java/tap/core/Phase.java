@@ -30,6 +30,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 
+import com.google.protobuf.Message;
 import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
 
 import tap.formats.avro.AvroGroupPartitioner;
@@ -375,13 +376,15 @@ public class Phase {
             AvroOutputFormat.setDeflateLevel(conf, deflateLevel);
 
         Object proto = null;
+        Class<?> protoClass = null;
         if (mainReads != null && mainReads.size() > 0) {
             Path[] inPaths = new Path[mainReads.size()];
             int i = 0;
             for (Pipe file : mainReads) {
                 inPaths[i++] = new Path(file.getPath());
                 Object myProto = file.getPrototype();
-                if (myProto == null) {
+                Class<?> myProtoClass = file.getPrototypeClass();
+                if (myProto == null && myProtoClass == null) {
                     errors.add(new PhaseError("Files need non-null prototypes " + file));
                 }
                 else if (proto != null) {
@@ -392,12 +395,15 @@ public class Phase {
                 }
                 else {
                     proto = myProto;
+                    protoClass = myProtoClass;
                 }
             }
             AvroInputFormat.setInputPaths(conf, inPaths);
 
             if (mapin == null) {
-                if (proto == null){
+                if(protoClass != null) {
+                    mapInClass = protoClass;
+                } else if (proto == null){
                     errors.add(new PhaseError("Undefined input format"));
                 } else {
                     mapin = getSchema(proto);
@@ -437,7 +443,7 @@ public class Phase {
         } catch (Exception e) {
             errors.add(new PhaseError(e, "Can't create instance of map output class: " + mapOutClass));
         }
-
+        
         conf.set(MAP_OUT_CLASS, mapOutClass.getName());
         conf.set(MAP_IN_CLASS, mapInClass.getName());
         // XXX validation!
@@ -447,7 +453,7 @@ public class Phase {
         else if (mapin != null) {
             conf.set(AvroJob.INPUT_SCHEMA, mapin.toString());
         }
-        else {
+        else if(!(Message.class.isAssignableFrom(mapInClass))) { // HACK protobuf
             errors.add(new PhaseError("No map input defined"));
         }
 

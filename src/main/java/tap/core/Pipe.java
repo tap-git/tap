@@ -85,7 +85,7 @@ public class Pipe<T> {
             }
             @Override
             public void setupInput(JobConf conf, Class<?> protoClass) {
-                setupInput(conf, protoClass);
+                setupInputImpl(conf, protoClass);
             }
             
             private <M extends Message> void setupOutputImpl(JobConf conf, Class<?> protoClass) {
@@ -217,6 +217,10 @@ public class Pipe<T> {
 
     public T getPrototype() {
         return prototype;
+    }
+    
+    public Class<?> getPrototypeClass() {
+        return protoClass;
     }
     
     void setPrototype(T prototype) {

@@ -33,6 +33,8 @@ import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.codehaus.jackson.JsonParseException;
 
+import com.twitter.elephantbird.mapreduce.input.LzoInputFormat;
+
 import tap.formats.avro.JsonToGenericRecord;
 
 
@@ -51,6 +53,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase imp
     private boolean isTextInput = false;
     private boolean isStringInput = false;
     private boolean isJsonInput = false;
+    private boolean isProtoInput = false;
     private Schema inSchema;
     private int parseErrors = 0;
     private BinaryEncoder encoder = null;
@@ -78,6 +81,8 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase imp
                     inSchema = Phase.getSchema((IN)ReflectionUtils.newInstance(inClass, conf));
                 }
             }
+            
+            isProtoInput = conf.getInputFormat() instanceof LzoInputFormat;
         }
         catch (Exception e) {
             if (e instanceof RuntimeException) throw (RuntimeException)e;
@@ -128,6 +133,8 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase imp
             mapper.map((IN)value, out, context);
         } else if (isStringInput) {            
             mapper.map((IN)((Text)value).toString(), out, context);
+        } else if (isProtoInput) {
+            mapper.map((IN)value, out, context);
         } else if (isJsonInput) {
             String json = ((Text)value).toString();
             if (shouldSkip(json)) return;
