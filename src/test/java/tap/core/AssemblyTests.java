@@ -9,109 +9,106 @@ import org.junit.Test;
 import tap.formats.Formats;
 
 public class AssemblyTests {
-	
-	@Test
-	public void wordCount() {
 
-		/* Set up a basic pipeline of map reduce */
-		Assembly wordcount = new Assembly(getClass()).named("wordcount");
-		/*
-		 * Parse options - just use the standard options - input and output
-		 * location, time window, etc.
-		 */
-		File infile = new File("share/decameron.txt");
-		System.out.println(infile.getAbsolutePath());
+    @Test
+    public void wordCount() {
 
-		String args[] = { "-i", "share/decameron.txt", "-o", "/tmp/out", "-f" };
-		Assert.assertEquals(5, args.length);
-		BaseOptions o = new BaseOptions();
-		int result = o.parse(wordcount, args);
-		Assert.assertEquals(0, result);
-		Assert.assertNotNull("must specify input directory", o.input);
-		Assert.assertNotNull("must specify output directory", o.output);
+        /* Set up a basic pipeline of map reduce */
+        Assembly wordcount = new Assembly(getClass()).named("wordcount");
+        /*
+         * Parse options - just use the standard options - input and output
+         * location, time window, etc.
+         */
+        File infile = new File("share/decameron.txt");
+        System.out.println(infile.getAbsolutePath());
 
-		Pipe input = new Pipe(o.input).stringFormat();
-		Pipe<CountRec> counts = new Pipe<CountRec>(o.output);
-		counts.setPrototype(new CountRec());
+        String args[] = { "-i", "share/decameron.txt", "-o", "/tmp/out", "-f" };
+        Assert.assertEquals(5, args.length);
+        BaseOptions o = new BaseOptions();
+        int result = o.parse(wordcount, args);
+        Assert.assertEquals(0, result);
+        Assert.assertNotNull("must specify input directory", o.input);
+        Assert.assertNotNull("must specify output directory", o.output);
 
-		wordcount.produces(counts);
+        Pipe input = new Pipe(o.input).stringFormat();
+        Pipe<CountRec> counts = new Pipe<CountRec>(o.output);
+        counts.setPrototype(new CountRec());
 
-		Phase count = new Phase().reads(input).writes(counts).map(Mapper.class)
-				.groupBy("word").reduce(Reducer.class);
+        wordcount.produces(counts);
 
-		if (o.forceRebuild)
-			wordcount.forceRebuild();
+        Phase count = new Phase().reads(input).writes(counts).map(Mapper.class)
+                .groupBy("word").reduce(Reducer.class);
 
-		wordcount.dryRun();
+        if (o.forceRebuild)
+            wordcount.forceRebuild();
 
-		wordcount.execute();
-	}
+        wordcount.dryRun();
 
-	// Job failing.....
-	@Test
-	public void summation() {
-		/* Set up a basic pipeline of map reduce */
-		Assembly summation = new Assembly(getClass())
-				.named("summation");
-		/*
-		 * Parse options - just use the standard options - input and output
-		 * location, time window, etc.
-		 */
+        wordcount.execute();
+    }
 
-		String args[] = { "-o", "/tmp/wordcount", "-i", "/tmp/out", "-f" };
-		Assert.assertEquals(5, args.length);
-		BaseOptions o = new BaseOptions();
-		int result = o.parse(summation, args);
-		Assert.assertEquals(0, result);
-		Assert.assertNotNull("must specify input directory", o.input);
-		Assert.assertNotNull("must specify output directory", o.output);
+    // Job failing.....
+    @Test
+    public void summation() {
+        /* Set up a basic pipeline of map reduce */
+        Assembly summation = new Assembly(getClass()).named("summation");
+        /*
+         * Parse options - just use the standard options - input and output
+         * location, time window, etc.
+         */
 
-		Pipe<CountRec> input = new Pipe<CountRec>(o.input);
-		input.setPrototype(new CountRec());
+        String args[] = { "-o", "/tmp/wordcount", "-i", "/tmp/out", "-f" };
+        Assert.assertEquals(5, args.length);
+        BaseOptions o = new BaseOptions();
+        int result = o.parse(summation, args);
+        Assert.assertEquals(0, result);
+        Assert.assertNotNull("must specify input directory", o.input);
+        Assert.assertNotNull("must specify output directory", o.output);
 
-		Pipe<OutputLog> output = new Pipe<OutputLog>(o.output);
-		output.setPrototype(new OutputLog());
+        Pipe<CountRec> input = new Pipe<CountRec>(o.input);
+        input.setPrototype(new CountRec());
 
-		summation.produces(output);
+        Pipe<OutputLog> output = new Pipe<OutputLog>(o.output);
+        output.setPrototype(new OutputLog());
 
-		Phase sum = new Phase().reads(input).writes(output)
-				.map(SummationMapper.class).groupBy("count")
-				.reduce(SummationReducer.class);
+        summation.produces(output);
 
-		if (o.forceRebuild)
-			summation.forceRebuild();
+        Phase sum = new Phase().reads(input).writes(output)
+                .map(SummationMapper.class).groupBy("count")
+                .reduce(SummationReducer.class);
 
-		summation.dryRun();
+        if (o.forceRebuild)
+            summation.forceRebuild();
 
-		summation.execute();
-	}
+        summation.dryRun();
 
-	public static class Mapper extends BaseMapper<String, CountRec> {
-		@Override
-		public void map(String line, CountRec out,
-				TapContext<CountRec> context) {
-			StringTokenizer tokenizer = new StringTokenizer(line);
-			while (tokenizer.hasMoreTokens()) {
-				out.word = tokenizer.nextToken();
-				out.count = 1;
-				context.write(out);
-			}
-		}
-	}
+        summation.execute();
+    }
 
-	public static class Reducer extends
-			BaseReducer<CountRec, CountRec> {
+    public static class Mapper extends BaseMapper<String, CountRec> {
+        @Override
+        public void map(String line, CountRec out, TapContext<CountRec> context) {
+            StringTokenizer tokenizer = new StringTokenizer(line);
+            while (tokenizer.hasMoreTokens()) {
+                out.word = tokenizer.nextToken();
+                out.count = 1;
+                context.write(out);
+            }
+        }
+    }
 
-		@Override
-		public void reduce(Iterable<CountRec> in, CountRec out,
-				TapContext<CountRec> context) {
-			out.count = 0;
-			for (CountRec rec : in) {
-				out.word = rec.word;
-				out.count += rec.count;
-			}
-			context.write(out);
-		}
+    public static class Reducer extends BaseReducer<CountRec, CountRec> {
 
-	}
+        @Override
+        public void reduce(Iterable<CountRec> in, CountRec out,
+                TapContext<CountRec> context) {
+            out.count = 0;
+            for (CountRec rec : in) {
+                out.word = rec.word;
+                out.count += rec.count;
+            }
+            context.write(out);
+        }
+
+    }
 }

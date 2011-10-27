@@ -46,218 +46,218 @@ import tap.formats.avro.JsonToGenericRecord;
 
 @SuppressWarnings("deprecation")
 public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
-		implements org.apache.hadoop.mapred.Mapper<KEY, VALUE, KO, VO> {
+        implements org.apache.hadoop.mapred.Mapper<KEY, VALUE, KO, VO> {
 
-	private Mapper<IN, OUT> mapper;
-	private boolean isMapOnly;
-	private OUT out;
-	private TapContext<OUT> context;
-	private Schema schema;
-	private String groupBy;
-	private String sortBy;
-	private boolean isTextInput = false;
-	private boolean isStringInput = false;
-	private boolean isJsonInput = false;
-	private Schema inSchema;
-	private int parseErrors = 0;
-	private BinaryEncoder encoder = null;
-	private EncoderFactory factory = new EncoderFactory();
-	// TODO: make this configurable
-	private int maxAllowedErrors = 1000;
+    private Mapper<IN, OUT> mapper;
+    private boolean isMapOnly;
+    private OUT out;
+    private TapContext<OUT> context;
+    private Schema schema;
+    private String groupBy;
+    private String sortBy;
+    private boolean isTextInput = false;
+    private boolean isStringInput = false;
+    private boolean isJsonInput = false;
+    private Schema inSchema;
+    private int parseErrors = 0;
+    private BinaryEncoder encoder = null;
+    private EncoderFactory factory = new EncoderFactory();
+    // TODO: make this configurable
+    private int maxAllowedErrors = 1000;
 
-	@SuppressWarnings("unchecked")
-	public void configure(JobConf conf) {
-		this.mapper = ReflectionUtils.newInstance(
-				conf.getClass(Phase.MAPPER, BaseMapper.class, Mapper.class),
-				conf);
-		this.isMapOnly = conf.getNumReduceTasks() == 0;
-		try {
-			this.out = (OUT) ReflectionUtils.newInstance(conf.getClass(
-					Phase.MAP_OUT_CLASS, Object.class, Object.class), conf);
-			this.schema = Phase.getSchema(this.out);
-			this.groupBy = conf.get(Phase.GROUP_BY);
-			this.sortBy = conf.get(Phase.SORT_BY);
-			if (conf.getInputFormat() instanceof TextInputFormat) {
-				Class<?> inClass = conf.getClass(Phase.MAP_IN_CLASS,
-						Object.class, Object.class);
-				if (inClass == String.class) {
-					isStringInput = true;
-				} else if (inClass == Text.class) {
-					isTextInput = true;
-				} else {
-					isJsonInput = true;
-					inSchema = Phase.getSchema((IN) ReflectionUtils
-							.newInstance(inClass, conf));
-				}
-			}
-			FileFormat ff = sniffFileFormat(conf);
-			// TODO now use FileFormat to generate exception?
-		} catch (Exception e) {
-			if (e instanceof RuntimeException)
-				throw (RuntimeException) e;
-			throw new RuntimeException(e);
-		}
+    @SuppressWarnings("unchecked")
+    public void configure(JobConf conf) {
+        this.mapper = ReflectionUtils.newInstance(
+                conf.getClass(Phase.MAPPER, BaseMapper.class, Mapper.class),
+                conf);
+        this.isMapOnly = conf.getNumReduceTasks() == 0;
+        try {
+            this.out = (OUT) ReflectionUtils.newInstance(conf.getClass(
+                    Phase.MAP_OUT_CLASS, Object.class, Object.class), conf);
+            this.schema = Phase.getSchema(this.out);
+            this.groupBy = conf.get(Phase.GROUP_BY);
+            this.sortBy = conf.get(Phase.SORT_BY);
+            if (conf.getInputFormat() instanceof TextInputFormat) {
+                Class<?> inClass = conf.getClass(Phase.MAP_IN_CLASS,
+                        Object.class, Object.class);
+                if (inClass == String.class) {
+                    isStringInput = true;
+                } else if (inClass == Text.class) {
+                    isTextInput = true;
+                } else {
+                    isJsonInput = true;
+                    inSchema = Phase.getSchema((IN) ReflectionUtils
+                            .newInstance(inClass, conf));
+                }
+            }
+            FileFormat ff = sniffFileFormat(conf);
+            // TODO now use FileFormat to generate exception?
+        } catch (Exception e) {
+            if (e instanceof RuntimeException)
+                throw (RuntimeException) e;
+            throw new RuntimeException(e);
+        }
 
-		mapper.setConf(conf);
-	}
+        mapper.setConf(conf);
+    }
 
-	/**
-	 * Open file and read header to determine file format
-	 * 
-	 * @param conf
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 */
-	private FileFormat sniffFileFormat(JobConf conf) throws IOException,
-			FileNotFoundException {
-		{
-			FileFormat returnFormat = Formats.UNKNOWN_FORMAT.getFileFormat();
-			Path path = new Path(conf.get("map.input.file"));
-			File file = FileSystem.getLocal(conf).pathToFile(path);
-			byte[] header = readHeader(file);
-			returnFormat = determineFileFormat(header);
-			System.out
-					.println("tap.core.MapperBridge: local file path " + path);
-			System.out.println("tap.core.MapperBridge: File format "
-					+ returnFormat.toString());
-			System.out.println("tap.core.MapperBridge: format extension "
-					+ returnFormat.fileExtension());
-			return returnFormat;
-		}
-	}
+    /**
+     * Open file and read header to determine file format
+     * 
+     * @param conf
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    private FileFormat sniffFileFormat(JobConf conf) throws IOException,
+            FileNotFoundException {
+        {
+            FileFormat returnFormat = Formats.UNKNOWN_FORMAT.getFileFormat();
+            Path path = new Path(conf.get("map.input.file"));
+            File file = FileSystem.getLocal(conf).pathToFile(path);
+            byte[] header = readHeader(file);
+            returnFormat = determineFileFormat(header);
+            System.out
+                    .println("tap.core.MapperBridge: local file path " + path);
+            System.out.println("tap.core.MapperBridge: File format "
+                    + returnFormat.toString());
+            System.out.println("tap.core.MapperBridge: format extension "
+                    + returnFormat.fileExtension());
+            return returnFormat;
+        }
+    }
 
-	/**
-	 * Based on file header values return File format.
-	 * 
-	 * @param returnFormat
-	 * @param header
-	 * @return
-	 */
-	private FileFormat determineFileFormat(byte[] header) {
-		for (Formats format : Formats.values()) {
-			if (format.getFileFormat().signature(header)) {
-				return format.getFileFormat();
+    /**
+     * Based on file header values return File format.
+     * 
+     * @param returnFormat
+     * @param header
+     * @return
+     */
+    private FileFormat determineFileFormat(byte[] header) {
+        for (Formats format : Formats.values()) {
+            if (format.getFileFormat().signature(header)) {
+                return format.getFileFormat();
 
-			}
-		}
-		return Formats.UNKNOWN_FORMAT.getFileFormat();
-	}
+            }
+        }
+        return Formats.UNKNOWN_FORMAT.getFileFormat();
+    }
 
-	/**
-	 * @param file
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	private byte[] readHeader(File file) throws FileNotFoundException,
-			IOException {
-		InputStream inputStream = new FileInputStream(file);
-		byte[] header = new byte[1000];
-		inputStream.read(header);
-		inputStream.close();
-		return header;
-	}
+    /**
+     * @param file
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private byte[] readHeader(File file) throws FileNotFoundException,
+            IOException {
+        InputStream inputStream = new FileInputStream(file);
+        byte[] header = new byte[1000];
+        inputStream.read(header);
+        inputStream.close();
+        return header;
+    }
 
-	@SuppressWarnings("unchecked")
-	private class Collector<K> extends AvroCollector<OUT> {
-		private final AvroWrapper<OUT> wrapper = new AvroWrapper<OUT>(null);
-		private final AvroKey<K> keyWrapper = new AvroKey<K>(null);
-		private final AvroValue<OUT> valueWrapper = new AvroValue<OUT>(null);
-		private final KeyExtractor<K, OUT> extractor;
-		private final K key;
-		private OutputCollector<KO, VO> collector;
+    @SuppressWarnings("unchecked")
+    private class Collector<K> extends AvroCollector<OUT> {
+        private final AvroWrapper<OUT> wrapper = new AvroWrapper<OUT>(null);
+        private final AvroKey<K> keyWrapper = new AvroKey<K>(null);
+        private final AvroValue<OUT> valueWrapper = new AvroValue<OUT>(null);
+        private final KeyExtractor<K, OUT> extractor;
+        private final K key;
+        private OutputCollector<KO, VO> collector;
 
-		public Collector(OutputCollector<KO, VO> collector,
-				KeyExtractor<K, OUT> extractor) {
-			this.collector = collector;
-			this.extractor = extractor;
-			key = extractor.getProtypeKey();
-			keyWrapper.datum(key);
-		}
+        public Collector(OutputCollector<KO, VO> collector,
+                KeyExtractor<K, OUT> extractor) {
+            this.collector = collector;
+            this.extractor = extractor;
+            key = extractor.getProtypeKey();
+            keyWrapper.datum(key);
+        }
 
-		public void collect(OUT datum) throws IOException {
-			if (isMapOnly) {
-				wrapper.datum(datum);
-				collector.collect((KO) wrapper, (VO) NullWritable.get());
-			} else {
-				extractor.setKey(datum, key);
-				valueWrapper.datum(datum);
-				collector.collect((KO) keyWrapper, (VO) valueWrapper);
-			}
-		}
-	}
+        public void collect(OUT datum) throws IOException {
+            if (isMapOnly) {
+                wrapper.datum(datum);
+                collector.collect((KO) wrapper, (VO) NullWritable.get());
+            } else {
+                extractor.setKey(datum, key);
+                valueWrapper.datum(datum);
+                collector.collect((KO) keyWrapper, (VO) valueWrapper);
+            }
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void map(KEY wrapper, VALUE value,
-			OutputCollector<KO, VO> collector, Reporter reporter)
-			throws IOException {
-		if (this.context == null) {
-			KeyExtractor<GenericData.Record, OUT> extractor = new ReflectionKeyExtractor<OUT>(
-					schema, groupBy, sortBy);
-			this.context = new TapContext<OUT>(new Collector(collector,
-					extractor), reporter);
-		}
-		if (isTextInput) {
-			mapper.map((IN) value, out, context);
-		} else if (isStringInput) {
-			mapper.map((IN) ((Text) value).toString(), out, context);
-		} else if (isJsonInput) {
-			String json = ((Text) value).toString();
-			if (shouldSkip(json))
-				return;
-			// inefficient implementation of json to avro...
-			// more efficient would be JsonToClass.jsonToRecord:
-			// mapper.map((IN) JsonToClass.jsonToRecord(json, inSchema), out,
-			// context);
+    @SuppressWarnings("unchecked")
+    @Override
+    public void map(KEY wrapper, VALUE value,
+            OutputCollector<KO, VO> collector, Reporter reporter)
+            throws IOException {
+        if (this.context == null) {
+            KeyExtractor<GenericData.Record, OUT> extractor = new ReflectionKeyExtractor<OUT>(
+                    schema, groupBy, sortBy);
+            this.context = new TapContext<OUT>(new Collector(collector,
+                    extractor), reporter);
+        }
+        if (isTextInput) {
+            mapper.map((IN) value, out, context);
+        } else if (isStringInput) {
+            mapper.map((IN) ((Text) value).toString(), out, context);
+        } else if (isJsonInput) {
+            String json = ((Text) value).toString();
+            if (shouldSkip(json))
+                return;
+            // inefficient implementation of json to avro...
+            // more efficient would be JsonToClass.jsonToRecord:
+            // mapper.map((IN) JsonToClass.jsonToRecord(json, inSchema), out,
+            // context);
 
-			// silly conversion approach - serialize then deserialize
-			try {
-				GenericContainer c = JsonToGenericRecord.jsonToRecord(json,
-						inSchema);
-				GenericDatumWriter<GenericContainer> writer = new GenericDatumWriter<GenericContainer>(
-						inSchema);
-				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-				writer.setSchema(inSchema);
-				encoder = factory.binaryEncoder(bos, encoder);
-				writer.write(c, encoder);
-				byte[] data = bos.toByteArray();
+            // silly conversion approach - serialize then deserialize
+            try {
+                GenericContainer c = JsonToGenericRecord.jsonToRecord(json,
+                        inSchema);
+                GenericDatumWriter<GenericContainer> writer = new GenericDatumWriter<GenericContainer>(
+                        inSchema);
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                writer.setSchema(inSchema);
+                encoder = factory.binaryEncoder(bos, encoder);
+                writer.write(c, encoder);
+                byte[] data = bos.toByteArray();
 
-				GenericDatumReader<IN> reader = new SpecificDatumReader<IN>(
-						inSchema);
-				reader.setSchema(inSchema);
+                GenericDatumReader<IN> reader = new SpecificDatumReader<IN>(
+                        inSchema);
+                reader.setSchema(inSchema);
 
-				IN converted = reader.read(null, DecoderFactory
-						.defaultFactory().createBinaryDecoder(data, null));
+                IN converted = reader.read(null, DecoderFactory
+                        .defaultFactory().createBinaryDecoder(data, null));
 
-				mapper.map(converted, out, context);
-			} catch (JsonParseException jpe) {
-				System.err.println("Failed to parse " + json + ": "
-						+ jpe.getMessage());
-				reporter.incrCounter("ColHadoopMapper", "json-parse-error", 1L);
-				if (++parseErrors > maxAllowedErrors) {
-					throw new RuntimeException(jpe);
-				}
-			}
-		} else {
-			mapper.map(((AvroWrapper<IN>) wrapper).datum(), out, context);
-		}
-	}
+                mapper.map(converted, out, context);
+            } catch (JsonParseException jpe) {
+                System.err.println("Failed to parse " + json + ": "
+                        + jpe.getMessage());
+                reporter.incrCounter("ColHadoopMapper", "json-parse-error", 1L);
+                if (++parseErrors > maxAllowedErrors) {
+                    throw new RuntimeException(jpe);
+                }
+            }
+        } else {
+            mapper.map(((AvroWrapper<IN>) wrapper).datum(), out, context);
+        }
+    }
 
-	private boolean shouldSkip(String json) {
-		int i;
-		int len = json.length();
-		for (i = 0; i < len; i++)
-			if (!Character.isWhitespace(json.charAt(i)))
-				break;
-		if (i == len)
-			return true; // blank line
-		return (json.charAt(i) == '#' || json.charAt(i) == '/' && len > (i + 1)
-				&& json.charAt(i + 1) == '/'); // skip comments
-	}
+    private boolean shouldSkip(String json) {
+        int i;
+        int len = json.length();
+        for (i = 0; i < len; i++)
+            if (!Character.isWhitespace(json.charAt(i)))
+                break;
+        if (i == len)
+            return true; // blank line
+        return (json.charAt(i) == '#' || json.charAt(i) == '/' && len > (i + 1)
+                && json.charAt(i + 1) == '/'); // skip comments
+    }
 
-	@Override
-	public void close() throws IOException {
-		mapper.close(out, context);
-	}
+    @Override
+    public void close() throws IOException {
+        mapper.close(out, context);
+    }
 }

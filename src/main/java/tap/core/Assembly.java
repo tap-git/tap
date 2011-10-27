@@ -29,19 +29,20 @@ import org.apache.hadoop.mapred.JobConf;
 import tap.util.Alerter;
 import tap.util.EmailAlerter;
 
-
 @SuppressWarnings("deprecation")
 public class Assembly {
     private List<Pipe> writes;
-    private int parallelPhases = 2; // default to 2 phases at once - use concurrency (also speeds up local running)    
+    private int parallelPhases = 2; // default to 2 phases at once - use
+                                    // concurrency (also speeds up local
+                                    // running)
     private JobConf baseConf = new JobConf();
     private Alerter alerter = new EmailAlerter();
     private String name = "";
-    private boolean forceRebuild = false;    
+    private boolean forceRebuild = false;
 
-    public Assembly() {        
+    public Assembly() {
     }
-        
+
     public Assembly(Class<?> jarClass) {
         baseConf.setJarByClass(jarClass);
         baseConf.set("mapred.job.reuse.jvm.num.tasks", "-1");
@@ -51,7 +52,8 @@ public class Assembly {
             if (fs.equals(localfs)) {
                 baseConf.setNumReduceTasks(2); // run only 2 reducers for local
             } else {
-                baseConf.setNumReduceTasks(32); // default to 32 reducers - need to tune this
+                baseConf.setNumReduceTasks(32); // default to 32 reducers - need
+                                                // to tune this
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -61,8 +63,7 @@ public class Assembly {
     public Assembly produces(List<Pipe> outputs) {
         if (writes == null) {
             writes = new ArrayList<Pipe>(outputs);
-        }
-        else {
+        } else {
             writes.addAll(outputs);
         }
         return this;
@@ -71,7 +72,7 @@ public class Assembly {
     public Assembly produces(Pipe... outputs) {
         return produces(Arrays.asList(outputs));
     }
-    
+
     public Assembly named(String name) {
         this.name = name;
         return this;
@@ -79,7 +80,7 @@ public class Assembly {
 
     public Assembly forceRebuild() {
         this.forceRebuild = true;
-        return this;        
+        return this;
     }
 
     public Assembly parallelPhases(int parallelPhases) {
@@ -100,32 +101,33 @@ public class Assembly {
                 execute(plan, result);
             }
         }
-        respond(result);        
+        respond(result);
     }
-    
+
     private void respond(List<PhaseError> result) {
         if (!result.isEmpty()) {
             alerter.alert(result);
-        }
-        else {
-            alerter.pipeCompletion(getName(), "Execution completed successfully.");
+        } else {
+            alerter.pipeCompletion(getName(),
+                    "Execution completed successfully.");
         }
     }
 
-    private List<PhaseError> execute(final PipePlan plan, List<PhaseError> errors) {
-        ExecutorService execution = Executors.newFixedThreadPool(parallelPhases);
+    private List<PhaseError> execute(final PipePlan plan,
+            List<PhaseError> errors) {
+        ExecutorService execution = Executors
+                .newFixedThreadPool(parallelPhases);
         submit(plan, execution, Collections.synchronizedList(errors));
-        
+
         try {
-            synchronized(plan) {
+            synchronized (plan) {
                 while (!plan.isComplete() && errors.isEmpty()) {
                     plan.wait();
                 }
             }
             execution.shutdown();
             execution.awaitTermination(20L, TimeUnit.DAYS);
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             System.err.println("interrupted job");
             alerter.alert("pipe execution interrupted");
         }
@@ -133,9 +135,11 @@ public class Assembly {
     }
 
     int submission = 0;
-    private List<PhaseError> submit(final PipePlan plan, final ExecutorService execution, final List<PhaseError> errors) {
+
+    private List<PhaseError> submit(final PipePlan plan,
+            final ExecutorService execution, final List<PhaseError> errors) {
         List<Phase> next = plan.getNextProcesses();
-        if (next != null) {        
+        if (next != null) {
             for (final Phase process : next) {
                 if (plan.executing(process)) {
                     execution.submit(new Runnable() {
@@ -146,21 +150,22 @@ public class Assembly {
                                 if (error != null) {
                                     errors.add(error);
                                     // alert immediately
-                                    System.err.println("Phase failed: " + error.getMessage());
+                                    System.err.println("Phase failed: "
+                                            + error.getMessage());
                                     plan.failed(process);
-                                }
-                                else {
+                                } else {
                                     plan.updated(process);
                                     plan.plan();
-                                    submit(plan, execution, Collections.synchronizedList(errors));                            
+                                    submit(plan, execution, Collections
+                                            .synchronizedList(errors));
                                 }
                             } finally {
-                                synchronized(plan) {
+                                synchronized (plan) {
                                     plan.notify();
                                 }
                             }
                         }
-        
+
                     });
                 }
             }
@@ -185,19 +190,21 @@ public class Assembly {
             Pipe file = toGenerate.iterator().next();
             toGenerate.remove(file);
             boolean exists = file.exists(baseConf);
-            if (exists && !file.isObsolete(baseConf) && (!forceRebuild || file.getProducer() == null)) {                
+            if (exists && !file.isObsolete(baseConf)
+                    && (!forceRebuild || file.getProducer() == null)) {
                 if (!generated.contains(file)) {
-                    System.out.println("File: "+file.getPath()+" exists and is up to date.");
+                    System.out.println("File: " + file.getPath()
+                            + " exists and is up to date.");
                     // ok already
                     generated.add(file);
                     plan.fileCreateWith(file, null);
                 }
-            }
-            else {
+            } else {
                 Phase phase = file.getProducer();
                 plan.fileCreateWith(file, phase);
                 if (phase == null) {
-                    errors.add(new PhaseError("Don't know how to generate " + file.getPath()));
+                    errors.add(new PhaseError("Don't know how to generate "
+                            + file.getPath()));
                 } else {
                     if (!exists)
                         missing.add(file);
@@ -226,9 +233,10 @@ public class Assembly {
         // partially ordered so we always print a producer before a consumer
         for (List<Phase> wave : waves) {
             for (Phase phase : wave) {
-                System.out.println("Will run "+phase.getSummary()+", producing: ");
+                System.out.println("Will run " + phase.getSummary()
+                        + ", producing: ");
                 for (Pipe output : phase.getOutputs()) {
-                    System.out.print("  "+output.getPath());
+                    System.out.print("  " + output.getPath());
                     if (missing.contains(output))
                         System.out.println(": missing");
                     else if (obsolete.contains(output))
@@ -242,7 +250,7 @@ public class Assembly {
     }
 
     public String getName() {
-        return name ;
+        return name;
     }
 
     public JobConf getConf() {
