@@ -34,6 +34,7 @@ import org.apache.hadoop.util.ReflectionUtils;
 import org.codehaus.jackson.JsonParseException;
 
 import com.twitter.elephantbird.mapreduce.input.LzoInputFormat;
+import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
 
 import tap.formats.avro.JsonToGenericRecord;
 
@@ -134,7 +135,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase imp
         } else if (isStringInput) {            
             mapper.map((IN)((Text)value).toString(), out, context);
         } else if (isProtoInput) {
-            mapper.map((IN)value, out, context);
+            mapper.map((IN) ((ProtobufWritable) value).get(), out, context);
         } else if (isJsonInput) {
             String json = ((Text)value).toString();
             if (shouldSkip(json)) return;

@@ -69,14 +69,12 @@ public class WordCountProtobuf extends Configured implements Tool {
         }        
     }
 
-    public static class Reducer extends BaseReducer<CountRec,ProtobufWritable<Protos.CountRec>> {
+    public static class Reducer extends BaseReducer<CountRec,Protos.CountRec> {
         
         // ProtobufWritable<Protos.CountRec> protoWritable = ProtobufWritable.newInstance(Protos.CountRec.class);
         
         @Override
-        public void reduce(Iterable<CountRec> in,
-                ProtobufWritable<Protos.CountRec> out,
-                TapContext<ProtobufWritable<Protos.CountRec>> context) {
+        public void reduce(Iterable<CountRec> in, Protos.CountRec out, TapContext<Protos.CountRec> context) {
             
             String word = null;
             int count = 0;
@@ -86,11 +84,10 @@ public class WordCountProtobuf extends Configured implements Tool {
                 count += rec.count;
             }
             
-            out.setConverter(Protos.CountRec.class);
-            out.set(Protos.CountRec.newBuilder()
+            out = Protos.CountRec.newBuilder()
                     .setWord(word)
                     .setCount(count)
-                    .build());
+                    .build();
             context.write(out);
         }
         

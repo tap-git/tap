@@ -27,6 +27,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.mapred.*;
 
+import tap.util.ObjectFactory;
+
 import com.google.protobuf.Message;
 import com.twitter.elephantbird.mapreduce.input.LzoProtobufB64LineInputFormat;
 import com.twitter.elephantbird.mapreduce.output.LzoProtobufB64LineOutputFormat;
@@ -38,7 +40,6 @@ public class Pipe<T> {
     private String path;
     private T prototype;
     private Formats format = Formats.AVRO_FORMAT;
-    private Class<?> protoClass;
 
     public static enum Formats {
         STRING_FORMAT {
@@ -197,14 +198,8 @@ public class Pipe<T> {
     }
 
     public static <T> Pipe<T> of(Class<? extends T> ofClass) {
-        if(Message.class.isAssignableFrom(ofClass)) {
-            Pipe<T> pipe = new Pipe<T>((T)null);
-            pipe.protoClass = ofClass;
-            return pipe;
-        }
-            
         try {
-            return new Pipe<T>(ofClass.newInstance());
+            return new Pipe<T>(ObjectFactory.newInstance(ofClass));
         }
         catch (Exception e) {
             throw new RuntimeException(e);
@@ -217,10 +212,6 @@ public class Pipe<T> {
 
     public T getPrototype() {
         return prototype;
-    }
-    
-    public Class<?> getPrototypeClass() {
-        return protoClass;
     }
     
     void setPrototype(T prototype) {
@@ -253,7 +244,7 @@ public class Pipe<T> {
     }
     
     public void setupOutput(JobConf conf) {
-        format.setupOutput(conf, protoClass != null ? protoClass : prototype == null ? null : prototype.getClass());        
+        format.setupOutput(conf, prototype == null ? null : prototype.getClass());        
     }
 
     public long getTimestamp(JobConf conf) {
@@ -268,7 +259,7 @@ public class Pipe<T> {
     }
 
     public void setupInput(JobConf conf) {
-        format.setupInput(conf, protoClass != null ? protoClass : prototype == null ? null : prototype.getClass());        
+        format.setupInput(conf, prototype == null ? null : prototype.getClass());        
     }
     
     // files at the same location are deemed equal, however

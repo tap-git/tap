@@ -26,6 +26,7 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.util.ReflectionUtils;
 
+import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
 import com.twitter.elephantbird.mapreduce.output.LzoOutputFormat;
 
 /**
@@ -53,6 +54,7 @@ class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OU
     private class ReduceCollector<AO, OUT> extends AvroCollector<AO> {
         private final AvroWrapper<OUT> wrapper = new AvroWrapper<OUT>(null);
         private OutputCollector out;
+        private ProtobufWritable protobufWritable = new ProtobufWritable();
 
         public ReduceCollector(OutputCollector<?, NullWritable> out) {
             this.out = out;
@@ -64,7 +66,10 @@ class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OU
             if (isTextOutput) {
                 out.collect(datum, NullWritable.get());
             } else if(isProtoOutput) {
-                out.collect(NullWritable.get(), datum);
+                if(datum != null)
+                    protobufWritable.setConverter(datum.getClass());
+                protobufWritable.set(datum);
+                out.collect(NullWritable.get(), protobufWritable);
             }
             else {
                 wrapper.datum((OUT) datum);

@@ -39,7 +39,6 @@ public class WordCountProtobufInput extends Configured implements Tool {
         Phase count = new Phase().reads(input).writes(counts).map(Mapper.class).
             groupBy("word").reduce(Reducer.class);
         
-        
         if (o.forceRebuild) wordcount.forceRebuild();
         if (o.dryRun) {
             wordcount.dryRun();
@@ -57,26 +56,24 @@ public class WordCountProtobufInput extends Configured implements Tool {
     }
     
 
-    public static class Mapper extends BaseMapper<ProtobufWritable<Protos.CountRec>,CountRec> {
+    public static class Mapper extends BaseMapper<Protos.CountRec,CountRec> {
         @Override
         public void map(
-                ProtobufWritable<Protos.CountRec> in,
+                Protos.CountRec in,
                 CountRec out,
                 TapContext<CountRec> context) {
-            out.word = in.get().getWord();
+            out.word = in.getWord();
             out.count = 1;
             context.write(out);
-        }        
+        } 
     }
 
-    public static class Reducer extends BaseReducer<CountRec,ProtobufWritable<Protos.CountRec>> {
-        
-        // ProtobufWritable<Protos.CountRec> protoWritable = ProtobufWritable.newInstance(Protos.CountRec.class);
+    public static class Reducer extends BaseReducer<CountRec,Protos.CountRec> {
         
         @Override
         public void reduce(Iterable<CountRec> in,
-                ProtobufWritable<Protos.CountRec> out,
-                TapContext<ProtobufWritable<Protos.CountRec>> context) {
+                Protos.CountRec out,
+                TapContext<Protos.CountRec> context) {
             
             String word = null;
             int count = 0;
@@ -86,11 +83,10 @@ public class WordCountProtobufInput extends Configured implements Tool {
                 count += rec.count;
             }
             
-            out.setConverter(Protos.CountRec.class);
-            out.set(Protos.CountRec.newBuilder()
+            out = Protos.CountRec.newBuilder()
                     .setWord(word)
                     .setCount(count)
-                    .build());
+                    .build();
             context.write(out);
         }
         

@@ -25,6 +25,7 @@ import java.util.*;
 
 import org.apache.avro.Schema;
 import org.apache.avro.mapred.*;
+import org.apache.avro.protobuf.ProtobufData;
 import org.apache.avro.reflect.ReflectData;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobClient;
@@ -35,6 +36,7 @@ import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
 
 import tap.formats.avro.AvroGroupPartitioner;
 import tap.formats.avro.TapAvroSerialization;
+import tap.util.ObjectFactory;
 
 
 @SuppressWarnings("deprecation")
@@ -255,7 +257,7 @@ public class Phase {
                                     } else {
                                         //TODO: handle cases beyond Object where output isn't defined    
                                         mapInClass = paramTypes[0];
-                                        mapin = getSchema(paramTypes[0].newInstance());
+                                        mapin = getSchema(ObjectFactory.newInstance(paramTypes[0]));
                                     }
                                     mapOutClass = paramTypes[1];
                                     foundIn = m.getDeclaringClass();
@@ -320,7 +322,7 @@ public class Phase {
             reduceOutClass = reduceOutProto.getClass();
         } else {
             try {
-                reduceOutProto = reduceOutClass.newInstance();
+                reduceOutProto = ObjectFactory.newInstance(reduceOutClass);
                 Object fileProto = mainWrites.get(0).getPrototype();
                 if (fileProto == null) {
                     mainWrites.get(0).setPrototype(reduceOutProto); // store output type inferred from input
@@ -338,7 +340,7 @@ public class Phase {
             // default reducer - use mapper output
             reduceOutClass = mapOutClass;
             try {
-                reduceOutProto = reduceOutClass.newInstance();
+                reduceOutProto = ObjectFactory.newInstance(reduceOutClass);
                 reduceout = getSchema(reduceOutProto);
             }
             catch (Exception e) {
@@ -368,23 +370,20 @@ public class Phase {
                 valueSchema = reduceout;
             }
             output.setupOutput(conf);
-            if(valueSchema != null)
-                conf.set(AvroJob.OUTPUT_SCHEMA, valueSchema.toString());
+            conf.set(AvroJob.OUTPUT_SCHEMA, valueSchema.toString());
         }
 
         if (deflateLevel != null)
             AvroOutputFormat.setDeflateLevel(conf, deflateLevel);
 
         Object proto = null;
-        Class<?> protoClass = null;
         if (mainReads != null && mainReads.size() > 0) {
             Path[] inPaths = new Path[mainReads.size()];
             int i = 0;
             for (Pipe file : mainReads) {
                 inPaths[i++] = new Path(file.getPath());
                 Object myProto = file.getPrototype();
-                Class<?> myProtoClass = file.getPrototypeClass();
-                if (myProto == null && myProtoClass == null) {
+                if (myProto == null) {
                     errors.add(new PhaseError("Files need non-null prototypes " + file));
                 }
                 else if (proto != null) {
@@ -395,15 +394,12 @@ public class Phase {
                 }
                 else {
                     proto = myProto;
-                    protoClass = myProtoClass;
                 }
             }
             AvroInputFormat.setInputPaths(conf, inPaths);
 
             if (mapin == null) {
-                if(protoClass != null) {
-                    mapInClass = protoClass;
-                } else if (proto == null){
+                if (proto == null){
                     errors.add(new PhaseError("Undefined input format"));
                 } else {
                     mapin = getSchema(proto);
@@ -427,7 +423,7 @@ public class Phase {
                     // not available - try to get it from the reducer
                     if (reducerClass == null) {
                         mapOutClass = reduceOutClass; 
-                        mapValueSchema = getSchema(reduceOutClass.newInstance());
+                        mapValueSchema = getSchema(ObjectFactory.newInstance(reduceOutClass));
                     } else {
                         // can't get it from reducer input - that's just Iterable
                         String fname = "no input file specified";
@@ -436,7 +432,7 @@ public class Phase {
                     }                    
                 }
             } else {
-                mapValueSchema = getSchema(mapOutClass.newInstance());
+                mapValueSchema = getSchema(ObjectFactory.newInstance(mapOutClass));
             }
             if (mapValueSchema != null)
                 conf.set(MAP_OUT_VALUE_SCHEMA, mapValueSchema.toString());
@@ -490,8 +486,10 @@ public class Phase {
     }
 
     public static Schema getSchema(Object proto) {
-        if(proto instanceof ProtobufWritable)
-            return null;
+        // System.out.println(proto.getClass());
+        
+        if(proto instanceof Message)
+            return ProtobufData.get().getSchema(proto.getClass());
         
         try {
             Field schemaField = proto.getClass().getField("SCHEMA$");
