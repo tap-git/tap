@@ -5,6 +5,7 @@ package tap.formats;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 
 import junit.framework.Assert;
@@ -23,7 +24,22 @@ import tap.formats.text.TextFormat;
  * 
  */
 public class FormatSignatureTests {
+	
+	@Test
+	public void testRealTextFileSignature() {
+		String path = "share/decameron.txt";
+		byte[] header = readHeaderFromFile(path);
+		BigInteger bi = new BigInteger(1, header);
+		System.out.printf("len %d  value %s ", header.length,
+				String.format("%0" + (header.length << 1) + "X", bi));
 
+		Assert.assertTrue("header length", (header.length > 4));
+		FileFormat format = new TextFormat();
+		boolean result = format.signature(header);
+		Assert.assertTrue("file signature match ", result);
+
+	}
+	
 	@Test
 	public void testAvroFileSignature() {
 		FileFormat format = new AvroFormat();
@@ -89,16 +105,8 @@ public class FormatSignatureTests {
 	 */
 	@Test
 	public void testAvroRealFileSignature() {
-		String path = "/tmp/out/part-00000.avro";
-		byte header[] = new byte[100];
-		try {
-			FileInputStream fis = new FileInputStream(path);
-			fis.read(header, 0, 100);
-			fis.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String path = "share/wordcount.out.avro";
+		byte[] header = readHeaderFromFile(path);
 		BigInteger bi = new BigInteger(1, header);
 		System.out.printf("len %d  value %s ", header.length,
 				String.format("%0" + (header.length << 1) + "X", bi));
@@ -108,5 +116,23 @@ public class FormatSignatureTests {
 		boolean result = format.signature(header);
 		Assert.assertTrue("file signature match ", result);
 
+	}
+
+
+	/**
+	 * @param path
+	 * @return
+	 */
+	private byte[] readHeaderFromFile(String path) {
+		byte header[] = new byte[1000];
+		try {
+			InputStream fis = new FileInputStream(path);
+			fis.read(header, 0, header.length);
+			fis.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return header;
 	}
 }

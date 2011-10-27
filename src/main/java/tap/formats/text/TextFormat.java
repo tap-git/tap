@@ -38,7 +38,7 @@ public class TextFormat extends FileFormat {
 	@Override
 	public boolean signature(byte[] header) {
 
-		boolean hasRecordDeliminator = false;
+		int recordDeliminatorCount = 0;
 		boolean hasPrintableOnly = false;
 		
 		if (header[0] == 0xFF) {
@@ -46,9 +46,13 @@ public class TextFormat extends FileFormat {
 		} else {
 			for (byte b : header) {
 				if (b == '\n') {
-					hasRecordDeliminator = true;
+					recordDeliminatorCount++;
 					continue;
-				} else if (b == '\t' || b >= 32 && b < 127) {
+				} else if (b >= 32 && b < 127 || b == '\r' || b == '\t') {
+					if (recordDeliminatorCount >= 2) {
+						// done after reaching two records worth of scanning
+						break;
+					}
 					continue;
 				}
 				hasPrintableOnly = false;
@@ -56,6 +60,6 @@ public class TextFormat extends FileFormat {
 			}
 			hasPrintableOnly = true;
 		}
-		return hasRecordDeliminator && hasPrintableOnly;
+		return (recordDeliminatorCount > 0) && hasPrintableOnly;
 	}
 }
