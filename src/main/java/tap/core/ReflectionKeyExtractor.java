@@ -24,9 +24,12 @@ import java.util.*;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 
+import com.google.protobuf.Message;
+
 
 public class ReflectionKeyExtractor<OUT> implements KeyExtractor<GenericData.Record, OUT> {
     final Map<String,java.lang.reflect.Field> inFields = new HashMap<String,java.lang.reflect.Field>();
+    final Map<String,java.lang.reflect.Method> inGetters = new HashMap<String,java.lang.reflect.Method>();
     private final List<String> fieldNames;
     private final Schema keySchema;
 
@@ -61,9 +64,14 @@ public class ReflectionKeyExtractor<OUT> implements KeyExtractor<GenericData.Rec
 
             try {
                 for (String fieldName : fieldNames) {
-                    java.lang.reflect.Field field = inClass.getField(fieldName);
-                    field.setAccessible(true);
-                    inFields.put(fieldName, field);                
+                    if(Message.class.isAssignableFrom(inClass)) {
+                        java.lang.reflect.Method getter = inClass.getMethod(getter(fieldName));
+                        inGetters.put(fieldName, getter);
+                    } else {
+                        java.lang.reflect.Field field = inClass.getField(fieldName);
+                        field.setAccessible(true);
+                        inFields.put(fieldName, field);
+                    }
                 }
             }
             catch (Exception e) {
@@ -75,11 +83,19 @@ public class ReflectionKeyExtractor<OUT> implements KeyExtractor<GenericData.Rec
                 String fieldName = entry.getKey();
                 key.put(fieldName, entry.getValue().get(value));
             }
+            for (Map.Entry<String, java.lang.reflect.Method> entry : inGetters.entrySet()) {
+                String fieldName = entry.getKey();
+                key.put(fieldName, entry.getValue().invoke(value));
+            }
         }
         catch (Exception e) {
             throw new RuntimeException(e);
         }
         
+    }
+    
+    private static String getter(String fieldName) {
+        return "get" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
     }
 
 }

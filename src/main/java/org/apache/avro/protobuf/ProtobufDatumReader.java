@@ -58,7 +58,7 @@ public class ProtobufDatumReader<T> extends GenericDatumReader<T> {
   @Override
   protected Object readRecord(Object old, Schema expected, 
                               ResolvingDecoder in) throws IOException {
-    Message.Builder b = (Message.Builder)super.readRecord(old, expected, in);
+    Message.Builder b = (Message.Builder)super.readRecord(null /*can't reuse*/, expected, in);
     return b.build();                             // build instance
   }
 
@@ -80,8 +80,7 @@ public class ProtobufDatumReader<T> extends GenericDatumReader<T> {
 
   @Override
     protected Object newRecord(Object old, Schema schema) {
-      Object rec = ProtobufData.newRecord(old, schema);
-      return rec != null ? rec : super.newRecord(old, schema);
+      return ProtobufData.newRecord(old, schema);
     }
 }
 

@@ -83,6 +83,9 @@ public class ProtobufData extends GenericData {
         b.clearField(f);
         break;
       }
+    case STRING:
+        b.setField(f, o == null ? null : o.toString());
+        break;
     default:
       b.setField(f, o);
     }
@@ -115,7 +118,11 @@ public class ProtobufData extends GenericData {
 
   // @Override
   protected Object getRecordState(Object r, Schema s) {
-    Descriptor d = ((Message.Builder)r).getDescriptorForType();
+    Descriptor d;
+    if(r instanceof Message)
+        d = ((Message)r).getDescriptorForType();
+    else
+        d = ((Message.Builder)r).getDescriptorForType();
     FieldDescriptor[] fields = fieldCache.get(d);
     if (fields == null) {                         // cache miss
       fields = new FieldDescriptor[s.getFields().size()];
@@ -136,11 +143,10 @@ public class ProtobufData extends GenericData {
     try {
       Class c = Class.forName(SpecificData.get().getClassName(schema));
       if (c == null)
-        return old; // hope this works... Ajai
-      if (c.isInstance(old))
-        return old;                               // reuse instance
+          throw new RuntimeException("cannot get class from schema");
+      if(c.isInstance(old))
+          return old;
       return c.getMethod("newBuilder").invoke(null);
-
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -172,7 +178,12 @@ public class ProtobufData extends GenericData {
       try {
         schema=getSchema((Descriptor)c.getMethod("getDescriptor").invoke(null));
       } catch (Exception e) {
-        throw new RuntimeException(e);
+          try {
+              // c is a Builder, so look in parent Message
+              schema=getSchema((Descriptor)c.getEnclosingClass().getMethod("getDescriptor").invoke(null));
+          } catch(Exception x) {
+              throw new RuntimeException(x);
+          }
       }
       schemaCache.put(c, schema);                 // update cache
     }
