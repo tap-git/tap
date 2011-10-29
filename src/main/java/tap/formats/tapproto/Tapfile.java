@@ -1338,6 +1338,7 @@ public final class Tapfile {
             this.getUnknownFields());
         while (true) {
           int tag = input.readTag();
+          System.out.println("read tag " + tag);
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
@@ -1411,7 +1412,9 @@ public final class Tapfile {
               break;
             }
             case 2410: {
+                System.out.println("before addFormatDescriptor");
               addFormatDescriptor(input.readBytes());
+                System.out.println("after addFormatDescriptor");
               break;
             }
             case 2416: {
