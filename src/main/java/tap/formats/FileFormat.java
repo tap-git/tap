@@ -32,9 +32,9 @@ public abstract class FileFormat {
 
 	/**
 	 * Is this File format compatible with the Hadoop input type (class)
-	 * @param foramt The format as determined by Hadoop / Tap
+	 * @param format The format as determined by Hadoop / Tap
 	 * @return true if compatible.
 	 */
-	public abstract boolean isCompatible(InputFormat foramt);
+	public abstract boolean isCompatible(InputFormat format);
 
 }

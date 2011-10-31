@@ -121,13 +121,13 @@ public class PhaseTests {
 
     public class Test3Reducer extends BaseReducer<CountRec, OutputLog> {
         @Override
-        public void reduce(InPipe<CountRec> in, OutPipe<OutputLog> out) {
+        public void reduce(Pipe<CountRec> in, Pipe<OutputLog> out) {
         }
     }
 
     public class Test2Mapper extends BaseMapper<CountRec, CountRec> {
         @Override
-        public void map(CountRec in, OutPipe<CountRec> out) {
+        public void map(CountRec in, Pipe<CountRec> out) {
             // preferred
         }
 
@@ -136,7 +136,7 @@ public class PhaseTests {
             // legacy
         }
 
-        public void map(Pipe<CountRec> in, OutPipe<CountRec> out) {
+        public void map(Pipe<CountRec> in, Pipe<CountRec> out) {
             // not supported
         }
 
@@ -147,7 +147,7 @@ public class PhaseTests {
 
     public class Test2Reducer extends BaseReducer<CountRec, OutputLog> {
         @Override
-        public void reduce(InPipe<CountRec> in, OutPipe<OutputLog> out) {
+        public void reduce(Pipe<CountRec> in, Pipe<OutputLog> out) {
         }
     }
 }

@@ -26,7 +26,7 @@ public class UnknownFormat extends FileFormat {
 	}
 
     @Override
-    public boolean isCompatible(InputFormat foramt) {
+    public boolean isCompatible(InputFormat format) {
         return false;
     }
 

@@ -37,7 +37,7 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
     private TapContext<OUT> context;
     protected boolean isPipeReducer = false;
     protected OUT out;
-    protected OutPipe<OUT> outpipe = null;
+    protected Pipe<OUT> outpipe = null;
 
     protected abstract ColReducer<V, OUT> getReducer(JobConf conf);
 
@@ -58,7 +58,7 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
         // Determine if we are using legacy reduce signature or newer Pipe based signature
         this.isPipeReducer = (null != conf.get(Phase.REDUCER_OUT_PIPE_CLASS));
         if (isPipeReducer) {
-            this.outpipe = new OutPipe<OUT>(out);
+            this.outpipe = new Pipe<OUT>(out);
         }
     }
 
@@ -92,7 +92,7 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
 
         if (this.isPipeReducer) {
             // create an Iterator inPipe
-            InPipe<V> inPipe = new InPipe<V>((Iterator<V>)values);
+            Pipe<V> inPipe = new Pipe<V>((Iterator<V>)values);
             reducer.reduce(inPipe, this.outpipe);
         } else {
             this.context = new TapContext<OUT>(this.collector, reporter);

@@ -9,7 +9,7 @@ public class SummationPipeReducer extends
 
     private OutputLog outLog = new OutputLog();
 	@Override
-	public void reduce(InPipe<CountRec> in, OutPipe<OutputLog> out) {
+	public void reduce(Pipe<CountRec> in, Pipe<OutputLog> out) {
 	    
 	    outLog.description = "sum of words";
 	    outLog.count = 0;

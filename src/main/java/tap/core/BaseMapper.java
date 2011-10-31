@@ -30,7 +30,7 @@ public class BaseMapper<IN,OUT> extends Configured implements Mapper<IN,OUT> {
     }
     
     @SuppressWarnings("unchecked")
-    public void map(IN in, OutPipe<OUT> out) {
+    public void map(IN in, Pipe<OUT> out) {
         out.put((OUT)in);
     }
 

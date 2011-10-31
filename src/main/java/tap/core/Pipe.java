@@ -23,6 +23,8 @@ import tap.formats.*;
 import tap.util.ObjectFactory;
 
 import java.io.IOException;
+import java.util.Iterator;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -31,9 +33,10 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
 
 @SuppressWarnings("deprecation")
-public class Pipe<T> {
+public class Pipe<T> implements Iterable<T>, Iterator<T> {
 
-
+    private TapContext<T> context; // for OutPipe
+    private Iterator<T> values;    // for InPipe
 	private Phase producer;
 	private String path;
 	private T prototype;
@@ -311,5 +314,68 @@ public class Pipe<T> {
     public Pipe<T> compressed(boolean isCompressed) {
         this.isCompressed = isCompressed;
         return this;
+    }
+    
+    /**
+     * InPipe type constructor
+     * Reducer In pipe
+     * @param values
+     */
+    public Pipe(Iterator<T> values) {
+        this.values = values;
+    }
+    
+    public boolean hasNext() {
+        return this.values.hasNext();
+    }
+    
+    public Iterator<T> iterator() {
+        return this;
+    }
+
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();        
+    }
+
+    /**
+     * Get next object of Type <T> from @Pipe
+     * @return Object value
+     */
+    public T next() {
+        return (T) this.values.next();
+    }
+    
+    /**
+     * Alias for next()
+     * @return The next value in the Iterator
+     */
+    public T get() {
+        return next();
+    }
+    
+    /**
+     * @return the context
+     */
+    public TapContext<T> getContext() {
+        return context;
+    }
+
+    /**
+     * @param context
+     *            the context to set
+     */
+    public void setContext(TapContext<T> context) {
+        this.context = context;
+    }
+
+    /**
+     * Put value @out into output
+     * 
+     * @param out
+     *            The value to put
+     */
+    public void put(T out) {
+        this.context.write(out);
     }
 }

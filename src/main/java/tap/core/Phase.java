@@ -99,7 +99,7 @@ public class Phase {
     private Class<? extends ColReducer> reducerClass;
     private Object inputPipeProto;
     private Class<?> mapOutPipeType;
-    private Class<OutPipe> reduceOutPipeType;
+    private Class<Pipe> reduceOutPipeType;
     private Class<?> reduceInClass;
 
     public Phase() {
@@ -371,13 +371,13 @@ public class Phase {
                             && !m.getDeclaringClass().equals(BaseReducer.class)) {
                         Class<?>[] paramTypes = m.getParameterTypes();
                         if (paramTypes.length == 2) {
-                            if (paramTypes[1].equals(OutPipe.class)) {
+                            if (paramTypes[1].equals(Pipe.class)) {
                                 // found the correct map function
                                 foundIn = m.getDeclaringClass();
                                 this.reduceInClass = ReflectUtils
                                         .getParameterClass(foundIn,
                                                 REDUCER2_IN_PARAMETER_POSITION);
-                                this.reduceOutPipeType = OutPipe.class;
+                                this.reduceOutPipeType = Pipe.class;
                                 this.reduceOutClass = ReflectUtils
                                         .getParameterClass(foundIn,
                                                 REDUCER2_OUT_PARAMETER_POSITION);
@@ -478,13 +478,13 @@ public class Phase {
                          * map(IN,OutPipe<OUT>)
                          */
                         if (paramTypes.length == 2) {
-                            if (paramTypes[1].equals(OutPipe.class)) {
+                            if (paramTypes[1].equals(Pipe.class)) {
                                 // found the correct map function
                                 foundIn = m.getDeclaringClass();
                                 this.mapInClass = ReflectUtils
                                         .getParameterClass(foundIn,
                                                 MAPPER2_IN_PARAMETER_POSITION);
-                                this.mapOutPipeType = OutPipe.class;
+                                this.mapOutPipeType = Pipe.class;
                                 this.mapOutClass = ReflectUtils
                                         .getParameterClass(foundIn,
                                                 MAPPER2_OUT_PARAMETER_POSITION);

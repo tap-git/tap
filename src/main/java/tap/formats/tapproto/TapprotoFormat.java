@@ -59,7 +59,7 @@ public class TapprotoFormat extends FileFormat {
 	}
 
     @Override
-    public boolean isCompatible(InputFormat foramt) {
+    public boolean isCompatible(InputFormat format) {
         // TODO Auto-generated method stub
         return false;
     }

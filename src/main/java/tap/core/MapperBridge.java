@@ -69,7 +69,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     private EncoderFactory factory = new EncoderFactory();
     // TODO: make this configurable
     private int maxAllowedErrors = 1000;
-    private OutPipe<OUT> outPipe = null;
+    private Pipe<OUT> outPipe = null;
     private boolean isPipeOutput = false;
 
     @SuppressWarnings("unchecked")
@@ -150,7 +150,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
                 conf.getClass(Phase.MAP_OUT_CLASS, Object.class, Object.class),
                 conf);
         if (null != conf.get(Phase.MAP_OUT_PIPE_CLASS)) {
-            this.outPipe = new OutPipe<OUT>(this.out);
+            this.outPipe = new Pipe<OUT>(this.out);
             this.isPipeOutput = true;
         }
         this.schema = Phase.getSchema(this.out);

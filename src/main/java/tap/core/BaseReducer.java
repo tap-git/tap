@@ -32,7 +32,7 @@ public class BaseReducer<IN,OUT> extends Configured implements ColReducer<IN,OUT
  
     /** Override this method for a reducer */
     @SuppressWarnings("unchecked")
-    public void reduce(InPipe<IN> in, OutPipe<OUT> out) {
+    public void reduce(Pipe<IN> in, Pipe<OUT> out) {
         while (in.hasNext()) {
             out.put((OUT)in.next());        
         }
