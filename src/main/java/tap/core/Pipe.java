@@ -20,6 +20,7 @@
 package tap.core;
 
 import tap.formats.*;
+import tap.util.ObjectFactory;
 
 import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
@@ -188,12 +189,12 @@ public class Pipe<T> {
 	}
 
 	public static <T> Pipe<T> of(Class<? extends T> ofClass) {
-		try {
-			return new Pipe<T>(ofClass.newInstance());
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+        try {
+            return new Pipe<T>(ObjectFactory.newInstance(ofClass));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	/*
 	 * Construct new Pipe<T> and set pipe's prototype.

@@ -564,7 +564,7 @@ public class Phase {
                     // not available - try to get it from the reducer
                     if (reducerClass == null) {
                         mapOutClass = reduceOutClass;
-                        mapValueSchema = getSchema(reduceOutClass.newInstance());
+                        mapValueSchema = getSchema(ObjectFactory.newInstance(reduceOutClass));
                     } else {
                         // can't get it from reducer input - that's just
                         // Iteratable
@@ -577,7 +577,7 @@ public class Phase {
                     }
                 }
             } else {
-                mapValueSchema = getSchema(mapOutClass.newInstance());
+                mapValueSchema = getSchema(ObjectFactory.newInstance(mapOutClass));
             }
         } catch (Exception e) {
             errors.add(new PhaseError(e,

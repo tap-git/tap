@@ -49,7 +49,7 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
         this.reducer = getReducer(conf);
 
         try {
-            this.out = (OUT) Class.forName(conf.get(Phase.REDUCE_OUT_CLASS)).newInstance();
+            this.out = (OUT) ObjectFactory.newInstance(Class.forName(conf.get(Phase.REDUCE_OUT_CLASS)));
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
