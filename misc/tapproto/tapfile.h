@@ -19,27 +19,37 @@ namespace tap {
     private:
         tap::file::Header           _header;
         tap::file::Header           _trailer;
-        tap::file::UpperIndexEntry  _upper_index_entry;
-        tap::file::LowerIndexEntry  _lower_index_entry;
+        tap::file::IndexEntry       _index_entry;
         
         bool                        _first_write;
+ 
+        // read path
+        // coded input streams we actually read from        
+        google::protobuf::io::CodedInputStream*     _metaIStream;
+        google::protobuf::io::CodedInputStream*     _dataIStream;
+        // underlying streams we keep around just to clean up
+        google::protobuf::io::FileInputStream*      _metaFIStream;
+        google::protobuf::io::GzipInputStream*      _dataGzipIStream;
+        google::protobuf::io::FileInputStream*      _dataFIStream;
         
-        // write path - coded output streams that we actually write to 
+        // write path
+        // coded output streams that we actually write to 
         google::protobuf::io::FileOutputStream*     _fileOStream;
         google::protobuf::io::CodedOutputStream*    _oStream;       
         google::protobuf::io::CodedOutputStream*    _dataOStream;
-        google::protobuf::io::CodedOutputStream*    _lowerIxOStream;
-        google::protobuf::io::CodedOutputStream*    _upperIxOStream;
-        
-        // write path - underlying streams that we keep around just to clean up 
+        google::protobuf::io::CodedOutputStream*    _indexOStream;
+        // underlying streams that we keep around just to clean up 
         google::protobuf::io::GzipOutputStream*     _dataGzipOStream;
-        google::protobuf::io::OstreamOutputStream*  _lowerIxOstreamOStream;
-        google::protobuf::io::OstreamOutputStream*  _upperIxOstreamOStream;
-        std::ostringstream*                         _lowerIxOstringstream;
-        std::ostringstream*                         _upperIxOstringstream;
+        google::protobuf::io::OstreamOutputStream*  _indexOstreamOStream;
+        std::ostringstream*                         _indexOstringstream;
 
-        // internal state
+        // state
         int                     _fd;
+        int                     _metaFd;
+        int                     _indexFd;
+        int                     _message_count;
+        int                     _data_block_count;
+        
         int32_t                 _target_block_size;
         bool                    _eof_flag;
         QBKey                   _next_key;
@@ -62,7 +72,10 @@ namespace tap {
         QBStatus            _flush();
         QBStatus            _read(string& s);
         void                _read_trailer();
+        void                _raw(google::protobuf::io::FileOutputStream* fos, const char *raw, int bytes);
+        void                _raw(google::protobuf::io::FileOutputStream* fos, const char *string);
         void                _pad(google::protobuf::io::FileOutputStream* fos, int remnant);
+        void                _pad(google::protobuf::io::CodedOutputStream* cos, int remnant);
         QBStatus            _read_next_key();
         QBStatus            _create_directory(const string &);
     };
