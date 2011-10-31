@@ -11,7 +11,10 @@ public abstract class FileFormat {
 
 	public abstract void setupInput(JobConf conf, Class<?> protoClass);
 
-	// file extension
+	/**
+	 * Obtain default file extension for the FileFormat
+	 * @return The file extension.
+	 */
 	public abstract String fileExtension();
 
 	/*
