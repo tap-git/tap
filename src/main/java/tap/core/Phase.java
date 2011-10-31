@@ -32,6 +32,7 @@ import org.apache.hadoop.mapred.JobConf;
 
 import tap.formats.avro.AvroGroupPartitioner;
 import tap.formats.avro.TapAvroSerialization;
+import tap.util.ReflectUtils;
 
 import org.apache.avro.protobuf.ProtobufData;
 
@@ -42,17 +43,26 @@ import tap.util.ObjectFactory;
 @SuppressWarnings("deprecation")
 public class Phase {
 
+    private static final int MAPPER2_IN_PARAMETER_POSITION = 0;
+    private static final int MAPPER2_OUT_PARAMETER_POSITION = 1;
+    private static final int REDUCER2_IN_PARAMETER_POSITION = 0;
+    private static final int REDUCER2_OUT_PARAMETER_POSITION = 1;
     private static final String SETTINGS = "tap.phase.settings";
     public static final String MAPPER = "tap.phase.mapper";
-    public static final String REDUCER = "tap.phase.reducer";
+    public static final String MAP_IN_CLASS = "tap.phase.map.input.class";
+    public static final String MAP_OUT_KEY_SCHEMA = "tap.phase.map.out.key.schema";
+    public static final String MAP_OUT_VALUE_SCHEMA = "tap.phase.map.out.value.schema";
+    public static final String MAP_OUT_PIPE_CLASS = "tap.phase.map.output.pipe.class"; // The
+                                                                                       // OUT
+                                                                                       // in
+                                                                                       // Pipe<OUT>
     public static final String MAP_OUT_CLASS = "tap.phase.map.output.class";
+    public static final String REDUCER_OUT_PIPE_CLASS = "tap.phase.reduce.output.pipe.class";
+    public static final String REDUCER = "tap.phase.reducer";
     public static final String REDUCE_OUT_CLASS = "tap.phase.reduce.output.class";
     public static final String GROUP_BY = "tap.phase.groupby";
     public static final String SORT_BY = "tap.phase.sortby";
     public static final String COMBINER = "tap.phase.combiner";
-    public static final String MAP_OUT_KEY_SCHEMA = "tap.phase.map.out.key.schema";
-    public static final String MAP_OUT_VALUE_SCHEMA = "tap.phase.map.out.value.schema";
-    public static final String MAP_IN_CLASS = "tap.phase.map.input.class";
 
     /*
      * we *allow* for multiple reads, writes, maps, combines, and reduces this
@@ -82,10 +92,15 @@ public class Phase {
     private Class<?> reduceOutClass;
     private Schema reduceout;
     private Class<? extends Mapper> mapperClass;
+    private Method mapperMethod;
     private Class<?> mapOutClass;
     private Class<?> mapInClass;
     private Schema mapin;
     private Class<? extends ColReducer> reducerClass;
+    private Object inputPipeProto;
+    private Class<?> mapOutPipeType;
+    private Class<OutPipe> reduceOutPipeType;
+    private Class<?> reduceInClass;
 
     public Phase() {
     }
@@ -250,10 +265,21 @@ public class Phase {
         }
 
         mapperPlan(errors);
-
         combinersPlan(errors);
         reducerPlan(errors);
+        formatPlan(errors);
 
+        Schema mapValueSchema = mapOutPlan(errors);
+
+        configurationSetup(errors, mapValueSchema);
+        return errors;
+    }
+
+    /**
+     * @param errors
+     * @return
+     */
+    private void formatPlan(List<PhaseError> errors) {
         Schema valueSchema = null;
         if (mainWrites.size() != 1) {
             errors.add(new PhaseError(
@@ -283,7 +309,7 @@ public class Phase {
         if (deflateLevel != null)
             AvroOutputFormat.setDeflateLevel(conf, deflateLevel);
 
-        Object proto = null;
+        inputPipeProto = null;
         if (mainReads != null && mainReads.size() > 0) {
             Path[] inPaths = new Path[mainReads.size()];
             int i = 0;
@@ -293,111 +319,33 @@ public class Phase {
                 if (myProto == null) {
                     errors.add(new PhaseError(
                             "Pipes need non-null prototypes: " + pipe.getPath()));
-                } else if (proto != null) {
-                    if (myProto.getClass() != proto.getClass()) {
+
+                } else if (inputPipeProto != null) {
+                    if (myProto.getClass() != inputPipeProto.getClass()) {
                         errors.add(new PhaseError(
                                 "Inconsistent prototype classes for inputs: "
                                         + myProto.getClass() + " vs "
-                                        + proto.getClass() + " for "
+                                        + inputPipeProto.getClass() + " for "
                                         + pipe.getPath()));
                     }
                 } else {
-                    proto = myProto;
+                    inputPipeProto = myProto;
                 }
             }
             AvroInputFormat.setInputPaths(conf, inPaths);
 
             if (mapin == null) {
-                if (proto == null) {
+                if (inputPipeProto == null) {
                     errors.add(new PhaseError("Undefined input format"));
                 } else {
-                    mapin = getSchema(proto);
-                    mapInClass = proto.getClass();
+                    mapin = getSchema(inputPipeProto);
+                    mapInClass = inputPipeProto.getClass();
                 }
             }
             mainReads.get(0).setupInput(conf);
             if (conf.get("mapred.input.format.class") == null)
                 conf.setInputFormat(AvroInputFormat.class);
         }
-
-        Schema mapValueSchema = null;
-        try {
-            // TODO: handle cases beyond Object where input isn't defined
-            if (mapOutClass == null || mapOutClass == Object.class) {
-                assert mapperClass == null;
-                if (proto != null) {
-                    mapOutClass = proto.getClass();
-                    mapValueSchema = getSchema(proto);
-                } else {
-                    // not available - try to get it from the reducer
-                    if (reducerClass == null) {
-                        mapOutClass = reduceOutClass;
-                        mapValueSchema = getSchema(ObjectFactory.newInstance(reduceOutClass));
-                    } else {
-                        // can't get it from reducer input - that's just
-                        // Iterable
-                        String fname = "no input file specified";
-                        if (mainReads != null && mainReads.size() > 0)
-                            fname = mainReads.get(0).getPath();
-                        errors.add(new PhaseError(
-                                "No input format specified for identity mapper - specify it on input file "
-                                        + fname));
-                    }
-                }
-            } else {
-                mapValueSchema = getSchema(ObjectFactory.newInstance(mapOutClass));
-            }
-            if (mapValueSchema != null)
-                conf.set(MAP_OUT_VALUE_SCHEMA, mapValueSchema.toString());
-        } catch (Exception e) {
-            errors.add(new PhaseError(e,
-                    "Can't create instance of map output class: " + mapOutClass));
-        }
-
-        conf.set(MAP_OUT_CLASS, mapOutClass.getName());
-        conf.set(MAP_IN_CLASS, mapInClass.getName());
-        // XXX validation!
-        if (proto != null) {
-            conf.set(AvroJob.INPUT_SCHEMA, getSchema(proto).toString());
-        } else if (mapin != null) {
-            conf.set(AvroJob.INPUT_SCHEMA, mapin.toString());
-        } else {
-            errors.add(new PhaseError("No map input defined"));
-        }
-
-        if (groupBy != null || sortBy != null) {
-            conf.set(MAP_OUT_KEY_SCHEMA, group(mapValueSchema, groupBy, sortBy)
-                    .toString());
-        }
-        if (groupBy != null) {
-            conf.set(GROUP_BY, groupBy);
-            AvroJob.setOutputMeta(conf, GROUP_BY, groupBy);
-        }
-        if (sortBy != null) {
-            conf.setPartitionerClass(AvroGroupPartitioner.class);
-            conf.set(SORT_BY, sortBy);
-            AvroJob.setOutputMeta(conf, SORT_BY, sortBy);
-        }
-
-        conf.setMapOutputKeyClass(AvroKey.class);
-        conf.setMapOutputValueClass(AvroValue.class);
-        conf.setOutputKeyComparatorClass(KeyComparator.class);
-
-        conf.setMapperClass(MapperBridge.class);
-        conf.setReducerClass(ReducerBridge.class);
-
-        for (Map.Entry<String, String> entry : textMeta.entrySet())
-            AvroJob.setOutputMeta(conf, entry.getKey(), entry.getValue());
-
-        // add TapAvroSerialization to io.serializations
-        Collection<String> serializations = conf
-                .getStringCollection("io.serializations");
-        if (!serializations.contains(TapAvroSerialization.class.getName())) {
-            serializations.add(TapAvroSerialization.class.getName());
-            conf.setStrings("io.serializations",
-                    serializations.toArray(new String[0]));
-        }
-        return errors;
     }
 
     /**
@@ -411,15 +359,31 @@ public class Phase {
         if (reducers != null && reducers.length > 0) {
             if (reducers.length != 1) {
                 errors.add(new PhaseError(
-                        "Tap phase/avro currently only supports one reducer per process: "
+                        "Tap Phase currently only supports one reducer per process: "
                                 + name));
             } else {
                 reducerClass = reducers[0];
                 conf.set(REDUCER, reducers[0].getName());
                 Class<?> foundIn = null;
                 for (Method m : reducerClass.getMethods()) {
-                    if ("reduce".equals(m.getName())) {
+                    if ("reduce".equals(m.getName())
+                            && !m.getDeclaringClass().equals(Object.class)
+                            && !m.getDeclaringClass().equals(BaseReducer.class)) {
                         Class<?>[] paramTypes = m.getParameterTypes();
+                        if (paramTypes.length == 2) {
+                            if (paramTypes[1].equals(OutPipe.class)) {
+                                // found the correct map function
+                                foundIn = m.getDeclaringClass();
+                                this.reduceInClass = ReflectUtils
+                                        .getParameterClass(foundIn,
+                                                REDUCER2_IN_PARAMETER_POSITION);
+                                this.reduceOutPipeType = OutPipe.class;
+                                this.reduceOutClass = ReflectUtils
+                                        .getParameterClass(foundIn,
+                                                REDUCER2_OUT_PARAMETER_POSITION);
+                                break;
+                            }
+                        }
                         if (paramTypes.length >= 3) {
                             if (foundIn == null
                                     || foundIn.isAssignableFrom(m
@@ -437,7 +401,6 @@ public class Phase {
                         }
                     }
                 }
-                // XXX validation!
             }
         }
         reduceOutProto = null;
@@ -485,22 +448,8 @@ public class Phase {
     }
 
     /**
-     * @param errors
-     */
-    private void combinersPlan(List<PhaseError> errors) {
-        if (combiners != null && combiners.length > 0) {
-            if (combiners.length > 1) {
-                errors.add(new PhaseError(
-                        "Tap phase/avro currently only supports one combiner per process: "
-                                + name));
-            } else {
-                conf.set(COMBINER, combiners[0].getName());
-                conf.setCombinerClass(CombinerBridge.class);
-            }
-        }
-    }
-
-    /**
+     * Find the correct Mapper class.
+     * 
      * @param errors
      */
     private void mapperPlan(List<PhaseError> errors) {
@@ -512,20 +461,45 @@ public class Phase {
         if (mappers != null && mappers.length > 0) {
             if (mappers.length > 1) {
                 errors.add(new PhaseError(
-                        "Tap phase/avro currently only supports one mapper per process: "
+                        "Tap Phase currently only supports one mapper per process: "
                                 + name));
             } else {
                 mapperClass = mappers[0];
-                conf.set(MAPPER, mapperClass.getName());
                 Class<?> foundIn = null;
+                // search for suitable map(...) methods
                 for (Method m : mapperClass.getMethods()) {
+                    // ignore base classes Object and BaseMapper
                     if (!m.getDeclaringClass().equals(Object.class)
                             && !m.getDeclaringClass().equals(BaseMapper.class)
                             && "map".equals(m.getName())) {
                         Class<?>[] paramTypes = m.getParameterTypes();
 
                         /**
-                         * map(<IN> in, <OUT> out, TapContext<OUT> context)
+                         * map(IN,OutPipe<OUT>)
+                         */
+                        if (paramTypes.length == 2) {
+                            if (paramTypes[1].equals(OutPipe.class)) {
+                                // found the correct map function
+                                foundIn = m.getDeclaringClass();
+                                this.mapInClass = ReflectUtils
+                                        .getParameterClass(foundIn,
+                                                MAPPER2_IN_PARAMETER_POSITION);
+                                this.mapOutPipeType = OutPipe.class;
+                                this.mapOutClass = ReflectUtils
+                                        .getParameterClass(foundIn,
+                                                MAPPER2_OUT_PARAMETER_POSITION);
+
+                                Object readProto = mainReads.get(0)
+                                        .getPrototype();
+                                this.mapin = getSchema(readProto);
+
+                                this.mapperMethod = m;
+                                break;
+                            }
+                        }
+                        /**
+                         * Find legacy map(<IN> in, <OUT> out, TapContext<OUT>
+                         * context)
                          */
                         if (paramTypes.length == 3
                                 && paramTypes[2].equals(TapContext.class)) {
@@ -547,6 +521,15 @@ public class Phase {
                                         // where output isn't defined
                                         mapInClass = paramTypes[0];
                                         mapin = getSchema(ObjectFactory.newInstance(paramTypes[0]));
+                                        Object readProto = mainReads.get(0).getPrototype();
+                                        if (null == readProto) {
+                                            errors.add(new PhaseError(
+                                                    "Can't create mapper, need input Pipe prototype"));
+                                            break;
+                                        }
+                                        mapInClass = mapOutClass = readProto
+                                                .getClass();
+                                        mapin = getSchema(readProto);
                                     }
                                     mapOutClass = paramTypes[1];
                                     foundIn = m.getDeclaringClass();
@@ -560,10 +543,146 @@ public class Phase {
                     }
                 }
             }
+        }
+
+    }
+
+    /**
+     * @param errors
+     * @return
+     */
+    private Schema mapOutPlan(List<PhaseError> errors) {
+        Schema mapValueSchema = null;
+        try {
+            // TODO: handle cases beyond Object where input isn't defined
+            if (mapOutClass == null || mapOutClass == Object.class) {
+                assert mapperClass == null;
+                if (inputPipeProto != null) {
+                    mapOutClass = inputPipeProto.getClass();
+                    mapValueSchema = getSchema(inputPipeProto);
+                } else {
+                    // not available - try to get it from the reducer
+                    if (reducerClass == null) {
+                        mapOutClass = reduceOutClass;
+                        mapValueSchema = getSchema(reduceOutClass.newInstance());
+                    } else {
+                        // can't get it from reducer input - that's just
+                        // Iteratable
+                        String fname = "no input file specified";
+                        if (mainReads != null && mainReads.size() > 0)
+                            fname = mainReads.get(0).getPath();
+                        errors.add(new PhaseError(
+                                "No input format specified for identity mapper - specify it on input file "
+                                        + fname));
+                    }
+                }
+            } else {
+                mapValueSchema = getSchema(mapOutClass.newInstance());
+            }
+        } catch (Exception e) {
+            errors.add(new PhaseError(e,
+                    "Can't create instance of map output class: " + mapOutClass));
+        }
+        return mapValueSchema;
+    }
+
+    /**
+     * Update Job Configuration with findings to be used by Mapper and Reducer
+     * 
+     * @param errors
+     *            Configuration errors collection to be appended to
+     * @param mapValueSchema
+     */
+    private void configurationSetup(List<PhaseError> errors,
+            Schema mapValueSchema) {
+
+        if (null == this.mapperClass) {
+            errors.add(new PhaseError("Missing Mapper class"));
         } else {
-            Object readProto = mainReads.get(0).getPrototype();
-            mapInClass = mapOutClass = readProto.getClass();
-            mapin = getSchema(readProto);
+            conf.set(MAPPER, this.mapperClass.getName());
+        }
+
+        if (null == this.mapInClass) {
+            errors.add(new PhaseError("Missing map IN class"));
+        } else {
+            conf.set(MAP_IN_CLASS, mapInClass.getName());
+        }
+
+        if (null == this.mapOutClass) {
+            errors.add(new PhaseError("Missing map OUT class"));
+        } else {
+            conf.set(MAP_OUT_CLASS, mapOutClass.getName());
+        }
+
+        // if we found piped map output type, set it here
+        if (null != this.mapOutPipeType) {
+            conf.set(MAP_OUT_PIPE_CLASS, this.mapOutPipeType.getName());
+        }
+
+        // if we found a piped reduce output type, set it here
+        if (null != this.reduceOutPipeType) {
+            conf.set(REDUCER_OUT_PIPE_CLASS, this.reduceOutPipeType.getName());
+        }
+
+        if (inputPipeProto != null) {
+            conf.set(AvroJob.INPUT_SCHEMA, getSchema(inputPipeProto).toString());
+        } else if (mapin != null) {
+            conf.set(AvroJob.INPUT_SCHEMA, mapin.toString());
+        } else {
+            errors.add(new PhaseError("No map input defined"));
+        }
+
+        if (mapValueSchema != null) {
+            conf.set(MAP_OUT_VALUE_SCHEMA, mapValueSchema.toString());
+        }
+
+        if (groupBy != null || sortBy != null) {
+            conf.set(MAP_OUT_KEY_SCHEMA, group(mapValueSchema, groupBy, sortBy)
+                    .toString());
+        }
+        if (groupBy != null) {
+            conf.set(GROUP_BY, groupBy);
+            AvroJob.setOutputMeta(conf, GROUP_BY, groupBy);
+        }
+        if (sortBy != null) {
+            conf.setPartitionerClass(AvroGroupPartitioner.class);
+            conf.set(SORT_BY, sortBy);
+            AvroJob.setOutputMeta(conf, SORT_BY, sortBy);
+        }
+
+        conf.setMapOutputKeyClass(AvroKey.class);
+        conf.setMapOutputValueClass(AvroValue.class);
+        conf.setOutputKeyComparatorClass(KeyComparator.class);
+
+        conf.setMapperClass(MapperBridge.class);
+        conf.setReducerClass(ReducerBridge.class);
+
+        for (Map.Entry<String, String> entry : textMeta.entrySet())
+            AvroJob.setOutputMeta(conf, entry.getKey(), entry.getValue());
+
+        // add TapAvroSerialization to io.serializations
+        Collection<String> serializations = conf
+                .getStringCollection("io.serializations");
+        if (!serializations.contains(TapAvroSerialization.class.getName())) {
+            serializations.add(TapAvroSerialization.class.getName());
+            conf.setStrings("io.serializations",
+                    serializations.toArray(new String[0]));
+        }
+    }
+
+    /**
+     * @param errors
+     */
+    private void combinersPlan(List<PhaseError> errors) {
+        if (combiners != null && combiners.length > 0) {
+            if (combiners.length > 1) {
+                errors.add(new PhaseError(
+                        "Tap Phase currently only supports one combiner per process: "
+                                + name));
+            } else {
+                conf.set(COMBINER, combiners[0].getName());
+                conf.setCombinerClass(CombinerBridge.class);
+            }
         }
     }
 
@@ -579,6 +698,15 @@ public class Phase {
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    /**
+     * Provide accessor for testing
+     * 
+     * @return return this phase's configuration.
+     */
+    JobConf getConf() {
+        return this.conf;
     }
 
     public PhaseError submit() {

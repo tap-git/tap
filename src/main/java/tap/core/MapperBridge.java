@@ -32,7 +32,6 @@ import org.apache.avro.io.*;
 import org.apache.avro.mapred.*;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -43,6 +42,7 @@ import org.codehaus.jackson.JsonParseException;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 import tap.formats.avro.JsonToGenericRecord;
+import tap.formats.text.TextFormat;
 
 import com.twitter.elephantbird.mapreduce.input.LzoInputFormat;
 import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
@@ -51,6 +51,7 @@ import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
 public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
         implements org.apache.hadoop.mapred.Mapper<KEY, VALUE, KO, VO> {
 
+    private static final int SNIFF_HEADER_SIZE = 1000;
     private Mapper<IN, OUT> mapper;
     private boolean isMapOnly;
     private OUT out;
@@ -68,6 +69,8 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     private EncoderFactory factory = new EncoderFactory();
     // TODO: make this configurable
     private int maxAllowedErrors = 1000;
+    private OutPipe<OUT> outPipe = null;
+    private boolean isPipeOutput = false;
 
     @SuppressWarnings("unchecked")
     public void configure(JobConf conf) {
@@ -76,27 +79,10 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
                 conf);
         this.isMapOnly = conf.getNumReduceTasks() == 0;
         try {
-            this.out = (OUT) ReflectionUtils.newInstance(conf.getClass(
-                    Phase.MAP_OUT_CLASS, Object.class, Object.class), conf);
-            this.schema = Phase.getSchema(this.out);
+            determineInputFormat(conf);
+            determineOutputFormat(conf);
             this.groupBy = conf.get(Phase.GROUP_BY);
             this.sortBy = conf.get(Phase.SORT_BY);
-            if (conf.getInputFormat() instanceof TextInputFormat) {
-                Class<?> inClass = conf.getClass(Phase.MAP_IN_CLASS,
-                        Object.class, Object.class);
-                if (inClass == String.class) {
-                    isStringInput = true;
-                } else if (inClass == Text.class) {
-                    isTextInput = true;
-                } else {
-                    isJsonInput = true;
-                    inSchema = Phase.getSchema((IN) ReflectionUtils
-                            .newInstance(inClass, conf));
-                }
-            }
-            isProtoInput = conf.getInputFormat() instanceof LzoInputFormat;
-            FileFormat ff = sniffFileFormat(conf);
-            // TODO now use FileFormat to generate exception?
         } catch (Exception e) {
             if (e instanceof RuntimeException)
                 throw (RuntimeException) e;
@@ -106,61 +92,68 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
         mapper.setConf(conf);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public void map(KEY wrapper, VALUE value,
+            OutputCollector<KO, VO> collector, Reporter reporter)
+            throws IOException {
+        if (this.context == null) {
+            KeyExtractor<GenericData.Record, OUT> extractor = new ReflectionKeyExtractor<OUT>(
+                    schema, groupBy, sortBy);
+            this.context = new TapContext<OUT>(new Collector(collector,
+                    extractor), reporter);
+        }
+
+        bindContextToPipe(collector, reporter);
+
+        invokeMapper(wrapper, value, reporter);
+    }
+
     /**
-     * Open file and read header to determine file format
-     * 
      * @param conf
      * @throws IOException
      * @throws FileNotFoundException
      */
-    private FileFormat sniffFileFormat(JobConf conf) throws IOException,
-            FileNotFoundException {
-        {
-            FileFormat returnFormat = Formats.UNKNOWN_FORMAT.getFileFormat();
-            Path path = new Path(conf.get("map.input.file"));
-            File file = FileSystem.getLocal(conf).pathToFile(path);
-            byte[] header = readHeader(file);
-            returnFormat = determineFileFormat(header);
-            System.out
-                    .println("tap.core.MapperBridge: local file path " + path);
-            System.out.println("tap.core.MapperBridge: File format "
-                    + returnFormat.toString());
-            System.out.println("tap.core.MapperBridge: format extension "
-                    + returnFormat.fileExtension());
-            return returnFormat;
+    private void determineInputFormat(JobConf conf)
+            throws FileNotFoundException, IOException {
+        
+        /**
+         * Compare mapper input file signature with Hadoop configured class
+         */
+        FileFormat ff = sniffMapInFormat(conf);
+        if (!ff.isCompatible(conf.getInputFormat())) {
+            throw new IllegalArgumentException("Map input format not compatible with file format.");
         }
-    }
 
-    /**
-     * Based on file header values return File format.
-     * 
-     * @param returnFormat
-     * @param header
-     * @return
-     */
-    private FileFormat determineFileFormat(byte[] header) {
-        for (Formats format : Formats.values()) {
-            if (format.getFileFormat().signature(header)) {
-                return format.getFileFormat();
-
+        
+        if (conf.getInputFormat() instanceof TextInputFormat) {
+            Class<?> inClass = conf.getClass(Phase.MAP_IN_CLASS, Object.class,
+                    Object.class);
+            if (inClass == String.class) {
+                isStringInput = true;
+            } else if (inClass == Text.class) {
+                isTextInput = true;
+            } else {
+                isJsonInput = true;
+                inSchema = Phase.getSchema((IN) ReflectionUtils.newInstance(
+                        inClass, conf));
             }
         }
-        return Formats.UNKNOWN_FORMAT.getFileFormat();
+        isProtoInput = conf.getInputFormat() instanceof LzoInputFormat;
     }
 
     /**
-     * @param file
-     * @return
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @param conf
      */
-    private byte[] readHeader(File file) throws FileNotFoundException,
-            IOException {
-        InputStream inputStream = new FileInputStream(file);
-        byte[] header = new byte[1000];
-        inputStream.read(header);
-        inputStream.close();
-        return header;
+    private void determineOutputFormat(JobConf conf) {
+        this.out = (OUT) ReflectionUtils.newInstance(
+                conf.getClass(Phase.MAP_OUT_CLASS, Object.class, Object.class),
+                conf);
+        if (null != conf.get(Phase.MAP_OUT_PIPE_CLASS)) {
+            this.outPipe = new OutPipe<OUT>(this.out);
+            this.isPipeOutput = true;
+        }
+        this.schema = Phase.getSchema(this.out);
     }
 
     @SuppressWarnings("unchecked")
@@ -192,23 +185,18 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
         }
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public void map(KEY wrapper, VALUE value,
-            OutputCollector<KO, VO> collector, Reporter reporter)
+    /**
+     * @param wrapper
+     * @param value
+     * @param reporter
+     * @throws IOException
+     */
+    private void invokeMapper(KEY wrapper, VALUE value, Reporter reporter)
             throws IOException {
-        if (this.context == null) {
-            KeyExtractor<GenericData.Record, OUT> extractor = new ReflectionKeyExtractor<OUT>(
-                    schema, groupBy, sortBy);
-            this.context = new TapContext<OUT>(new Collector(collector,
-                    extractor), reporter);
-        }
         if (isTextInput) {
             mapper.map((IN) value, out, context);
         } else if (isStringInput) {
             mapper.map((IN) ((Text) value).toString(), out, context);
-        } else if (isProtoInput) {
-            mapper.map((IN) ((ProtobufWritable) value).get(), out, context);           
         } else if (isJsonInput) {
             String json = ((Text) value).toString();
             if (shouldSkip(json))
@@ -247,7 +235,31 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
                 }
             }
         } else {
-            mapper.map(((AvroWrapper<IN>) wrapper).datum(), out, context);
+            if (this.isPipeOutput) {
+                mapper.map(((AvroWrapper<IN>) wrapper).datum(), this.outPipe);
+            } else {
+                mapper.map(((AvroWrapper<IN>) wrapper).datum(), out, context);
+            }
+        }
+    }
+
+    /**
+     * Bind the output to the Tap Context
+     * 
+     * @param collector
+     * @param reporter
+     */
+    private void bindContextToPipe(OutputCollector<KO, VO> collector,
+            Reporter reporter) {
+        if (this.outPipe != null && this.outPipe.getContext() == null) {
+            if (this.context == null) {
+                KeyExtractor<GenericData.Record, OUT> extractor = new ReflectionKeyExtractor<OUT>(
+                        schema, groupBy, sortBy);
+                this.outPipe.setContext(new TapContext<OUT>(new Collector(
+                        collector, extractor), reporter));
+            } else {
+                this.outPipe.setContext(this.context);
+            }
         }
     }
 
@@ -261,6 +273,69 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
             return true; // blank line
         return (json.charAt(i) == '#' || json.charAt(i) == '/' && len > (i + 1)
                 && json.charAt(i + 1) == '/'); // skip comments
+    }
+
+    /**
+     * Open file and read header to determine file format
+     * 
+     * @param conf
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    private FileFormat sniffMapInFormat(JobConf conf) throws IOException,
+            FileNotFoundException {
+        {
+            FileFormat returnFormat = Formats.UNKNOWN_FORMAT.getFileFormat();
+            Path path = new Path(conf.get("map.input.file"));
+            File file = FileSystem.getLocal(conf).pathToFile(path);
+            byte[] header = readHeader(file);
+            returnFormat = determineFileFormat(header);
+            
+            InputFormat inputFormat = conf.getInputFormat();
+            
+            /*
+            System.out
+                    .println("tap.core.MapperBridge: local file path " + path);
+            System.out.println("tap.core.MapperBridge: File format "
+                    + returnFormat.toString());
+            System.out.println("tap.core.MapperBridge: format extension "
+                    + returnFormat.fileExtension());
+            */
+            return returnFormat;
+        }
+    }
+
+    /**
+     * Based on file header values return File format.
+     * 
+     * @param returnFormat
+     * @param header
+     * @return
+     */
+    private FileFormat determineFileFormat(byte[] header) {
+        for (Formats format : Formats.values()) {
+            if (format.getFileFormat().signature(header)) {
+                return format.getFileFormat();
+
+            }
+        }
+        return Formats.UNKNOWN_FORMAT.getFileFormat();
+    }
+
+    /**
+     * Read first N bytes from normal file system file.
+     * @param file
+     * @return byte buffer containing first SNIFF_HEADER_SIZE bytes.
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private byte[] readHeader(File file) throws FileNotFoundException,
+            IOException {
+        InputStream inputStream = new FileInputStream(file);
+        byte[] header = new byte[SNIFF_HEADER_SIZE];
+        inputStream.read(header);
+        inputStream.close();
+        return header;
     }
 
     @Override
