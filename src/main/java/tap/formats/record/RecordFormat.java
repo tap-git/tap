@@ -1,5 +1,6 @@
 package tap.formats.record;
 
+import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.apache.hadoop.mapred.TextOutputFormat;
@@ -32,5 +33,11 @@ public class RecordFormat extends FileFormat {
 	public void setPipeFormat(Pipe pipe) {
 		pipe.setFormat(Formats.RECORD_FORMAT);
 	}
+
+    @Override
+    public boolean isCompatible(InputFormat foramt) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
 }

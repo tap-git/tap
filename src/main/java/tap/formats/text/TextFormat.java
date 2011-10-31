@@ -1,5 +1,6 @@
 package tap.formats.text;
 
+import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.apache.hadoop.mapred.TextOutputFormat;
@@ -30,6 +31,11 @@ public class TextFormat extends FileFormat {
 	@Override
 	public void setPipeFormat(Pipe pipe) {
 		pipe.setFormat(Formats.STRING_FORMAT);
+	}
+	
+	@Override
+	public boolean isCompatible(InputFormat format) {
+	    return (format instanceof TextInputFormat);
 	}
 
 	/**

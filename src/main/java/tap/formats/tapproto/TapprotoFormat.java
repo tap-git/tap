@@ -58,4 +58,10 @@ public class TapprotoFormat extends FileFormat {
 		return Arrays.equals(FILE_SIGNATURE, Arrays.copyOfRange(header, 0, FILE_SIGNATURE.length));
 	}
 
+    @Override
+    public boolean isCompatible(InputFormat foramt) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

@@ -1,5 +1,6 @@
 package tap.formats.unknown;
 
+import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
 
 import tap.core.Pipe;
@@ -23,5 +24,10 @@ public class UnknownFormat extends FileFormat {
 	public void setPipeFormat(Pipe pipe) {
 		pipe.setFormat(Formats.UNKNOWN_FORMAT);
 	}
+
+    @Override
+    public boolean isCompatible(InputFormat foramt) {
+        return false;
+    }
 
 }
