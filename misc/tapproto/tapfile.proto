@@ -75,7 +75,7 @@
 //      'tapproto'                  signature at end of file
 // 
 
-package tap.file;
+package tap.formats.tapproto;
 
 message IndexEntry {
     optional bytes  first_key = 1;                  // first key value in the data block
@@ -107,7 +107,7 @@ message Header {
     optional uint64     uncompressed_bytes = 206;   // sum of the uncompressed data bytes in the file
     optional uint64     max_decomp_size = 207;      // max(uncompressed_bytes) from index
     
-    optional repeated bytes      format_descriptor = 301;    // all proto FileDescriptors needed to reconstruct message
+    repeated bytes      format_descriptor = 301;    // all proto FileDescriptors needed to reconstruct message
     optional uint32     metadata_count = 302;       // number of Metadata messages to follow
 }
 

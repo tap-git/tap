@@ -19,7 +19,7 @@ public class TapfileTests {
 
     @Test
     public void testCanReadFile() throws Exception {
-        File file = new File("share/test.tapfile");
+        File file = new File("share/test.tapfile.bugfixed");
         FileInputStream fin = new FileInputStream(file);
         
         FileChannel channel = fin.getChannel();
@@ -30,30 +30,24 @@ public class TapfileTests {
         long trailerOffset = stream.readRawLittleEndian64();
         
         byte[] bytes = stream.readRawBytes(8);
-        String sig = new String(bytes);
-        System.out.println("file size=" + file.length());
-        System.out.println("trailerOffset=" + trailerOffset);
-        System.out.println(sig.equals("tapproto"));
+        Assert.assertEquals("tapproto", new String(bytes));
         
         channel.position(trailerOffset);
-        System.out.println("file pos=" + channel.position());
-        bytes = stream.readRawBytes(4);
-        System.out.println(new String(bytes)); // "trai"
-        bytes = stream.readRawBytes(4);
-        System.out.println(new String(bytes)); // "none"
+        stream = CodedInputStream.newInstance(fin);
+        bytes = stream.readRawBytes(8);
+        Assert.assertEquals("trainone", new String(bytes));
         
-        System.out.println("file pos=" + channel.position());
-        /*
-        Tapfile.Header.Builder builder = Tapfile.Header.newBuilder();
-        stream.readMessage(builder, null);
-        Tapfile.Header trailer = builder.build();
-        */
-        Tapfile.Header trailer = Tapfile.Header.newBuilder()
-                .mergeFrom(stream)
-                .build();
-        System.out.println("file pos=" + channel.position());
+        int limit = stream.readRawVarint32();
         
-        System.out.println("message name=" + trailer.getMessageName());
-        System.out.println("message count=" + trailer.getMessageCount());
+        stream.pushLimit(limit);
+        Tapfile.Header trailer = Tapfile.Header.parseFrom(stream);
+        
+        Assert.assertEquals("test.file", trailer.getInitialPipeName());
+        Assert.assertEquals("TestMsg", trailer.getMessageName());
+        Assert.assertEquals(5000, trailer.getMessageCount());
+        
+        stream.popLimit(limit);
+        
+        fin.close();
     }
 }
