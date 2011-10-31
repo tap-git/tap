@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
+import java.util.zip.GZIPInputStream;
 
 import junit.framework.Assert;
 
@@ -37,17 +38,56 @@ public class TapfileTests {
         bytes = stream.readRawBytes(8);
         Assert.assertEquals("trainone", new String(bytes));
         
-        int limit = stream.readRawVarint32();
-        
-        stream.pushLimit(limit);
+        int limit = stream.pushLimit(stream.readRawVarint32());
         Tapfile.Header trailer = Tapfile.Header.parseFrom(stream);
+        stream.popLimit(limit);
         
         Assert.assertEquals("test.file", trailer.getInitialPipeName());
         Assert.assertEquals("TestMsg", trailer.getMessageName());
         Assert.assertEquals(5000, trailer.getMessageCount());
         
-        stream.popLimit(limit);
+        System.out.println(trailer);
+        
+        // read index
+        channel.position(trailer.getIndexOffset());
+        CodedInputStream idx = CodedInputStream.newInstance(fin);
+        bytes = idx.readRawBytes(8);
+        Assert.assertEquals("upixnone",  new String(bytes));
+        
+        FileInputStream dataInputStream = new FileInputStream(file);
+        FileChannel dataChannel = dataInputStream.getChannel();
+        
+        // read data
+        long dataBlockCount = trailer.getDataBlockCount();
+        int totalMessagesRead = 0;
+        while(dataBlockCount-- > 0) {
+            // read next index entry
+            limit = idx.pushLimit(idx.readRawVarint32());
+            Tapfile.IndexEntry entry = Tapfile.IndexEntry.parseFrom(idx);
+            idx.popLimit(limit);
+            System.out.println(entry);
+
+            int messageCount = entry.getMessageCount();
+            // read data block
+            dataChannel.position(entry.getDataOffset());
+            dataInputStream.read(bytes);
+            Assert.assertEquals("datagzip", new String(bytes));
+            GZIPInputStream gzipStream = new GZIPInputStream(dataInputStream);
+            CodedInputStream dataStream = CodedInputStream.newInstance(gzipStream);
+            
+            while(messageCount-- > 0) {
+                int size = dataStream.readRawVarint32();
+                byte[] keyBytes = dataStream.readRawBytes(size);
+                limit = dataStream.pushLimit(dataStream.readRawVarint32());
+                Testmsg.TestMsg msg = Testmsg.TestMsg.parseFrom(dataStream);
+                dataStream.popLimit(limit);
+                totalMessagesRead += 1;
+            }
+        }
         
         fin.close();
+        dataInputStream.close();
+        
+        Assert.assertEquals(5000, totalMessagesRead);
     }
 }
