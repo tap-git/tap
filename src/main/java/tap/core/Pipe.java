@@ -25,6 +25,7 @@ import tap.util.ObjectFactory;
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.apache.avro.mapred.AvroValue;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -36,7 +37,7 @@ import org.apache.hadoop.mapred.JobConf;
 public class Pipe<T> implements Iterable<T>, Iterator<T> {
 
     private TapContext<T> context; // for OutPipe
-    private Iterator<T> values;    // for InPipe
+    private Iterator<AvroValue<T>> values;    // for InPipe
 	private Phase producer;
 	private String path;
 	private T prototype;
@@ -321,7 +322,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
      * Reducer In pipe
      * @param values
      */
-    public Pipe(Iterator<T> values) {
+    public Pipe(Iterator<AvroValue<T>> values) {
         this.values = values;
     }
     
@@ -343,7 +344,8 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
      * @return Object value
      */
     public T next() {
-        return (T) this.values.next();
+        T val = this.values.next().datum();
+        return (T) val;
     }
     
     /**
@@ -351,7 +353,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
      * @return The next value in the Iterator
      */
     public T get() {
-        return next();
+        return this.next();
     }
     
     /**
@@ -362,8 +364,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     }
 
     /**
-     * @param context
-     *            the context to set
+     * @param context The context to set
      */
     public void setContext(TapContext<T> context) {
         this.context = context;

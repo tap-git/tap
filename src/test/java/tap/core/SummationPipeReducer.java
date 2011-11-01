@@ -14,7 +14,7 @@ public class SummationPipeReducer extends
 	    outLog.description = "sum of words";
 	    outLog.count = 0;
 	    while (in.hasNext()) {
-	        outLog.count += ((CountRec)in.next()).count;
+	        outLog.count += in.next().count;
 	    }
 		out.put(outLog);
 	}
