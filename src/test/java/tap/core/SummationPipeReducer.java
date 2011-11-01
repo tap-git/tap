@@ -15,7 +15,7 @@ public class SummationPipeReducer extends
 	    CountRec val;
 	    while (in.hasNext()) {
 	        val = in.next();
-	        System.out.printf("<CountRec> (%s, %d) \n", val.word, val.count);
+	        //System.out.printf("<CountRec> (%s, %d) \n", val.word, val.count);
 	        outLog.count += val.count;
 	        loopCount ++;
 	    }

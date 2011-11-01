@@ -34,7 +34,7 @@ public class ReducerTests {
         summation.produces(output);
 
         Phase sum = new Phase().reads(input).writes(output)
-                .map(SummationPipeMapper.class).sortBy("word")
+                .map(SummationPipeMapper.class).groupBy("word")
                 .reduce(SummationPipeReducer.class);
         
         if (o.forceRebuild)
