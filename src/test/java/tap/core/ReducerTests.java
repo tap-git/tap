@@ -8,7 +8,7 @@ import org.junit.Test;
 public class ReducerTests {
 
     @Test
-    public void summationWithPipes() {
+    public void x() {
         /* Set up a basic pipeline of map reduce */
         Assembly summation = new Assembly(getClass())
                 .named("summation");
@@ -34,7 +34,7 @@ public class ReducerTests {
         summation.produces(output);
 
         Phase sum = new Phase().reads(input).writes(output)
-                .map(SummationPipeMapper.class).groupBy("word")
+                .map(SummationPipeMapper.class).sortBy("word")
                 .reduce(SummationPipeReducer.class);
         
         if (o.forceRebuild)
