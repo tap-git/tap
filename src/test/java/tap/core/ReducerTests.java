@@ -8,7 +8,7 @@ import org.junit.Test;
 public class ReducerTests {
 
     @Test
-    public void x() {
+    public void summation() {
         /* Set up a basic pipeline of map reduce */
         Assembly summation = new Assembly(getClass())
                 .named("summation");
