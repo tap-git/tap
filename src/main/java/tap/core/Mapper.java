@@ -23,6 +23,7 @@ import org.apache.hadoop.conf.*;
 
 public interface Mapper<IN,OUT> extends Configurable {
     public void map(IN in, OUT out, TapContext<OUT> context);
+    public void map(IN in, Pipe<OUT> out);
     
     public void close(OUT out, TapContext<OUT> context);
 }
