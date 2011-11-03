@@ -19,6 +19,7 @@
  */
 package tap.core;
 
+import tap.core.compression.Compressions;
 import tap.formats.*;
 
 import java.io.IOException;
@@ -42,6 +43,7 @@ public class Pipe<T> {
     private boolean isCompressed = false;
     private String uncompressedPath;
     private Class<T> pipeType;
+    private Compressions compression = null;
 
     @Deprecated
     public Pipe(T prototype) {
@@ -60,12 +62,10 @@ public class Pipe<T> {
     }
 
     private void determineCompression() {
-        if (this.path.endsWith(".gz")) {
+        if (this.path.endsWith(Compressions.GZIP_COMPRESSION.fileExtension())) {
             this.isCompressed = true;
+            setCompression(Compressions.GZIP_COMPRESSION);
             this.uncompressedPath = this.path.replaceAll(".gz$", "");
-        } else if (this.path.endsWith(".lzo")) {
-            this.isCompressed = true;
-            this.uncompressedPath = this.path.replaceAll(".lzo$", "");
         } else {
             this.uncompressedPath = path;
         }
@@ -239,13 +239,37 @@ public class Pipe<T> {
         this.setFormat(Formats.TAPPROTO_FORMAT);
         return this;
     }
+    
+    //Compression Methods
+    public Pipe gzipCompression() {
+    	this.setCompression(Compressions.GZIP_COMPRESSION);
+    	return this;
+    }
 
+    public Pipe setCompression(Compressions compression) {
+    	this.isCompressed = true;
+    	this.compression = compression;
+    	return this;
+    	
+    }
+    
+    public Compressions getCompression() {
+    	return this.compression;
+    }
+
+    
     public void setupOutput(JobConf conf) {
         getFormat().getFileFormat().setupOutput(conf, prototype == null ? null : prototype.getClass());
+        if(this.isCompressed == true) {
+        	getCompression().getCompression().setupOutput(conf);
+        }
     }
 
     public void setupInput(JobConf conf) {
         getFormat().getFileFormat().setupInput(conf, prototype == null ? null : prototype.getClass());
+        if (this.isCompressed == true) {
+        	getCompression().getCompression().setupInput(conf);
+        }
     }
 
     public long getTimestamp(JobConf conf) {
