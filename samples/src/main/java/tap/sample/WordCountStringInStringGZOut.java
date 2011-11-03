@@ -1,5 +1,7 @@
 package tap.sample;
 
+import java.util.StringTokenizer;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.util.Tool;
@@ -14,7 +16,7 @@ import tap.core.Pipe;
 import tap.core.TapContext;
 import tap.sample.WordCountProtobufInput.CountRec;
 
-public class WordCountProtoInStringGZOut extends Configured implements Tool {
+public class WordCountStringInStringGZOut extends Configured implements Tool {
 
     @Override
     public int run(String[] args) throws Exception {
@@ -35,7 +37,7 @@ public class WordCountProtoInStringGZOut extends Configured implements Tool {
             return 1;
         }
 
-        Pipe input = Pipe.of(Protos.CountRec.class).at(o.input).protoFormat();
+        Pipe input = Pipe.of(Protos.CountRec.class).at(o.input).stringFormat();
         Pipe<String> counts = new Pipe(o.output).stringFormat().gzipCompression();
         wordcount.produces(counts);
         
@@ -54,18 +56,19 @@ public class WordCountProtoInStringGZOut extends Configured implements Tool {
         return 0;
     }
 
-    public static class Mapper extends BaseMapper<Protos.CountRec,CountRec> {
+    public static class Mapper extends BaseMapper<String,CountRec> {
         private static int i = 0;
     	
     	@Override
-        public void map(Protos.CountRec in, CountRec out, TapContext<CountRec> context) {
+        public void map(String in, CountRec out, TapContext<CountRec> context) {
         	
-            out.word = in.getWord();
-            out.count = 1;
-            context.write(out);
-            if (i % 100 == 0) {
-            	System.out.println("Mapper Word=" + out.word + " Count=" + out.count);
-            }
+    		StringTokenizer tokenizer = new StringTokenizer(in);
+    		while (tokenizer.hasMoreTokens()) {
+    			out.word = tokenizer.nextToken();
+    			out.count = 1;
+    			context.write(out);
+    			System.out.println("Map Out " + out.word + " Count=" + out.count);
+    		}
             i++;
         } 
     }
@@ -82,6 +85,7 @@ public class WordCountProtoInStringGZOut extends Configured implements Tool {
                     word = rec.word;
                 count += rec.count;
             }
+            System.out.println("Redcuer Out " + word + "-X-" + count);
             
             context.write(word + "-X-" + count);
 
@@ -89,7 +93,7 @@ public class WordCountProtoInStringGZOut extends Configured implements Tool {
     }
     
     public static void main(String[] args) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new WordCountProtoInStringGZOut(), args);
+        int res = ToolRunner.run(new Configuration(), new WordCountStringInStringGZOut(), args);
         System.exit(res);
     }
 

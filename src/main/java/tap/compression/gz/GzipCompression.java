@@ -1,13 +1,13 @@
-package tap.core.compression.gz;
+package tap.compression.gz;
 
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.io.compress.GzipCodec;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.TextOutputFormat;
 
+import tap.compression.Compressions;
+import tap.compression.FileCompression;
 import tap.core.Pipe;
-import tap.core.compression.Compressions;
-import tap.core.compression.FileCompression;
 
 @SuppressWarnings("deprecation")
 public class GzipCompression extends FileCompression {

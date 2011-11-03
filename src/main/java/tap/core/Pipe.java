@@ -19,7 +19,7 @@
  */
 package tap.core;
 
-import tap.core.compression.Compressions;
+import tap.compression.Compressions;
 import tap.formats.*;
 import tap.util.ObjectFactory;
 

@@ -1,4 +1,4 @@
-package tap.core.compression;
+package tap.compression;
 
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapred.JobConf;

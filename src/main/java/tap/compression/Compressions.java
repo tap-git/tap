@@ -1,6 +1,6 @@
-package tap.core.compression;
+package tap.compression;
 
-import tap.core.compression.gz.GzipCompression;
+import tap.compression.gz.GzipCompression;
 
 public enum Compressions {
 	GZIP_COMPRESSION {
