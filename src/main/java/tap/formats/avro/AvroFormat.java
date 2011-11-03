@@ -6,6 +6,7 @@ import org.apache.avro.mapred.AvroInputFormat;
 import org.apache.avro.mapred.AvroJob;
 import org.apache.avro.mapred.AvroOutputFormat;
 import org.apache.avro.mapred.AvroWrapper;
+import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
 
 import tap.core.Pipe;
@@ -36,6 +37,7 @@ public class AvroFormat extends FileFormat {
 		pipe.setFormat(Formats.AVRO_FORMAT);
 	}
 	
+	
 	/**
 	 * Compare file signature of Avro type file (uncompressed)
 	 */
@@ -43,5 +45,11 @@ public class AvroFormat extends FileFormat {
 	public boolean signature(byte[] header) {
 		return Arrays.equals(FILE_SIGNATURE, Arrays.copyOfRange(header, 0, FILE_SIGNATURE.length));
 	}
+
+    @Override
+    public boolean isCompatible(InputFormat format) {
+        // TODO Auto-generated method stub
+        return (format instanceof AvroInputFormat);
+    }
 
 }

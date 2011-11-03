@@ -1,5 +1,6 @@
 package tap.formats;
 
+import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
 import tap.core.Pipe;
 
@@ -10,7 +11,10 @@ public abstract class FileFormat {
 
 	public abstract void setupInput(JobConf conf, Class<?> protoClass);
 
-	// file extension
+	/**
+	 * Obtain default file extension for the FileFormat
+	 * @return The file extension.
+	 */
 	public abstract String fileExtension();
 
 	/*
@@ -25,5 +29,12 @@ public abstract class FileFormat {
 	}
 
 	public abstract void setPipeFormat(Pipe pipe) ;
+
+	/**
+	 * Is this File format compatible with the Hadoop input type (class)
+	 * @param format The format as determined by Hadoop / Tap
+	 * @return true if compatible.
+	 */
+	public abstract boolean isCompatible(InputFormat format);
 
 }

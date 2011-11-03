@@ -1,13 +1,17 @@
 package tap.sample;
 
-import java.util.StringTokenizer;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import tap.core.*;
+import tap.core.Assembly;
+import tap.core.BaseMapper;
+import tap.core.BaseOptions;
+import tap.core.BaseReducer;
+import tap.core.Phase;
+import tap.core.Pipe;
+import tap.core.TapContext;
 import tap.sample.WordCountProtobufInput.CountRec;
 
 public class WordCountProtoInStringGZOut extends Configured implements Tool {
