@@ -19,6 +19,7 @@
  */
 package tap.core;
 
+import tap.compression.Compressions;
 import tap.formats.*;
 import tap.util.ObjectFactory;
 
@@ -44,6 +45,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 	private Formats format = Formats.AVRO_FORMAT;
 	private boolean isCompressed = false;
 	private String uncompressedPath;
+	private Compressions compression = null;
 
 	@Deprecated
 	public Pipe(T prototype) {
@@ -62,12 +64,13 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 	}
 
 	private void determineCompression() {
-		if (this.path.endsWith(".gz")) {
-			this.compressed(true);
-			this.uncompressedPath = this.path.replaceAll(".gz$", "");
-		} else {
-			this.uncompressedPath = path;
-		}
+        if (this.path.endsWith(Compressions.GZIP_COMPRESSION.fileExtension())) {
+            this.isCompressed = true;
+            setCompression(Compressions.GZIP_COMPRESSION);
+            this.uncompressedPath = this.path.replaceAll(".gz$", "");
+        } else {
+            this.uncompressedPath = path;
+        }
 	}
 
 	/*
@@ -241,13 +244,38 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
         return this;
     }
 	
+    //Compression Methods
+    public Pipe<T> gzipCompression() {
+    	this.setCompression(Compressions.GZIP_COMPRESSION);
+    	return this;
+    }
+
+    public Pipe<T> setCompression(Compressions compression) {
+    	this.isCompressed = true;
+    	this.compression = compression;
+    	return this;
+    	
+    }
+    
+    public Compressions getCompression() {
+    	return this.compression;
+    }	
+	
     public void setupOutput(JobConf conf) {
         getFormat().getFileFormat().setupOutput(conf,
                 prototype == null ? null : prototype.getClass());
+        if(this.isCompressed == true) {
+        	getCompression().getCompression().setupOutput(conf);
+        }
+        
     }
 
     public void setupInput(JobConf conf) {
         getFormat().getFileFormat().setupInput(conf, prototype == null ? null : prototype.getClass());
+        if (this.isCompressed == true) {
+        	getCompression().getCompression().setupInput(conf);
+        }
+        
     }
     
 	/**
