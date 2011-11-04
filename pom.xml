@@ -119,7 +119,7 @@
             <version>2.0.16</version>
         </dependency>
         <dependency>
-            <groupId>commons-email</groupId>
+          <groupId>org.apache.commons</groupId>
             <artifactId>commons-email</artifactId>
             <version>1.1</version>
         </dependency>
