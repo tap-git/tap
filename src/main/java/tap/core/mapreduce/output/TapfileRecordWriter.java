@@ -12,11 +12,15 @@ import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapred.RecordWriter;
 import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.util.Progressable;
 import org.mortbay.servlet.GzipFilter.GzipStream;
 
 import tap.formats.tapproto.Tapfile;
@@ -56,13 +60,14 @@ public class TapfileRecordWriter<M extends Message> implements RecordWriter<Null
     private GZIPOutputStream dataGzipStream;
     private CodedOutputStream dataStream;
     
-    public TapfileRecordWriter(FSDataOutputStream outputStream, TypeRef<M> typeRef) {
-        initialize(outputStream, typeRef);
+    public TapfileRecordWriter(Configuration job, Path path, TypeRef<M> typeRef) throws IOException {
+        FileSystem fs = path.getFileSystem(job);
+        initialize(fs.create(path), typeRef);
     }
     
-    public TapfileRecordWriter(File file, TypeRef<M> typeRef) throws IOException {
-        FSDataOutputStream out = new FSDataOutputStream(new FileOutputStream(file));
-        initialize(out, typeRef);
+    public TapfileRecordWriter(Configuration job, Path path, Progressable progress, TypeRef<M> typeRef) throws IOException {
+        FileSystem fs = path.getFileSystem(job);
+        initialize(fs.create(path, progress), typeRef);
     }
     
     private void initialize(FSDataOutputStream outputStream, TypeRef<M> typeRef) {
@@ -110,6 +115,7 @@ public class TapfileRecordWriter<M extends Message> implements RecordWriter<Null
             firstWrite = false;
             Tapfile.Header header = writeHeader();
             initializeTrailer(header);
+            initializeIndexStream();
         }
         
         if(dataStream == null) {
@@ -126,7 +132,7 @@ public class TapfileRecordWriter<M extends Message> implements RecordWriter<Null
         }
         
         dataStream.writeRawVarint32(EMPTY_KEY.size());
-        dataStream.writeBytesNoTag(EMPTY_KEY);
+        dataStream.writeRawBytes(EMPTY_KEY.toByteArray());
         M msg = writable.get();
         dataStream.writeRawVarint32(msg.getSerializedSize());
         msg.writeTo(dataStream);
