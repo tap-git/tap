@@ -43,16 +43,13 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Long
     private CodedInputStream dataStream;
     
     public TapfileRecordReader(Configuration job, FileSplit split, TypeRef<M> typeRef) throws IOException {
-        Path file = split.getPath();
-        FileSystem fs = file.getFileSystem(job);
-        FileStatus status = fs.getFileStatus(file);
-        
-        initialize(fs.open(file), status.getLen(), typeRef);
+        this(job, split.getPath(), typeRef);
     }
     
-    public TapfileRecordReader(File file, TypeRef<M> typeRef) throws IOException {
-        FSDataInputStream in = new FSDataInputStream(new FileInputStream(file));
-        initialize(in, file.length(), typeRef);
+    public TapfileRecordReader(Configuration job, Path file, TypeRef<M> typeRef) throws IOException {
+        FileSystem fs = file.getFileSystem(job);
+        FileStatus status = fs.getFileStatus(file);
+        initialize(fs.open(file), status.getLen(), typeRef);
     }
     
     private void initialize(FSDataInputStream inputStream, long size, TypeRef<M> typeRef) throws IOException {
@@ -67,11 +64,10 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Long
     }
     
     private Boolean moveToNextDataBlock() throws IOException {
-        if(currentIndex >= indexEntries.size()) {
+        if(++currentIndex >= indexEntries.size()) {
             messageCount = 0;
             return false;
         }
-        currentIndex += 1;
         Tapfile.IndexEntry e = indexEntries.get(currentIndex);
         messageCount = e.getMessageCount();
         inputStream.seek(e.getDataOffset());
@@ -150,11 +146,14 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Long
         
         int keySize = dataStream.readRawVarint32();
         byte[] keyBytes = dataStream.readRawBytes(keySize);
-       
+        
         key.set(getPos());
+        
         int messageSize = dataStream.readRawVarint32();
         byte[] messageBytes = dataStream.readRawBytes(messageSize); 
         value.set(converter.fromBytes(messageBytes));
+        
+        messageCount -= 1;
 
         return true;
     }
