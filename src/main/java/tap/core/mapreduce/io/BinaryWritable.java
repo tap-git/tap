@@ -1,5 +1,5 @@
 
-package com.twitter.elephantbird.mapreduce.io;
+package tap.core.mapreduce.io;
 
 import java.io.DataInput;
 import java.io.DataOutput;

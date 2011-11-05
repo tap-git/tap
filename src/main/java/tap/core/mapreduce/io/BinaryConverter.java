@@ -1,4 +1,4 @@
-package com.twitter.elephantbird.mapreduce.io;
+package tap.core.mapreduce.io;
 
 /**
  * A simple interface to serialize and deserialize objects

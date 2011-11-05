@@ -13,11 +13,10 @@ import org.apache.hadoop.mapred.JobConf;
 import org.junit.Test;
 
 import tap.core.mapreduce.input.TapfileRecordReader;
+import tap.core.mapreduce.io.BinaryWritable;
+import tap.core.mapreduce.io.ProtobufWritable;
 import tap.formats.tapproto.Testmsg.TestMsg;
-
-import com.twitter.elephantbird.mapreduce.io.BinaryWritable;
-import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
-import com.twitter.elephantbird.util.TypeRef;
+import tap.util.TypeRef;
 
 public class TapfileRecordWriterTests {
     TypeRef<TestMsg> typeRef = new TypeRef<TestMsg>(TestMsg.class) {};

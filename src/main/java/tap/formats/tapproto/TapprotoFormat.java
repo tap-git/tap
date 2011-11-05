@@ -11,10 +11,10 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.OutputFormat;
 
 import com.google.protobuf.Message;
-import com.twitter.elephantbird.mapreduce.input.LzoProtobufB64LineInputFormat;
-import com.twitter.elephantbird.mapreduce.output.LzoProtobufB64LineOutputFormat;
 
 import tap.core.Pipe;
+import tap.core.mapreduce.input.TapfileInputFormat;
+import tap.core.mapreduce.output.TapfileOutputFormat;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 
@@ -33,12 +33,12 @@ public class TapprotoFormat extends FileFormat {
 
     private <M extends Message> void setupOutputImpl(JobConf conf, Class<?> protoClass) {
         conf.setOutputFormat((Class<? extends OutputFormat>)
-            LzoProtobufB64LineOutputFormat.getOutputFormatClass((Class<M>) protoClass, conf));
+            TapfileOutputFormat.getOutputFormatClass((Class<M>) protoClass, conf));
     }
 
     private <M extends Message> void setupInputImpl(JobConf conf, Class<?> protoClass) {
         conf.setInputFormat((Class<? extends InputFormat>)
-            LzoProtobufB64LineInputFormat.getInputFormatClass((Class<M>) protoClass, conf));
+            TapfileInputFormat.getInputFormatClass((Class<M>) protoClass, conf));
     }
 	
 	public String fileExtension() {

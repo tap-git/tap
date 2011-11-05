@@ -7,7 +7,7 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
+import tap.core.mapreduce.io.ProtobufWritable;
 
 import tap.core.*;
 

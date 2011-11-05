@@ -1,7 +1,9 @@
-package com.twitter.elephantbird.mapreduce.io;
+package tap.core.mapreduce.io;
+
+import tap.util.TypeRef;
 
 import com.google.protobuf.Message;
-import com.twitter.elephantbird.util.TypeRef;
+
 
 /**
  * A Hadoop Writable wrapper around a protocol buffer of type M.

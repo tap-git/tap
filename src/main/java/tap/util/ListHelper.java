@@ -1,4 +1,4 @@
-package com.twitter.elephantbird.util;
+package tap.util;
 
 import java.util.List;
 

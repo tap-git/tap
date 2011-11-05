@@ -180,13 +180,6 @@
             <artifactId>guava</artifactId>
             <version>10.0.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.hadoop</groupId>
-            <artifactId>hadoop-lzo</artifactId>
-            <version>0.4.14</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/hadoop-lzo-0.4.14.jar</systemPath>
-        </dependency>
 		
 	</dependencies>
 </project>

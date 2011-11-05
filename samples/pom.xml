@@ -136,13 +136,6 @@
 			<version>2.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.hadoop</groupId>
-			<artifactId>hadoop-lzo</artifactId>
-			<version>0.4.14</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/hadoop-lzo-0.4.14.jar</systemPath>
-		</dependency>
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.0</version>

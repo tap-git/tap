@@ -1,13 +1,14 @@
-package com.twitter.elephantbird.mapreduce.io;
+package tap.core.mapreduce.io;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import tap.util.Protobufs;
+import tap.util.TypeRef;
+
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.UninitializedMessageException;
-import com.twitter.elephantbird.util.Protobufs;
-import com.twitter.elephantbird.util.TypeRef;
 
 /**
  * {@link BinaryConverter} for Protobufs

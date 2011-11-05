@@ -26,8 +26,8 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.util.ReflectionUtils;
 
-import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
-import com.twitter.elephantbird.mapreduce.output.LzoOutputFormat;
+import tap.core.mapreduce.io.ProtobufWritable;
+import tap.core.mapreduce.output.TapfileOutputFormat;
 
 /**
  * Bridge between a {@link org.apache.hadoop.mapred.Reducer} and an {@link AvroReducer}.
@@ -42,7 +42,7 @@ class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OU
     public void configure(JobConf conf) {
         super.configure(conf);
         isTextOutput = conf.getOutputFormat() instanceof TextOutputFormat;
-        isProtoOutput = conf.getOutputFormat() instanceof LzoOutputFormat;
+        isProtoOutput = conf.getOutputFormat() instanceof TapfileOutputFormat;
     }
 
     @Override

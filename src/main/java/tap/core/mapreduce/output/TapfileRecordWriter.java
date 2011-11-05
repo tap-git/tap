@@ -23,17 +23,17 @@ import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.util.Progressable;
 import org.mortbay.servlet.GzipFilter.GzipStream;
 
+import tap.core.mapreduce.io.BinaryWritable;
 import tap.formats.tapproto.Tapfile;
 import tap.formats.tapproto.Tapfile.IndexEntry;
+import tap.util.Protobufs;
+import tap.util.TypeRef;
 
 import com.google.common.io.CountingOutputStream;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.Message;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.twitter.elephantbird.mapreduce.io.BinaryWritable;
-import com.twitter.elephantbird.util.Protobufs;
-import com.twitter.elephantbird.util.TypeRef;
 
 public class TapfileRecordWriter<M extends Message> implements RecordWriter<NullWritable, BinaryWritable<M>> {
     

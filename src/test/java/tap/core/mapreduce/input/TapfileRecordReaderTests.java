@@ -3,7 +3,9 @@ package tap.core.mapreduce.input;
 import java.io.File;
 
 import junit.framework.Assert;
+import tap.core.mapreduce.io.BinaryWritable;
 import tap.formats.tapproto.Testmsg.TestMsg;
+import tap.util.TypeRef;
 
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -11,9 +13,6 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.fs.RawLocalFileSystem;
 import org.junit.Test;
-
-import com.twitter.elephantbird.mapreduce.io.BinaryWritable;
-import com.twitter.elephantbird.util.TypeRef;
 
 public class TapfileRecordReaderTests {
     TypeRef<TestMsg> typeRef = new TypeRef<TestMsg>(TestMsg.class) {};

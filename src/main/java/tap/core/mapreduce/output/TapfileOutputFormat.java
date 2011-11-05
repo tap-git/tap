@@ -12,10 +12,11 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RecordWriter;
 import org.apache.hadoop.util.Progressable;
 
+import tap.core.mapreduce.io.BinaryWritable;
+import tap.util.Protobufs;
+import tap.util.TypeRef;
+
 import com.google.protobuf.Message;
-import com.twitter.elephantbird.mapreduce.io.BinaryWritable;
-import com.twitter.elephantbird.util.Protobufs;
-import com.twitter.elephantbird.util.TypeRef;
 
 public class TapfileOutputFormat<M extends Message> extends FileOutputFormat<NullWritable, BinaryWritable<M>>{
 
@@ -23,7 +24,7 @@ public class TapfileOutputFormat<M extends Message> extends FileOutputFormat<Nul
 
     @SuppressWarnings("rawtypes")
     public static <M extends Message> Class<TapfileOutputFormat>
-       getInputFormatClass(Class<M> protoClass, Configuration job) {
+       getOutputFormatClass(Class<M> protoClass, Configuration job) {
       Protobufs.setClassConf(job, TapfileOutputFormat.class, protoClass);
       return TapfileOutputFormat.class;
     }

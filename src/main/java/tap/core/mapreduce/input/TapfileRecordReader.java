@@ -17,14 +17,14 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapred.FileSplit;
 import org.apache.hadoop.mapred.RecordReader;
 
+import tap.core.mapreduce.io.BinaryWritable;
+import tap.core.mapreduce.io.ProtobufConverter;
+import tap.core.mapreduce.io.ProtobufWritable;
 import tap.formats.tapproto.Tapfile;
+import tap.util.TypeRef;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.Message;
-import com.twitter.elephantbird.mapreduce.io.BinaryWritable;
-import com.twitter.elephantbird.mapreduce.io.ProtobufConverter;
-import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
-import com.twitter.elephantbird.util.TypeRef;
 
 public class TapfileRecordReader<M extends Message> implements RecordReader<LongWritable, BinaryWritable<M>> {
 

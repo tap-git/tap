@@ -33,7 +33,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
-import com.twitter.elephantbird.mapreduce.io.ProtobufConverter;
+import tap.core.mapreduce.io.ProtobufConverter;
 
 public class TapfileTests {
     
@@ -129,7 +129,6 @@ public class TapfileTests {
         out.write(PAD_BYTES, 0, (int) padBytes);
     }
     
-    @Test
     public void testCanWriteFile() throws Exception {
         Tapfile.Header.Builder headerBuilder = Tapfile.Header.newBuilder(); 
         headerBuilder.setInitialPipeName("test.file");

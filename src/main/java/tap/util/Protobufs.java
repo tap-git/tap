@@ -1,4 +1,4 @@
-package com.twitter.elephantbird.util;
+package tap.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

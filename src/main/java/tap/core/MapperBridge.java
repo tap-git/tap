@@ -39,13 +39,11 @@ import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.codehaus.jackson.JsonParseException;
 
+import tap.core.mapreduce.input.TapfileInputFormat;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 import tap.formats.avro.JsonToGenericRecord;
 import tap.formats.text.TextFormat;
-
-import com.twitter.elephantbird.mapreduce.input.LzoInputFormat;
-import com.twitter.elephantbird.mapreduce.io.ProtobufWritable;
 
 @SuppressWarnings("deprecation")
 public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
@@ -139,7 +137,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
                         inClass, conf));
             }
         }
-        isProtoInput = conf.getInputFormat() instanceof LzoInputFormat;
+        isProtoInput = conf.getInputFormat() instanceof TapfileInputFormat;
     }
 
     /**
