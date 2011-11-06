@@ -40,6 +40,7 @@ import org.apache.hadoop.util.ReflectionUtils;
 import org.codehaus.jackson.JsonParseException;
 
 import tap.core.mapreduce.input.TapfileInputFormat;
+import tap.core.mapreduce.io.ProtobufWritable;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 import tap.formats.avro.JsonToGenericRecord;
@@ -195,6 +196,8 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
             mapper.map((IN) value, out, context);
         } else if (isStringInput) {
             mapper.map((IN) ((Text) value).toString(), out, context);
+        } else if (isProtoInput) {
+            mapper.map((IN) ((ProtobufWritable) value).get(), out, context);
         } else if (isJsonInput) {
             String json = ((Text) value).toString();
             if (shouldSkip(json))

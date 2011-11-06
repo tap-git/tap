@@ -20,6 +20,8 @@ import com.google.protobuf.Message;
 
 public class TapfileOutputFormat<M extends Message> extends FileOutputFormat<NullWritable, BinaryWritable<M>>{
 
+    public static final String EXT = ".tapproto";
+    
     private TypeRef<M> typeRef;
 
     @SuppressWarnings("rawtypes")
@@ -37,7 +39,7 @@ public class TapfileOutputFormat<M extends Message> extends FileOutputFormat<Nul
         if (typeRef == null) {
             typeRef = Protobufs.getTypeRef(job, TapfileOutputFormat.class);
         }
-        Path path = FileOutputFormat.getTaskOutputPath(job, name);
+        Path path = FileOutputFormat.getTaskOutputPath(job, name + EXT);
         return new TapfileRecordWriter<M>(job, path, progressable, typeRef);
     }
 }

@@ -42,7 +42,7 @@ public class TapprotoFormat extends FileFormat {
     }
 	
 	public String fileExtension() {
-		return ".proto";
+		return TapfileOutputFormat.EXT;
 	}
 
 	@Override
@@ -60,8 +60,7 @@ public class TapprotoFormat extends FileFormat {
 
     @Override
     public boolean isCompatible(InputFormat format) {
-        // TODO Auto-generated method stub
-        return false;
+        return (format instanceof TapfileInputFormat);
     }
 
 }
