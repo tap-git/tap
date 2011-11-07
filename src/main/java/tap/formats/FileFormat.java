@@ -21,7 +21,7 @@ public abstract class FileFormat {
 	 * Does path name indicate a matching file name
 	 */
 	public boolean matches(String path) {
-		return path.endsWith(fileExtension());
+		return (null != path) && path.endsWith(fileExtension());
 	}
 	
 	public boolean signature(byte[] header) {

@@ -1,6 +1,7 @@
 package tap.core;
 
 import static org.junit.Assert.*;
+import junit.framework.Assert;
 
 import org.apache.hadoop.io.Text;
 import org.junit.Test;
@@ -20,6 +21,8 @@ public class PipeTests {
     @Test
     public void prototype() {
         Pipe pipe = new Pipe(CountRec.class);
+        Assert.assertNotNull(pipe);
+        Assert.assertNotNull(pipe.getPrototype());
         System.out.println("pipe prototype " + pipe.getPrototype());
     }
 
