@@ -50,7 +50,7 @@ public class AssemblyTests {
 		Assert.assertNotNull("must specify output directory", o.output);
 
 		Pipe input = new Pipe(o.input).stringFormat();
-		Pipe<CountRec> counts = new Pipe<CountRec>(o.output);
+		Pipe<CountRec> counts = new Pipe<CountRec>(o.output).avroFormat();
 		counts.setPrototype(new CountRec());
 
 		wordcount.produces(counts);
@@ -86,11 +86,8 @@ public class AssemblyTests {
 		Assert.assertNotNull("must specify input directory", o.input);
 		Assert.assertNotNull("must specify output directory", o.output);
 
-		Pipe<CountRec> input = new Pipe<CountRec>(o.input);
-		input.setPrototype(new CountRec());
-
-		Pipe<OutputLog> output = new Pipe<OutputLog>(o.output);
-		output.setPrototype(new OutputLog());
+		Pipe<CountRec> input = Pipe.of(CountRec.class).at(o.input);
+		Pipe<OutputLog> output = Pipe.of(OutputLog.class).at(o.output);
 
 		summation.produces(output);
 
@@ -101,7 +98,7 @@ public class AssemblyTests {
 		if (o.forceRebuild)
 			summation.forceRebuild();
 
-		summation.dryRun();
+		//summation.dryRun();
 
 		summation.execute();
 	}
