@@ -19,7 +19,6 @@
  */
 package tap.formats.tapproto;
 
-import static org.junit.Assert.*;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -35,10 +34,10 @@ public class TapprotoPipeTests {
     public void testMessageParentage() {
         TestMsg m = Testmsg.TestMsg.getDefaultInstance();
         Assert.assertNotNull(m);
-        Assert.assertTrue("is a protobuf", m instanceof com.google.protobuf.GeneratedMessage);
+        Assert.assertTrue("is a protobuf", m instanceof com.google.protobuf.Message);
         Pipe<TestMsg> pipe = Pipe.of(TestMsg.class);
         Assert.assertTrue("pipe type", pipe.getPrototype() instanceof TestMsg);
-        Assert.assertTrue("pipe type", pipe.getPrototype() instanceof com.google.protobuf.GeneratedMessage);
+        Assert.assertTrue("pipe type", pipe.getPrototype() instanceof com.google.protobuf.Message);
         Assert.assertEquals(Formats.TAPPROTO_FORMAT, pipe.getFormat());
     }
 
