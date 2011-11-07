@@ -39,6 +39,10 @@ public class WordCountProtobuf extends Configured implements Tool {
         Phase count = new Phase().reads(input).writes(counts).map(Mapper.class).
             groupBy("word").reduce(Reducer.class);
         
+        /* new style mapping - does not work, check with Doug
+        Phase count = new Phase().reads(input).writes(counts).map(PipeMapper.class).
+            groupBy("word").reduce(PipeReducer.class);
+        */
         
         if (o.forceRebuild) wordcount.forceRebuild();
         if (o.dryRun) {
@@ -68,6 +72,20 @@ public class WordCountProtobuf extends Configured implements Tool {
             }
         }        
     }
+    
+    public static class PipeMapper extends BaseMapper<String,CountRec> {
+        @Override
+        public void map(String in, Pipe<CountRec> out) {
+            StringTokenizer tokenizer = new StringTokenizer(in);
+           CountRec rec = new CountRec();
+            while (tokenizer.hasMoreTokens()) {
+                rec.word = tokenizer.nextToken();
+                rec.count = 1;
+                out.put(rec);
+            }
+        }        
+    }
+    
 
     public static class Reducer extends BaseReducer<CountRec,Protos.CountRec> {
         
@@ -92,6 +110,30 @@ public class WordCountProtobuf extends Configured implements Tool {
         }
         
     }
+    
+    public static class PipeReducer extends BaseReducer<CountRec,Protos.CountRec> {
+        
+        // ProtobufWritable<Protos.CountRec> protoWritable = ProtobufWritable.newInstance(Protos.CountRec.class);
+        
+        @Override
+        public void reduce(Pipe<CountRec> in, Pipe<Protos.CountRec> out) {
+            
+            String word = null;
+            int count = 0;
+            for (CountRec rec : in) {
+                if(word == null)
+                    word = rec.word;
+                count += rec.count;
+            }
+            
+            Protos.CountRec rec = Protos.CountRec.newBuilder()
+                    .setWord(word)
+                    .setCount(count)
+                    .build();
+            out.put(rec);
+        }
+    }
+    
     
     public static void main(String[] args) throws Exception {
         int res = ToolRunner.run(new Configuration(), new WordCountProtobuf(), args);

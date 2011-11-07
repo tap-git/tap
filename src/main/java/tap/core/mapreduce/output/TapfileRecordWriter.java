@@ -81,6 +81,11 @@ public class TapfileRecordWriter<M extends Message> implements RecordWriter<Null
         
         flush();
         
+        if(firstWrite) { // empty file!
+            fsOutputStream.close();
+            return;
+        }
+        
         indexStream.flush();
         indexBuffer.close();
         trailerBuilder.setIndexOffset(fsOutputStream.getPos());
