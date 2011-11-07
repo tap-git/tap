@@ -400,7 +400,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
         for (Formats f : Formats.values()) {
             // if (f.getFileFormat().matches(this.uncompressedPath)) {
             FileFormat fileFormat = f.getFileFormat();
-            if (fileFormat.matches(this.getUncompressedPath())) {
+            if (fileFormat.matches(this)) {
                 this.setFormat(f);
                 break;
             }
