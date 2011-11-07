@@ -20,9 +20,13 @@
 package tap.core;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.StringTokenizer;
 
 import junit.framework.Assert;
+
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.junit.Test;
 
 import tap.formats.Formats;
@@ -51,7 +55,7 @@ public class AssemblyTests {
 
         Pipe input = new Pipe(o.input).stringFormat();
         Assert.assertNotNull("path", o.output);
-        Pipe counts = Pipe.of(CountRec.class).at(o.output); //.avroFormat();
+        Pipe counts = Pipe.of(CountRec.class).at(o.output); // .avroFormat();
 
         Assert.assertEquals(Formats.AVRO_FORMAT, counts.getFormat());
         Assert.assertNotNull(counts.getPath());
@@ -67,6 +71,15 @@ public class AssemblyTests {
         wordcount.dryRun();
 
         wordcount.execute();
+        File standard = new File("share/wordcount.out.avro");
+        Assert.assertTrue("Can read standard", standard.canRead());
+        Assert.assertTrue(standard.isFile());
+
+        File file = new File("/tmp/out/part-00000.avro");
+        Assert.assertTrue("Can read output", file.canRead());
+        Assert.assertTrue(file.isFile());
+        Assert.assertEquals("compare file to standard", standard.length(),
+                file.length());
     }
 
     @Test
