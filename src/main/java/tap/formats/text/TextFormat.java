@@ -31,6 +31,7 @@ public class TextFormat extends FileFormat {
 	@Override
 	public void setPipeFormat(Pipe pipe) {
 		pipe.setFormat(Formats.STRING_FORMAT);
+		pipe.setPrototype(new String(""));
 	}
 	
 	@Override

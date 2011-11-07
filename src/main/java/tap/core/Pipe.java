@@ -81,6 +81,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 		for (Formats f : Formats.values()) {
 			if (f.getFileFormat().matches(this.uncompressedPath)) {
 				f.getFileFormat().setPipeFormat(this);
+				break;
 			}
 		}
 		if (this.getFormat().equals(Formats.UNKNOWN_FORMAT)) {
@@ -214,7 +215,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 		return prototype;
 	}
 
-	void setPrototype(T prototype) {
+	public void setPrototype(T prototype) {
 		this.prototype = prototype;
 	}
 

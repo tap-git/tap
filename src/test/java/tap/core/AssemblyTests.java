@@ -6,6 +6,8 @@ import java.util.StringTokenizer;
 import junit.framework.Assert;
 import org.junit.Test;
 
+import tap.formats.Formats;
+
 public class AssemblyTests {
 	
 	@Test
@@ -44,6 +46,8 @@ public class AssemblyTests {
 
 		wordcount.execute();
 	}
+	
+	
 
 	@Test
 	public void summation() {
