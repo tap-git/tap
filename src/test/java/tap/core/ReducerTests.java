@@ -25,10 +25,10 @@ public class ReducerTests {
         Assert.assertNotNull("must specify input directory", o.input);
         Assert.assertNotNull("must specify output directory", o.output);
 
-        Pipe<CountRec> input = new Pipe<CountRec>(o.input);
+        Pipe<CountRec> input = Pipe.of(CountRec.class).at(o.input);
         input.setPrototype(new CountRec());
 
-        Pipe<OutputLog> output = new Pipe<OutputLog>(o.output);
+        Pipe<OutputLog> output = Pipe.of(OutputLog.class).at(o.output);
         output.setPrototype(new OutputLog());
 
         summation.produces(output);
@@ -36,6 +36,8 @@ public class ReducerTests {
         Phase sum = new Phase().reads(input).writes(output)
                 .map(SummationPipeMapper.class).groupBy("word")
                 .reduce(SummationPipeReducer.class);
+        
+        sum.plan(summation);
         
         if (o.forceRebuild)
             summation.forceRebuild();

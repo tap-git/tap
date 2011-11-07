@@ -4,6 +4,8 @@ package tap.core;
 public class SummationMapper extends BaseMapper<CountRec, CountRec> {
     @Override
     public void map(CountRec in, CountRec out, TapContext<CountRec> context) {
-        context.write((CountRec)in);
+        out.count = in.count;
+        out.word = "sum";
+        context.write((CountRec)out);
     }
 }

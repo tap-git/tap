@@ -124,4 +124,10 @@ public class PipeTests {
         Assert.assertEquals("path", "/tmp/xyz", pipe2.getPath());
      
     }
+    
+    @Test
+    public void anonPipe() {
+        Pipe pipe = new Pipe("/tmp/abc");
+        Assert.assertEquals(Formats.UNKNOWN_FORMAT, pipe.getFormat());
+    }
 }
