@@ -72,6 +72,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     private boolean isPipeOutput = false;
 
     @SuppressWarnings("unchecked")
+    @Override
     public void configure(JobConf conf) {
         this.mapper = ReflectionUtils.newInstance(
                 conf.getClass(Phase.MAPPER, BaseMapper.class, Mapper.class),

@@ -31,8 +31,11 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
 //import org.apache.hadoop.fs.*;
 import org.apache.hadoop.mapred.JobConf;
+
+import com.google.protobuf.Message;
 
 @SuppressWarnings("deprecation")
 public class Pipe<T> implements Iterable<T>, Iterator<T> {
@@ -42,7 +45,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 	private Phase producer;
 	private String path;
 	private T prototype;
-	private Formats format = Formats.AVRO_FORMAT;
+	private Formats format = Formats.UNKNOWN_FORMAT;
 	private boolean isCompressed = false;
 	private String uncompressedPath;
 	private Compressions compression = null;
@@ -217,6 +220,14 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 
 	public void setPrototype(T prototype) {
 		this.prototype = prototype;
+		
+		if(format != Formats.UNKNOWN_FORMAT)
+		    return;
+		
+		if(prototype instanceof Message)
+		    setFormat(Formats.TAPPROTO_FORMAT);
+		else if(!(prototype instanceof String) && !(prototype instanceof Text))
+		    setFormat(Formats.AVRO_FORMAT);
 	}
 
 	public void delete(JobConf conf) {

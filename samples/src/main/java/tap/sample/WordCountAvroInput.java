@@ -32,8 +32,8 @@ public class WordCountAvroInput extends Configured implements Tool {
         }
 
 
-        Pipe<CountRec> input = Pipe.of(CountRec.class).at(o.input);
-        Pipe<CountRec> counts = new Pipe<CountRec>(o.output);
+        Pipe input = new Pipe(o.input);
+        Pipe counts = new Pipe(o.output);
         wordcount.produces(counts);
         
         Phase count = new Phase().reads(input).writes(counts).map(Mapper.class).

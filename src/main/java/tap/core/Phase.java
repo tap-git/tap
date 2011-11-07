@@ -264,7 +264,11 @@ public class Phase {
             conf.set(entry.getKey(), entry.getValue());
         }
 
-        mapperPlan(errors);
+        try {
+            mapperPlan(errors);
+        } catch(Exception e) {
+           errors.add(new PhaseError(e.toString()));
+        }
         combinersPlan(errors);
         reducerPlan(errors);
         formatPlan(errors);
@@ -446,13 +450,14 @@ public class Phase {
         }
         conf.set(REDUCE_OUT_CLASS, reduceOutClass.getName());
     }
-
+    
+    
     /**
      * Find the correct Mapper class.
      * 
      * @param errors
      */
-    private void mapperPlan(List<PhaseError> errors) {
+    private void mapperPlan(List<PhaseError> errors) throws Exception {
         mapin = null;
         mapOutClass = null;
         mapInClass = null;
@@ -491,6 +496,11 @@ public class Phase {
 
                                 Object readProto = mainReads.get(0)
                                         .getPrototype();
+                                if(readProto == null) {
+                                    readProto = ObjectFactory.newInstance(mapInClass);
+                                    mainReads.get(0).setPrototype(readProto);
+                                }
+                                
                                 this.mapin = getSchema(readProto);
 
                                 this.mapperMethod = m;
@@ -522,10 +532,9 @@ public class Phase {
                                         mapInClass = paramTypes[0];
                                         mapin = getSchema(ObjectFactory.newInstance(paramTypes[0]));
                                         Object readProto = mainReads.get(0).getPrototype();
-                                        if (null == readProto) {
-                                            errors.add(new PhaseError(
-                                                    "Can't create mapper, need input Pipe prototype"));
-                                            break;
+                                        if (readProto == null) {
+                                            readProto = ObjectFactory.newInstance(mapInClass);
+                                            mainReads.get(0).setPrototype(readProto);
                                         }
                                         mapInClass = mapOutClass = readProto
                                                 .getClass();
@@ -544,7 +553,6 @@ public class Phase {
                 }
             }
         }
-
     }
 
     /**

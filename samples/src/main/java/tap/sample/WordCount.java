@@ -30,8 +30,8 @@ public class WordCount extends Configured implements Tool {
             return 1;
         }
 
-        Pipe<String> input = new Pipe(o.input).stringFormat();
-        Pipe<CountRec> counts = new Pipe<CountRec>(o.output);
+        Pipe input = new Pipe(o.input);
+        Pipe counts = new Pipe(o.output);
         wordcount.produces(counts);
         
         Phase count = new Phase().reads(input).writes(counts).map(Mapper.class).

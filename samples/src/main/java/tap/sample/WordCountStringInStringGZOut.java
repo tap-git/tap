@@ -37,8 +37,8 @@ public class WordCountStringInStringGZOut extends Configured implements Tool {
             return 1;
         }
 
-        Pipe input = Pipe.of(Protos.CountRec.class).at(o.input).stringFormat();
-        Pipe<String> counts = new Pipe(o.output).stringFormat().gzipCompression();
+        Pipe input = new Pipe(o.input);
+        Pipe<String> counts = new Pipe(o.output).gzipCompression();
         wordcount.produces(counts);
         
         Phase count = new Phase().reads(input).writes(counts).map(Mapper.class).
