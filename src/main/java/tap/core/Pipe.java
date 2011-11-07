@@ -390,15 +390,14 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     }
 
     protected void determineFormat() {
-
+/*
         if (this.prototype != null
-                && this.prototype instanceof com.google.protobuf.GeneratedMessage) {
+                && this.prototype instanceof com.google.protobuf.Message) {
             this.protoFormat();
             return;
         }
-
+*/
         for (Formats f : Formats.values()) {
-            // if (f.getFileFormat().matches(this.uncompressedPath)) {
             FileFormat fileFormat = f.getFileFormat();
             if (fileFormat.matches(this)) {
                 this.setFormat(f);

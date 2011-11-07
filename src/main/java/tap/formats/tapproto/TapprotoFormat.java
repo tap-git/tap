@@ -6,7 +6,6 @@ import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.OutputFormat;
 
-import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 
 import tap.core.Pipe;
@@ -62,7 +61,7 @@ public class TapprotoFormat extends FileFormat {
 
     @Override
     public boolean instanceOfCheck(Object o) {
-        return  o instanceof GeneratedMessage;
+        return  o instanceof Message;
     }
 
 }
