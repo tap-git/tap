@@ -22,11 +22,8 @@ package tap.core;
 import tap.compression.Compressions;
 import tap.formats.*;
 import tap.util.ObjectFactory;
-import tap.util.ReflectUtils;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.util.Iterator;
 
 import org.apache.avro.mapred.AvroValue;
@@ -68,7 +65,6 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
         init();
     }
 
-    @SuppressWarnings("unchecked")
     public Pipe(String path) {
         setPath(path);
     }
