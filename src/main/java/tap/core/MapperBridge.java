@@ -31,6 +31,7 @@ import org.apache.avro.generic.*;
 import org.apache.avro.io.*;
 import org.apache.avro.mapred.*;
 import org.apache.avro.specific.SpecificDatumReader;
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
@@ -289,13 +290,21 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
         {
             FileFormat returnFormat = Formats.UNKNOWN_FORMAT.getFileFormat();
             Path path = new Path(conf.get("map.input.file"));
-            File file = FileSystem.getLocal(conf).pathToFile(path);
-            byte[] header = readHeader(file);
-            returnFormat = determineFileFormat(header);
-            
-            InputFormat inputFormat = conf.getInputFormat();
+            // System.out.println("PATH is " + path);
+            FileSystem fs = path.getFileSystem(conf);
+            FSDataInputStream in = null;
+            try {
+                in = fs.open(path);
+                byte[] header = readHeader(in);
+                returnFormat = determineFileFormat(header);
+            } finally {
+                if(in != null)
+                    in.close();
+            }
+            return returnFormat;
             
             /*
+            InputFormat inputFormat = conf.getInputFormat();
             System.out
                     .println("tap.core.MapperBridge: local file path " + path);
             System.out.println("tap.core.MapperBridge: File format "
@@ -303,7 +312,6 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
             System.out.println("tap.core.MapperBridge: format extension "
                     + returnFormat.fileExtension());
             */
-            return returnFormat;
         }
     }
 
@@ -331,9 +339,8 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private byte[] readHeader(File file) throws FileNotFoundException,
+    private byte[] readHeader(FSDataInputStream inputStream) throws FileNotFoundException,
             IOException {
-        InputStream inputStream = new FileInputStream(file);
         byte[] header = new byte[SNIFF_HEADER_SIZE];
         inputStream.read(header);
         inputStream.close();
