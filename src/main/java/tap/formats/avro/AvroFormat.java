@@ -1,3 +1,22 @@
+/*
+ * Licensed to Think Big Analytics, Inc. under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  Think Big Analytics, Inc. licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * Copyright 2011 Think Big Analytics. All Rights Reserved.
+ */
 package tap.formats.avro;
 
 import java.util.Arrays;
@@ -6,8 +25,11 @@ import org.apache.avro.mapred.AvroInputFormat;
 import org.apache.avro.mapred.AvroJob;
 import org.apache.avro.mapred.AvroOutputFormat;
 import org.apache.avro.mapred.AvroWrapper;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
+
+import com.google.protobuf.GeneratedMessage;
 
 import tap.core.Pipe;
 import tap.formats.FileFormat;
@@ -50,6 +72,12 @@ public class AvroFormat extends FileFormat {
     public boolean isCompatible(InputFormat format) {
         // TODO Auto-generated method stub
         return (format instanceof AvroInputFormat);
+    }
+
+    @Override
+    public boolean instanceOfCheck(Object o) {
+        // TODO Find better way than listing all of the other types
+        return !(o instanceof String || o instanceof Text || o instanceof GeneratedMessage);
     }
 
 }
