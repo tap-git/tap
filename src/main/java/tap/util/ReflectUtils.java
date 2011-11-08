@@ -21,6 +21,6 @@ public class ReflectUtils {
 	public static Class<?> getParameterClass(Class<?> aClass, int position) {
 		 ParameterizedType parameterizedType =
 			        (ParameterizedType) aClass.getGenericSuperclass();
-		 return (Class)parameterizedType.getActualTypeArguments()[1];
+		 return (Class)parameterizedType.getActualTypeArguments()[position];
 	 }
 }
