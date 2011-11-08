@@ -36,13 +36,8 @@ public class WordCountProtobuf extends Configured implements Tool {
         Pipe counts = new Pipe(o.output);
         wordcount.produces(counts);
         
-        Phase count = new Phase().reads(input).writes(counts).map(Mapper.class).
-            groupBy("word").reduce(Reducer.class);
-        
-        /* new style mapping - does not work, check with Doug
         Phase count = new Phase().reads(input).writes(counts).map(PipeMapper.class).
             groupBy("word").reduce(PipeReducer.class);
-        */
         
         if (o.forceRebuild) wordcount.forceRebuild();
         if (o.dryRun) {

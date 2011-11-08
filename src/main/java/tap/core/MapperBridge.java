@@ -185,6 +185,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
             }
         }
     }
+    
 
     /**
      * @param wrapper
@@ -195,11 +196,11 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     private void invokeMapper(KEY wrapper, VALUE value, Reporter reporter)
             throws IOException {
         if (isTextInput) {
-            mapper.map((IN) value, out, context);
+            map((IN) value);
         } else if (isStringInput) {
-            mapper.map((IN) ((Text) value).toString(), out, context);
+            map((IN) ((Text) value).toString());
         } else if (isProtoInput) {
-            mapper.map((IN) ((ProtobufWritable) value).get(), out, context);
+            map((IN) ((ProtobufWritable) value).get());
         } else if (isJsonInput) {
             String json = ((Text) value).toString();
             if (shouldSkip(json))
@@ -228,7 +229,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
                 IN converted = reader.read(null, DecoderFactory
                         .defaultFactory().createBinaryDecoder(data, null));
 
-                mapper.map(converted, out, context);
+                map(converted);
             } catch (JsonParseException jpe) {
                 System.err.println("Failed to parse " + json + ": "
                         + jpe.getMessage());
@@ -238,11 +239,15 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
                 }
             }
         } else {
-            if (this.isPipeOutput) {
-                mapper.map(((AvroWrapper<IN>) wrapper).datum(), this.outPipe);
-            } else {
-                mapper.map(((AvroWrapper<IN>) wrapper).datum(), out, context);
-            }
+            map(((AvroWrapper<IN>) wrapper).datum());
+        }
+    }
+    
+    private void map(IN value) {
+        if (this.isPipeOutput) {
+            mapper.map(value, this.outPipe);
+        } else {
+            mapper.map(value, out, context);
         }
     }
 
