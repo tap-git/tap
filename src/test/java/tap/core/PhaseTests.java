@@ -72,6 +72,35 @@ public class PhaseTests {
                 .getConf().get(Phase.MAP_OUT_CLASS));
 
     }
+    
+    @Test
+    public void mapperSignatureTest2() {
+        /* Set up a basic pipeline of map reduce */
+        Assembly assembly = new Assembly(getClass()).named("mapperTest");
+
+        Pipe<CountRec> p1 = new Pipe("share/wordcount.out.avro");
+        Pipe<OutputLog> p2 = new Pipe("/tmp/out");
+        assembly.produces(p2);
+
+        Phase phase = new Phase();
+        phase.reads(p1).writes(p2).map(Test3Mapper.class).groupBy("word")
+                .reduce(Test2Reducer.class);
+
+        System.out.println(phase.getSummary());
+        List<PhaseError> errors = phase.plan(assembly);
+
+        Assert.assertEquals(0, errors.size());
+
+        Assert.assertNotNull("inputs missing", phase.getInputs().get(0));
+        Assert.assertNotNull("outputs missing", phase.getOutputs().get(0));
+
+        Assert.assertEquals("MAP IN CLASS", String.class.getName(), phase
+                .getConf().get(Phase.MAP_IN_CLASS));
+        Assert.assertEquals("MAP OUT CLASS", "tap.core.CountRec", phase
+                .getConf().get(Phase.MAP_OUT_CLASS));
+
+    }
+
 
     @Test
     public void mapperSignatureTest3() {

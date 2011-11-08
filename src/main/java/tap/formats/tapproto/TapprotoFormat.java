@@ -2,10 +2,6 @@ package tap.formats.tapproto;
 
 import java.util.Arrays;
 
-import org.apache.avro.mapred.AvroInputFormat;
-import org.apache.avro.mapred.AvroJob;
-import org.apache.avro.mapred.AvroOutputFormat;
-import org.apache.avro.mapred.AvroWrapper;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.OutputFormat;
@@ -61,6 +57,11 @@ public class TapprotoFormat extends FileFormat {
     @Override
     public boolean isCompatible(InputFormat format) {
         return (format instanceof TapfileInputFormat);
+    }
+
+    @Override
+    public boolean instanceOfCheck(Object o) {
+        return  o instanceof Message;
     }
 
 }

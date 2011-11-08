@@ -30,4 +30,10 @@ public class UnknownFormat extends FileFormat {
         return false;
     }
 
+    @Override
+    public boolean instanceOfCheck(Object o) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

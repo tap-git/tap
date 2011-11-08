@@ -121,6 +121,16 @@ public class Phase {
         }
         return mainWrites.get(n);
     }
+    
+    /**
+     * The output of one phase is the input to another phase
+     * @param phase The previous phase
+     * @return This phase.
+     */
+    public Phase reads(Phase phase) {
+        this.reads(phase.getOutputs().get(0));  //TODO: Only one input is supported
+        return this;
+    }
 
     public Phase reads(Pipe... inputs) {
         return reads(Arrays.asList(inputs));
