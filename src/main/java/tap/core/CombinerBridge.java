@@ -41,8 +41,8 @@ class CombinerBridge<K, V> extends BaseAvroReducer<K, V, V, AvroKey<K>, AvroValu
 
     @Override
     @SuppressWarnings("unchecked")
-    protected ColReducer<V, V> getReducer(JobConf conf) {
-        return ReflectionUtils.newInstance(conf.getClass(Phase.COMBINER, BaseReducer.class, ColReducer.class), conf);
+    protected TapReducer<V, V> getReducer(JobConf conf) {
+        return ReflectionUtils.newInstance(conf.getClass(Phase.COMBINER, BaseReducer.class, TapReducer.class), conf);
     }
 
     @Override

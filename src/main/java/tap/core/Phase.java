@@ -79,8 +79,8 @@ public class Phase {
     /** any files written, including side writes */
     private List<Pipe> writes;
     private Class<? extends Mapper>[] mappers;
-    private Class<? extends ColReducer>[] combiners;
-    private Class<? extends ColReducer>[] reducers;
+    private Class<? extends TapReducer>[] combiners;
+    private Class<? extends TapReducer>[] reducers;
     private String groupBy;
     private String sortBy;
     private Map<String, String> props = new LinkedHashMap<String, String>();
@@ -96,7 +96,7 @@ public class Phase {
     private Class<?> mapOutClass;
     private Class<?> mapInClass;
     private Schema mapin;
-    private Class<? extends ColReducer> reducerClass;
+    private Class<? extends TapReducer> reducerClass;
     private Object inputPipeProto;
     private Class<?> mapOutPipeType;
     private Class<Pipe> reduceOutPipeType;
@@ -221,7 +221,7 @@ public class Phase {
         return this;
     }
 
-    public Phase combine(Class<? extends ColReducer>... combiners) {
+    public Phase combine(Class<? extends TapReducer>... combiners) {
         this.combiners = combiners;
         return this;
     }
@@ -229,7 +229,7 @@ public class Phase {
     /*
      * Specify the Reducer class
      */
-    public Phase reduce(Class<? extends ColReducer>... reducers) {
+    public Phase reduce(Class<? extends TapReducer>... reducers) {
         this.reducers = reducers;
         return this;
     }
@@ -369,7 +369,7 @@ public class Phase {
     private void reducerPlan(List<PhaseError> errors) {
         reduceout = null;
         reduceOutClass = null;
-        Class<? extends ColReducer> reducerClass = null;
+        Class<? extends TapReducer> reducerClass = null;
         if (reducers != null && reducers.length > 0) {
             if (reducers.length != 1) {
                 errors.add(new PhaseError(

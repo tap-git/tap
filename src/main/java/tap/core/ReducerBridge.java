@@ -47,8 +47,8 @@ class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OU
 
     @Override
     @SuppressWarnings("unchecked")
-    protected ColReducer<V, OUT> getReducer(JobConf conf) {
-        return ReflectionUtils.newInstance(conf.getClass(Phase.REDUCER, BaseReducer.class, ColReducer.class), conf);
+    protected TapReducer<V, OUT> getReducer(JobConf conf) {
+        return ReflectionUtils.newInstance(conf.getClass(Phase.REDUCER, BaseReducer.class, TapReducer.class), conf);
     }
 
     private class ReduceCollector<AO, OUT> extends AvroCollector<AO> {

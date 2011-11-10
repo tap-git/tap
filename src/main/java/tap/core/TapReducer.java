@@ -21,7 +21,7 @@ package tap.core;
 
 import org.apache.hadoop.conf.Configurable;
 
-public interface ColReducer <IN,OUT> extends Configurable {
+public interface TapReducer <IN,OUT> extends Configurable {
     public void reduce(Iterable<IN> in, OUT out, TapContext<OUT> context);
     public void reduce(Pipe<IN> in, Pipe<OUT> out);
     

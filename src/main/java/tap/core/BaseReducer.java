@@ -21,7 +21,7 @@ package tap.core;
 
 import org.apache.hadoop.conf.Configured;
 
-public class BaseReducer<IN,OUT> extends Configured implements ColReducer<IN,OUT> {
+public class BaseReducer<IN,OUT> extends Configured implements TapReducer<IN,OUT> {
     /** Override this method for a reducer */      
     @SuppressWarnings("unchecked")
     public void reduce(Iterable<IN> in, OUT out, TapContext<OUT> context) {
