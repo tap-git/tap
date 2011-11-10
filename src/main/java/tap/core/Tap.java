@@ -30,7 +30,7 @@ import tap.util.Alerter;
 import tap.util.EmailAlerter;
 
 @SuppressWarnings("deprecation")
-public class Assembly {
+public class Tap {
     private List<Pipe> writes;
     private int parallelPhases = 2; // default to 2 phases at once - use
                                     // concurrency (also speeds up local
@@ -40,10 +40,10 @@ public class Assembly {
     private String name = "";
     private boolean forceRebuild = false;
 
-    public Assembly() {
+    public Tap() {
     }
 
-    public Assembly(Class<?> jarClass) {
+    public Tap(Class<?> jarClass) {
         baseConf.setJarByClass(jarClass);
         baseConf.set("mapred.job.reuse.jvm.num.tasks", "-1");
         try {
@@ -60,7 +60,7 @@ public class Assembly {
         }
     }
 
-    public Assembly produces(List<Pipe> outputs) {
+    public Tap produces(List<Pipe> outputs) {
         if (writes == null) {
             writes = new ArrayList<Pipe>(outputs);
         } else {
@@ -69,21 +69,21 @@ public class Assembly {
         return this;
     }
 
-    public Assembly produces(Pipe... outputs) {
+    public Tap produces(Pipe... outputs) {
         return produces(Arrays.asList(outputs));
     }
 
-    public Assembly named(String name) {
+    public Tap named(String name) {
         this.name = name;
         return this;
     }
 
-    public Assembly forceRebuild() {
+    public Tap forceRebuild() {
         this.forceRebuild = true;
         return this;
     }
 
-    public Assembly parallelPhases(int parallelPhases) {
+    public Tap parallelPhases(int parallelPhases) {
         this.parallelPhases = parallelPhases;
         return this;
     }

@@ -13,7 +13,7 @@ public class SamplePipe extends Configured implements Tool {
     @SuppressWarnings({ "unchecked", "unused" })
     @Override
     public int run(String[] args) throws Exception {
-        Assembly pipe = new Assembly(getClass());
+        Tap pipe = new Tap(getClass());
 
         /* Parse options - just use the standard options - input and output location, time window, etc. */
         BaseOptions o = new BaseOptions();

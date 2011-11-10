@@ -17,7 +17,7 @@ public class WordCountProtobufInput extends Configured implements Tool {
     public int run(String[] args) throws Exception {
 
         /* Set up a basic pipeline of map reduce */
-        Assembly wordcount = new Assembly(getClass()).named("wordcount");
+        Tap wordcount = new Tap(getClass()).named("wordcount");
         /* Parse options - just use the standard options - input and output location, time window, etc. */
         BaseOptions o = new BaseOptions();
         int result = o.parse(wordcount, args);

@@ -63,7 +63,7 @@ public class BaseOptions {
     @Option(name = "--work-dir", aliases = { "-w" }, usage="Specify work directory")
     public String workDir;
     
-    public int parse(Assembly pipeline, String... args) {
+    public int parse(Tap pipeline, String... args) {
         JobConf conf = pipeline.getConf();
         String[] otherArgs;
         try {

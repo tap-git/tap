@@ -44,7 +44,7 @@ public class PhaseTests {
     @Test
     public void mapperSignatureTest() {
         /* Set up a basic pipeline of map reduce */
-        Assembly assembly = new Assembly(getClass()).named("mapperTest");
+        Tap assembly = new Tap(getClass()).named("mapperTest");
 
         Pipe<CountRec> p1 = new Pipe<CountRec>("share/wordcount.out.avro");
         p1.setPrototype(new CountRec());
@@ -76,7 +76,7 @@ public class PhaseTests {
     @Test
     public void mapperSignatureTest2() {
         /* Set up a basic pipeline of map reduce */
-        Assembly assembly = new Assembly(getClass()).named("mapperTest");
+        Tap assembly = new Tap(getClass()).named("mapperTest");
 
         Pipe<CountRec> p1 = new Pipe("share/wordcount.out.avro");
         Pipe<OutputLog> p2 = new Pipe("/tmp/out");
@@ -105,7 +105,7 @@ public class PhaseTests {
     @Test
     public void mapperSignatureTest3() {
         /* Set up a basic pipeline of map reduce */
-        Assembly assembly = new Assembly(getClass()).named("mapperTest");
+        Tap assembly = new Tap(getClass()).named("mapperTest");
 
         Pipe<String> p1 = new Pipe("share/decameron.txt");
         p1.setPrototype("prototype");

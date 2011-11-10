@@ -10,7 +10,7 @@ public class ReducerTests {
     @Test
     public void summation() {
         /* Set up a basic pipeline of map reduce */
-        Assembly summation = new Assembly(getClass())
+        Tap summation = new Tap(getClass())
                 .named("summation");
         /*
          * Parse options - just use the standard options - input and output

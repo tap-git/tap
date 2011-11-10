@@ -267,7 +267,7 @@ public class Phase {
         throw new UnsupportedOperationException("toJson not yet working");
     }
 
-    public List<PhaseError> plan(Assembly distPipeline) {
+    public List<PhaseError> plan(Tap distPipeline) {
         List<PhaseError> errors = new ArrayList<PhaseError>();
         conf = new JobConf(distPipeline.getConf());
         for (Map.Entry<String, String> entry : props.entrySet()) {

@@ -37,7 +37,7 @@ public class AssemblyTests {
     public void wordCount() {
 
         /* Set up a basic pipeline of map reduce */
-        Assembly wordcount = new Assembly(getClass()).named("wordcount");
+        Tap wordcount = new Tap(getClass()).named("wordcount");
         /*
          * Parse options - just use the standard options - input and output
          * location, time window, etc.
@@ -85,7 +85,7 @@ public class AssemblyTests {
     @Test
     public void summation() {
         /* Set up a basic pipeline of map reduce */
-        Assembly summation = new Assembly(getClass()).named("summation");
+        Tap summation = new Tap(getClass()).named("summation");
         /*
          * Parse options - just use the standard options - input and output
          * location, time window, etc.
