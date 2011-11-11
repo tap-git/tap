@@ -55,7 +55,8 @@ public class BaseOptionsTests {
             assertEquals(1, rc);
             ps.flush();
             String errText = new String(bos.toByteArray());
-            assertTrue(errText.contains("\"-t=2010-09-07T13:00:00Z/2010-09-08T13:30:00Z\" is not a valid option"));
+            //Error message is localized so check it carefully.
+            assertTrue(errText.contains("\"-t=2010-09-07T13:00:00Z/2010-09-08T13:30:00Z\""));
             assertTrue(errText.contains("Usage: hadoop jar"));
             assertTrue(errText.contains("-time"));
             assertTrue(errText.contains("Example: hadoop jar"));
