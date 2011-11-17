@@ -158,7 +158,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     }
 
     @SuppressWarnings("unchecked")
-    private class Collector<K> extends AvroCollector<OUT> {
+    private class Collector<K> extends AvroMultiCollector<OUT> {
         private final AvroWrapper<OUT> wrapper = new AvroWrapper<OUT>(null);
         private final AvroKey<K> keyWrapper = new AvroKey<K>(null);
         private final AvroValue<OUT> valueWrapper = new AvroValue<OUT>(null);

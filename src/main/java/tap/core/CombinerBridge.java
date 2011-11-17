@@ -26,6 +26,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.mapred.*;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.OutputCollector;
+import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.util.ReflectionUtils;
 
 /**
@@ -53,7 +54,7 @@ class CombinerBridge<K, V> extends BaseAvroReducer<K, V, V, AvroKey<K>, AvroValu
         this.sortBy = conf.get(Phase.SORT_BY);
     }
     
-    private class Collector<VC> extends AvroCollector<VC> {
+    private class Collector<VC> extends AvroMultiCollector<VC> {
         //private final AvroWrapper<V> wrapper = new AvroWrapper<V>(null);
         private final AvroKey<K> keyWrapper = new AvroKey<K>(null);
         private final AvroValue<VC> valueWrapper = new AvroValue<VC>(null);
@@ -76,7 +77,7 @@ class CombinerBridge<K, V> extends BaseAvroReducer<K, V, V, AvroKey<K>, AvroValu
     }
 
     @Override
-    protected AvroCollector<V> getCollector(OutputCollector<AvroKey<K>, AvroValue<V>> collector) {
+    protected AvroMultiCollector<V> getCollector(OutputCollector<AvroKey<K>, AvroValue<V>> collector, Reporter reporter) {
         KeyExtractor<GenericData.Record, V> extractor = new ReflectionKeyExtractor<V>(schema, groupBy, sortBy);
         //XXX fix this typing: the collector returns GenericData.Record, not K! should be Collector<V>
         return new Collector(collector, extractor);

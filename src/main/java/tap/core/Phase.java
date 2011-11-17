@@ -63,6 +63,8 @@ public class Phase {
     public static final String GROUP_BY = "tap.phase.groupby";
     public static final String SORT_BY = "tap.phase.sortby";
     public static final String COMBINER = "tap.phase.combiner";
+    
+    public static final String MULTIPLE_OUTPUT_PREFIX = "tap.phase.multiple.output.prefix";
 
     /*
      * we *allow* for multiple reads, writes, maps, combines, and reduces this
@@ -231,6 +233,11 @@ public class Phase {
      */
     public Phase reduce(Class<? extends TapReducer>... reducers) {
         this.reducers = reducers;
+        return this;
+    }
+    
+    public Phase multipleOutput(String prefix) {
+        set(MULTIPLE_OUTPUT_PREFIX, prefix);
         return this;
     }
 

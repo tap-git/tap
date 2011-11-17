@@ -332,6 +332,10 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     public void put(T out) {
         this.context.write(out);
     }
+    
+    public void put(T out, String multiName) {
+        this.context.write(out, multiName);
+    }
 
     public Phase getProducer() {
         return producer;

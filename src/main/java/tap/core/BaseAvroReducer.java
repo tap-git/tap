@@ -32,7 +32,7 @@ import tap.util.ObjectFactory;
 abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implements Reducer<AvroKey<K>, AvroValue<V>, KO, VO> {
 
     private TapReducer<V, OUT> reducer;
-    private AvroCollector<OUT> collector;
+    private AvroMultiCollector<OUT> collector;
     private ReduceIterable reduceIterable = new ReduceIterable();
     private TapContext<OUT> context;
     protected boolean isPipeReducer = false;
@@ -41,7 +41,7 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
 
     protected abstract TapReducer<V, OUT> getReducer(JobConf conf);
 
-    protected abstract AvroCollector<OUT> getCollector(OutputCollector<KO, VO> c);
+    protected abstract AvroMultiCollector<OUT> getCollector(OutputCollector<KO, VO> c, Reporter reporter);
 
     @SuppressWarnings({ "unchecked" })
     @Override
@@ -87,7 +87,7 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
             OutputCollector<KO, VO> collector, Reporter reporter)
             throws IOException {
         if (this.collector == null) {
-            this.collector = getCollector(collector);
+            this.collector = getCollector(collector, reporter);
         }
 
         if (this.isPipeReducer) {
@@ -98,7 +98,8 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
             }
             reducer.reduce(inPipe, this.outpipe);
         } else {
-            this.context = new TapContext<OUT>(this.collector, reporter);
+            if(this.context == null)
+                this.context = new TapContext<OUT>(this.collector, reporter);
             reduceIterable.values = values;
             reducer.reduce(reduceIterable, out, context);
         }
