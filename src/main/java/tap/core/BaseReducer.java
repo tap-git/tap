@@ -21,12 +21,20 @@ package tap.core;
 
 import org.apache.hadoop.conf.Configured;
 
-public class BaseReducer<IN,OUT> extends Configured implements ColReducer<IN,OUT> {
-    /** Override this method for a mapper */      
+public class BaseReducer<IN,OUT> extends Configured implements TapReducer<IN,OUT> {
+    /** Override this method for a reducer */      
     @SuppressWarnings("unchecked")
     public void reduce(Iterable<IN> in, OUT out, TapContext<OUT> context) {
         for (IN i : in) { 
             context.write((OUT)i);
+        }
+    }
+ 
+    /** Override this method for a reducer */
+    @SuppressWarnings("unchecked")
+    public void reduce(Pipe<IN> in, Pipe<OUT> out) {
+        while (in.hasNext()) {
+            out.put((OUT)in.next());        
         }
     }
 

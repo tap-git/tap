@@ -1,0 +1,120 @@
+//  Tap Protobuf File Format (v0.5)
+//  Paul Sutter
+//  Copyright © Quantbench 2011
+//
+//  A Tap protobuf file consists of a signature followed by a series of blocks.
+//  In order to maintain the write-once / append only format of the file, most of
+//  the file metadata is stored in a trailer.
+//
+//  To open the file, the last 16 bytes are read to check the signature and locate 
+//  the trailer. Then the trailer is read. If the index is needed, it is then read.
+//  The initial physical read might be 64-256K so that only one physical io occurs.
+//
+//  Keys are constructed in big-endian format (most significant byte first) so that
+//  they can be compared using memcmp()
+//
+//  Wondering why blocks are 512-byte aligned? Send guesses to paul at quantbench dot com
+//
+//  Partition File Format (each <> represents a "block" defined below)
+//
+//  'tapproto'                      file format signature
+//  <header block>
+//  <data block>
+//  <data block>
+//  <data block>...       
+//  <index block>
+//  <trailer block>
+//
+//  Header block:
+//
+//      'head'                      offset = 8 bytes
+//      'none'                      
+//      <Header protobuf>           partially completed header
+//      <pad>                       align to 512 bytes
+//
+//  Data block (T is user protobuf):
+//
+//      'data'                      offset = data_offset in upper index
+//      'none' | 'gzip' | 'snap' 
+//   
+//      <varint keylen>             native protobuf encoding of lengths
+//      <key bytes>
+//      <varint msglen>
+//      <T protobuf>
+//
+//      <varint keylen>
+//      <key bytes>
+//      <varint msglen>
+//      <T protobuf>
+//
+//      <varint keylen>
+//      <key bytes>
+//      <varint msglen>
+//      <T protobuf>...             n = message_count in upper index
+//      <pad>                       align to 512 bytes
+//
+//  Index block (one per partition file):
+//
+//      'indx'                      offset = upper_index_offset in trailer
+//      'none'                      may add compression later
+//      <IndexEntry protobuf>   
+//      <IndexEntry protobuf>   
+//      <IndexEntry protobuf>...    n = data_block_count in trailer
+//      <pad>                       align to 512 bytes
+//
+//  Trailer block:
+//
+//      'trai'                      offset = backlink in trailing signature
+//      'none'    
+//      <Header protobuf>           fully completed header
+//      <Metadata protobuf>
+//      <Metadata protobuf>
+//      <Metadata protobuf>...      n = metadata_count in trailer
+//      <pad>                       pad so that signature ends 512-byte aligned
+//      <backlink>                  little endian 64 bit unsigned offset of trailer
+//      'tapproto'                  signature at end of file
+// 
+
+package tap.formats.tapproto;
+
+message IndexEntry {
+    optional bytes  first_key = 1;                  // first key value in the data block
+    optional uint64 data_offset = 2;                // starting offset of user messages for this data block
+    optional uint64 data_bytes = 3;                 // on-disk length of user messages
+    optional uint32 message_count = 6;              // number of messages in this data block
+}
+
+message Header {
+
+    // trailer and header common fields
+ 
+    optional string     copyright_notice = 100;     // optional data provider copyright notice
+    optional uint32     partition_count = 101;      // number of partitions (omit if not hash partitioned)
+    optional uint32     partition_number = 102;     // zero-based partition number (omit if not hash partitioned)
+    optional string     initial_pipe_name = 103;    // pipe name (not updated when file is renamed) 
+    optional string     message_name = 104;         // Protobuf message name
+    optional string     key_descriptor = 105;       // Tap key descriptor string
+    optional uint64     target_decomp_size = 106;   // target decompression size (for example, 64K or 256K)
+   
+    // trailer-only fields
+   
+    optional uint64     index_offset = 200;         // offset of the index block
+    optional uint64     index_bytes = 201;          // length in bytes of the index block
+    optional bytes      first_key = 202;            // first key value in whole file
+    optional bytes      last_key = 203;             // last key value in whole file
+    optional uint64     message_count = 204;        // number of messages in whole file
+    optional uint64     data_block_count = 205;     // number of data blocks in whole file
+    optional uint64     uncompressed_bytes = 206;   // sum of the uncompressed data bytes in the file
+    optional uint64     max_decomp_size = 207;      // max(uncompressed_bytes) from index
+    
+    repeated bytes      format_descriptor = 301;    // all proto FileDescriptors needed to reconstruct message
+    optional uint32     metadata_count = 302;       // number of Metadata messages to follow
+}
+
+message Metadata {
+    optional string key = 1;                        // this is a key as in key/value not a message key
+    optional string string_value = 2;               // only one value allowed per key/value pair
+    optional uint64 integer_value = 3;
+    optional double double_value = 4;
+    optional bytes bytes_value = 5;
+}

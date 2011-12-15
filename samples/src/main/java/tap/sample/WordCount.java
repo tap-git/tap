@@ -15,7 +15,7 @@ public class WordCount extends Configured implements Tool {
     public int run(String[] args) throws Exception {
 
         /* Set up a basic pipeline of map reduce */
-        Assembly wordcount = new Assembly(getClass()).named("wordcount");
+        Tap wordcount = new Tap(getClass()).named("wordcount");
         /* Parse options - just use the standard options - input and output location, time window, etc. */
         BaseOptions o = new BaseOptions();
         int result = o.parse(wordcount, args);
@@ -30,7 +30,7 @@ public class WordCount extends Configured implements Tool {
             return 1;
         }
 
-        Pipe input = new Pipe(o.input).stringFormat();
+        Pipe input = new Pipe(o.input);
         Pipe counts = new Pipe(o.output);
         wordcount.produces(counts);
         
@@ -48,11 +48,12 @@ public class WordCount extends Configured implements Tool {
         
         return 0;
     }
-    
+
     public static class CountRec {
         public String word;
         public int count;
     }
+    
 
     public static class Mapper extends BaseMapper<String,CountRec> {
         @Override

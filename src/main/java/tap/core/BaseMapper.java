@@ -28,6 +28,11 @@ public class BaseMapper<IN,OUT> extends Configured implements Mapper<IN,OUT> {
     public void map(IN in, OUT out, TapContext<OUT> context) {
         context.write((OUT)in);
     }
+    
+    @SuppressWarnings("unchecked")
+    public void map(IN in, Pipe<OUT> out) {
+        out.put((OUT)in);
+    }
 
     @Override
     public void close(OUT out, TapContext<OUT> context) {

@@ -1,0 +1,11 @@
+//
+//  Copyright (c) 2011 Quantbench Corporation, All Rights Reserved.
+//
+
+package tap.formats.tapproto;
+
+message TestMsg {
+    optional int32   	size = 1;       
+    required string   	data = 2;       
+}
+

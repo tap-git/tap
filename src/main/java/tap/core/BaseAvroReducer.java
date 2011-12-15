@@ -25,32 +25,40 @@ import java.util.Iterator;
 import org.apache.avro.mapred.*;
 import org.apache.hadoop.mapred.*;
 
+import tap.util.ObjectFactory;
+
 /** Base class for a combiner or a reducer */
 @SuppressWarnings("deprecation")
 abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implements Reducer<AvroKey<K>, AvroValue<V>, KO, VO> {
 
-    private ColReducer<V, OUT> reducer;
-    private AvroCollector<OUT> collector;
+    private TapReducer<V, OUT> reducer;
+    private AvroMultiCollector<OUT> collector;
     private ReduceIterable reduceIterable = new ReduceIterable();
     private TapContext<OUT> context;
+    protected boolean isPipeReducer = false;
     protected OUT out;
+    protected Pipe<OUT> outpipe = null;
 
-    protected abstract ColReducer<V, OUT> getReducer(JobConf conf);
+    protected abstract TapReducer<V, OUT> getReducer(JobConf conf);
 
-    protected abstract AvroCollector<OUT> getCollector(OutputCollector<KO, VO> c);
+    protected abstract AvroMultiCollector<OUT> getCollector(OutputCollector<KO, VO> c, Reporter reporter);
 
     @SuppressWarnings({ "unchecked" })
     @Override
     public void configure(JobConf conf) {
         this.reducer = getReducer(conf);
+
         try {
-            this.out = (OUT) Class.forName(conf.get(Phase.REDUCE_OUT_CLASS)).newInstance();
-        }
-        catch (RuntimeException e) {
+            this.out = (OUT) ObjectFactory.newInstance(Class.forName(conf.get(Phase.REDUCE_OUT_CLASS)));
+        } catch (RuntimeException e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+        // Determine if we are using legacy reduce signature or newer Pipe based signature
+        this.isPipeReducer = (null != conf.get(Phase.REDUCER_OUT_PIPE_CLASS));
+        if (isPipeReducer) {
+            this.outpipe = new Pipe<OUT>(out);
         }
     }
 
@@ -75,16 +83,26 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
     }
 
     @Override
-    public final void reduce(AvroKey<K> key, Iterator<AvroValue<V>> values, OutputCollector<KO, VO> collector, Reporter reporter)
+    public final void reduce(AvroKey<K> key, Iterator<AvroValue<V>> values,
+            OutputCollector<KO, VO> collector, Reporter reporter)
             throws IOException {
         if (this.collector == null) {
-            this.collector = getCollector(collector);
+            this.collector = getCollector(collector, reporter);
         }
 
-        this.context = new TapContext<OUT>(this.collector, reporter);
-
-        reduceIterable.values = values;
-        reducer.reduce(reduceIterable, out, context);
+        if (this.isPipeReducer) {
+            // create an Iterator inPipe
+            Pipe<V> inPipe = new Pipe<V>((Iterator<AvroValue<V>>)values);
+            if (null == this.outpipe.getContext()) {
+                this.outpipe.setContext(new TapContext<OUT>(this.collector, reporter));
+            }
+            reducer.reduce(inPipe, this.outpipe);
+        } else {
+            if(this.context == null)
+                this.context = new TapContext<OUT>(this.collector, reporter);
+            reduceIterable.values = values;
+            reducer.reduce(reduceIterable, out, context);
+        }
     }
 
     @Override

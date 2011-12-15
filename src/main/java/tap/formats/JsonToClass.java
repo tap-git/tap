@@ -228,7 +228,7 @@ public class JsonToClass {
         while (schema.getType() == Type.UNION) {
             List<Schema> schemas = schema.getTypes();
             Schema found = null;
-            // dumb parser that won't accept complex union abiguities
+            // dumb parser that won't accept complex union ambiguities
             for (Schema inner : schemas) {
                 if (inner.getType() == Type.ARRAY) {
                     return inner;

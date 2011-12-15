@@ -24,52 +24,102 @@ import java.io.IOException;
 import org.apache.avro.mapred.*;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapred.*;
+import org.apache.hadoop.mapred.lib.MultipleOutputs;
 import org.apache.hadoop.util.ReflectionUtils;
+
+import tap.core.mapreduce.io.ProtobufWritable;
+import tap.core.mapreduce.output.TapfileOutputFormat;
 
 /**
  * Bridge between a {@link org.apache.hadoop.mapred.Reducer} and an {@link AvroReducer}.
  */
 @SuppressWarnings("deprecation")
 class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OUT>, NullWritable> {
-
+    
     private boolean isTextOutput = false;
+    private boolean isProtoOutput = false;
+    
+    private String multiOutputPrefix;
+    private MultipleOutputs multiOutput;
+    
 
     @Override
     public void configure(JobConf conf) {
         super.configure(conf);
         isTextOutput = conf.getOutputFormat() instanceof TextOutputFormat;
+        isProtoOutput = conf.getOutputFormat() instanceof TapfileOutputFormat;
+       
+        /*
+        System.out.println(conf.getOutputFormat().getClass());
+        System.out.println(conf.getOutputKeyClass());
+        System.out.println(conf.getOutputValueClass());
+        */
+        
+        multiOutputPrefix = conf.get(Phase.MULTIPLE_OUTPUT_PREFIX);
+        if(multiOutputPrefix == null)
+            multiOutputPrefix = "out";
+        
+        MultipleOutputs.addMultiNamedOutput(
+                conf, multiOutputPrefix, conf.getOutputFormat().getClass(),
+                conf.getOutputKeyClass(), conf.getOutputValueClass());
+        
+        this.multiOutput = new MultipleOutputs(conf);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected ColReducer<V, OUT> getReducer(JobConf conf) {
-        return ReflectionUtils.newInstance(conf.getClass(Phase.REDUCER, BaseReducer.class, ColReducer.class), conf);
+    protected TapReducer<V, OUT> getReducer(JobConf conf) {
+        return ReflectionUtils.newInstance(conf.getClass(Phase.REDUCER, BaseReducer.class, TapReducer.class), conf);
     }
 
-    private class ReduceCollector<AO, OUT> extends AvroCollector<AO> {
+    private class ReduceCollector<AO, OUT> extends AvroMultiCollector<AO> {
         private final AvroWrapper<OUT> wrapper = new AvroWrapper<OUT>(null);
-        private OutputCollector out;
+        private Reporter reporter;
+        private OutputCollector originalCollector;
+        private ProtobufWritable protobufWritable = new ProtobufWritable();
 
-        public ReduceCollector(OutputCollector<?, NullWritable> out) {
-            this.out = out;
+        public ReduceCollector(OutputCollector<?, NullWritable> out, Reporter reporter) {
+            this.originalCollector = out;
+            this.reporter = reporter;
         }
 
         @SuppressWarnings("unchecked")
-        @Override
-        public void collect(Object datum) throws IOException {
+        private void _collect(Object datum, OutputCollector out) throws IOException {
             if (isTextOutput) {
                 out.collect(datum, NullWritable.get());
+            } else if(isProtoOutput) {
+                if(datum != null)
+                    protobufWritable.setConverter(datum.getClass());
+                protobufWritable.set(datum);
+                out.collect(NullWritable.get(), protobufWritable);
             }
             else {
                 wrapper.datum((OUT) datum);
                 out.collect(wrapper, NullWritable.get());
             }
         }
+        
+        @Override
+        public void collect(Object datum) throws IOException {
+           _collect(datum, originalCollector); 
+        }
+        
+        @Override
+        public void collect(Object datum, String multiName) throws IOException {
+            OutputCollector collector = multiOutput.getCollector(multiOutputPrefix, multiName, reporter);
+            _collect(datum, collector);
+        }
     }
 
     @Override
-    protected AvroCollector<OUT> getCollector(OutputCollector<AvroWrapper<OUT>, NullWritable> collector) {
-        return new ReduceCollector(collector);
+    protected AvroMultiCollector<OUT> getCollector(OutputCollector<AvroWrapper<OUT>, NullWritable> collector, Reporter reporter) {
+        return new ReduceCollector(collector, reporter);
+    }
+    
+    @Override
+    public void close() throws IOException {
+        super.close();
+        multiOutput.close();
     }
 
 }

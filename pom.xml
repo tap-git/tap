@@ -56,7 +56,7 @@
                       <version>2.9</version>
                       <configuration>
                         <includes>
-                          <include>**/Test*.java</include>
+                          <include>**/*Test*.java</include>
                         </includes>
                       </configuration>
               </plugin>
@@ -106,7 +106,7 @@
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-core</artifactId>
-			<version>0.20.204.0</version>
+			<version>0.20.203.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -119,7 +119,7 @@
             <version>2.0.16</version>
         </dependency>
         <dependency>
-            <groupId>commons-email</groupId>
+          <groupId>org.apache.commons</groupId>
             <artifactId>commons-email</artifactId>
             <version>1.1</version>
         </dependency>
@@ -148,12 +148,12 @@
 		<dependency>
 		    <groupId>org.apache.avro</groupId>
 		    <artifactId>avro</artifactId>
-		    <version>1.5.1</version>
+		    <version>1.5.4</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.avro</groupId>
 		    <artifactId>avro-mapred</artifactId>
-		    <version>1.5.1</version>
+		    <version>1.5.4</version>
 		</dependency>
 		<dependency>
 		    <groupId>joda-time</groupId>
@@ -170,6 +170,17 @@
 		    <artifactId>mail</artifactId>
 		    <version>1.4</version>
 		</dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>10.0.1</version>
+        </dependency>
+		
 	</dependencies>
 </project>
 

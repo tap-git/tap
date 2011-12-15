@@ -29,9 +29,9 @@ import org.apache.hadoop.mapred.*;
 public class TapContext<OUT> {
 
     private Reporter reporter;
-    private AvroCollector<OUT> collector;
+    private AvroMultiCollector<OUT> collector;
     
-    public<IN, K, V, KO, VO> TapContext(AvroCollector<OUT> collector, Reporter reporter) {
+    public<IN, K, V, KO, VO> TapContext(AvroMultiCollector<OUT> collector, Reporter reporter) {
         this.reporter = reporter;
         this.collector = collector;
     }
@@ -39,6 +39,15 @@ public class TapContext<OUT> {
     public void write(OUT out) {
         try {
             collector.collect(out);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public void write(OUT out, String multiName) {
+        try {
+            collector.collect(out, multiName);
         }
         catch (IOException e) {
             throw new RuntimeException(e);

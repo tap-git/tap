@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * Copyright 2010 Think Big Analytics. All Rights Reserved.
+ * Copyright 2011 Think Big Analytics. All Rights Reserved.
  */
 package tap.core;
 

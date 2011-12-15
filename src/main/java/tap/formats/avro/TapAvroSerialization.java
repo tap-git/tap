@@ -24,11 +24,15 @@ import java.io.*;
 import org.apache.avro.Schema;
 import org.apache.avro.io.*;
 import org.apache.avro.mapred.*;
-import org.apache.avro.specific.SpecificDatumReader;
-import org.apache.avro.specific.SpecificDatumWriter;
+import org.apache.avro.protobuf.ProtobufDatumReader;
+import org.apache.avro.protobuf.ProtobufDatumWriter;
+import org.apache.avro.reflect.ReflectDatumReader;
+import org.apache.avro.reflect.ReflectDatumWriter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.io.serializer.*;
+
+import com.google.protobuf.Message;
 
 import tap.core.Phase;
 
@@ -53,7 +57,20 @@ public class TapAvroSerialization<T> extends Configured implements Serialization
         boolean isKey = AvroKey.class.isAssignableFrom(c);
         Schema schema = Schema.parse(isKey ? getConf().get(Phase.MAP_OUT_KEY_SCHEMA) : getConf().get(
                 Phase.MAP_OUT_VALUE_SCHEMA));
-        return new AvroWrapperDeserializer(new SpecificDatumReader<T>(schema), isKey);
+        
+        Boolean isProtobuf = !isKey && Message.class.isAssignableFrom(getMapOutClass(getConf()));
+        
+        return new AvroWrapperDeserializer(isProtobuf ?
+                new ProtobufDatumReader<T>(schema) :
+                new ReflectDatumReader<T>(schema), isKey);
+    }
+    
+    private static final Class<?> getMapOutClass(Configuration conf) {
+        try {
+            return conf.getClassByName(conf.get(Phase.MAP_OUT_CLASS));
+        } catch(ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static final DecoderFactory FACTORY = new DecoderFactory();
@@ -73,7 +90,7 @@ public class TapAvroSerialization<T> extends Configured implements Serialization
         }
 
         public void open(InputStream in) {
-            this.decoder = FACTORY.createBinaryDecoder(in, decoder);
+            this.decoder = FACTORY.directBinaryDecoder(in, null);
         }
 
         public AvroWrapper<T> deserialize(AvroWrapper<T> wrapper) throws IOException {
@@ -99,9 +116,22 @@ public class TapAvroSerialization<T> extends Configured implements Serialization
         // Here we must rely on mapred.task.is.map to tell whether the map output
         // or final output is needed.
         boolean isMap = conf.getBoolean("mapred.task.is.map", false);
-        Schema schema = !isMap ? AvroJob.getOutputSchema(conf) : Schema.parse(AvroKey.class.isAssignableFrom(c) ? conf
-                .get(Phase.MAP_OUT_KEY_SCHEMA) : conf.get(Phase.MAP_OUT_VALUE_SCHEMA));
-        return new AvroWrapperSerializer(new SpecificDatumWriter<T>(schema));
+       
+        Schema schema = null;
+        if(!isMap)
+            schema = AvroJob.getOutputSchema(conf);
+        
+        Boolean isProtobuf = false;
+        if(AvroKey.class.isAssignableFrom(c)) {
+            schema = Schema.parse(conf.get(Phase.MAP_OUT_KEY_SCHEMA));
+        } else {
+            schema = Schema.parse(conf.get(Phase.MAP_OUT_VALUE_SCHEMA));
+            isProtobuf = Message.class.isAssignableFrom(getMapOutClass(getConf()));
+        }
+        
+        return new AvroWrapperSerializer(isProtobuf ?
+                new ProtobufDatumWriter<T>(schema) :
+                new ReflectDatumWriter<T>(schema));
     }
 
     private class AvroWrapperSerializer implements Serializer<AvroWrapper<T>> {
@@ -116,7 +146,7 @@ public class TapAvroSerialization<T> extends Configured implements Serialization
 
         public void open(OutputStream out) {
             this.out = out;
-            this.encoder = new EncoderFactory().binaryEncoder(out, null);
+            this.encoder = new EncoderFactory().directBinaryEncoder(out, null);
         }
 
         public void serialize(AvroWrapper<T> wrapper) throws IOException {
