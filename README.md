@@ -1,7 +1,7 @@
 The Tap Framework
 =================
 
-Tap is a new framework for batch and streaming big data programming in Java. It's designed to make it easy to write programs using an OO-style, programming with POJOs. It comes with support for working with pipelines - determining file dependencies and running the phases needed to emit the corresponding results. The framework is still in alpha test, but we'd love you to try it and give us feedback.
+Tap is a new framework for batch and streaming big data programming in Java. It's designed to make it easy to write programs using an OO-style, programming with POJOs. It comes with support for working with pipelines - determining file dependencies and running the phases needed to emit the corresponding results. The framework is still in alpha test, but we'd love you to try it and give us feedback. Thank you!
 
 ## Key concepts:
 
