@@ -189,9 +189,11 @@ public class Tap {
         while (!toGenerate.isEmpty()) {
             Pipe file = toGenerate.iterator().next();
             toGenerate.remove(file);
-            boolean exists = file.exists(baseConf);
-            if (exists && !file.isObsolete(baseConf)
-                    && (!forceRebuild || file.getProducer() == null)) {
+//            boolean exists = file.exists(baseConf);
+            boolean exists = true;
+//            if (exists && !file.isObsolete(baseConf)
+//                    && (!forceRebuild || file.getProducer() == null)) {
+            if (file.getProducer() == null) {
                 if (!generated.contains(file)) {
                     System.out.println("File: " + file.getPath()
                             + " exists and is up to date.");
