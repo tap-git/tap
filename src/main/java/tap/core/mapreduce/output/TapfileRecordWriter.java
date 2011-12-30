@@ -172,7 +172,7 @@ public class TapfileRecordWriter<M extends Message> implements RecordWriter<Null
         }
         
         dataStream.writeRawVarint32(key.size());
-        dataStream.writeRawBytes(key);
+        dataStream.writeRawBytes(key.toByteArray());
         dataStream.writeRawVarint32(msg.getSerializedSize());
         msg.writeTo(dataStream);
         
