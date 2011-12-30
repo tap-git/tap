@@ -11,6 +11,9 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.*;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -34,6 +37,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.Message;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Descriptors.Descriptor;
 
 public class TapfileRecordWriter<M extends Message> implements RecordWriter<NullWritable, BinaryWritable<M>> {
     
@@ -112,10 +116,41 @@ public class TapfileRecordWriter<M extends Message> implements RecordWriter<Null
         fsOutputStream.close();
     }
 
+    private Long findKey(Message msg) {
+	Long key = 0L;
+
+	com.google.protobuf.Descriptors.Descriptor descriptor = msg.getDescriptorForType();
+	List<com.google.protobuf.Descriptors.FieldDescriptor> field_list = descriptor.getFields();
+	Iterator<com.google.protobuf.Descriptors.FieldDescriptor> field_iterator = field_list.iterator();
+
+	while (field_iterator.hasNext()) {
+		com.google.protobuf.Descriptors.FieldDescriptor field_descriptor = field_iterator.next();
+		if (field_descriptor.getFullName().matches("(?i).*timestamp.*")) {
+			switch (field_descriptor.getJavaType()) {
+				case MESSAGE:
+					key = findKey((Message) msg.getField(field_descriptor));
+					break;
+				case LONG:
+					key = (Long) msg.getField(field_descriptor);
+					break;
+			}
+			break;
+		}
+	}
+
+	return key;
+    }
+
     @Override
     public void write(NullWritable arg0, BinaryWritable<M> writable)
             throws IOException {
         
+	M msg = writable.get();
+	ByteBuffer buf = ByteBuffer.allocate(8);
+	Long lkey = findKey(msg);
+	buf.putLong(lkey);	// no need to swap endian, java is already big-endian
+	ByteString key = ByteString.copyFrom(buf.array());
+
         if(firstWrite) {
             firstWrite = false;
             Tapfile.Header header = writeHeader();
@@ -125,7 +160,7 @@ public class TapfileRecordWriter<M extends Message> implements RecordWriter<Null
         
         if(dataStream == null) {
            indexEntryBuilder = Tapfile.IndexEntry.newBuilder(); 
-           indexEntryBuilder.setFirstKey(EMPTY_KEY);
+           indexEntryBuilder.setFirstKey(key);
            indexEntryBuilder.setDataOffset(fsOutputStream.getPos());
            indexEntryBuilder.setMessageCount(0);
            writeRawBytes(fsOutputStream, "data");
@@ -136,14 +171,13 @@ public class TapfileRecordWriter<M extends Message> implements RecordWriter<Null
            dataStream = CodedOutputStream.newInstance(dataCountStream);
         }
         
-        dataStream.writeRawVarint32(EMPTY_KEY.size());
-        dataStream.writeRawBytes(EMPTY_KEY.toByteArray());
-        M msg = writable.get();
+        dataStream.writeRawVarint32(key.size());
+        dataStream.writeRawBytes(key);
         dataStream.writeRawVarint32(msg.getSerializedSize());
         msg.writeTo(dataStream);
         
         indexEntryBuilder.setMessageCount(indexEntryBuilder.getMessageCount() + 1);
-        trailerBuilder.setLastKey(EMPTY_KEY);
+        trailerBuilder.setLastKey(key);
         dataStream.flush();
         
         if(dataCountStream.getCount() >= DEFAULT_TARGET_BLOCK_SIZE) {
