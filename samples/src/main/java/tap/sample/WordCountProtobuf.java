@@ -7,8 +7,8 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import tap.formats.Formats;
 import tap.core.mapreduce.io.ProtobufWritable;
-
 import tap.core.*;
 
 public class WordCountProtobuf extends Configured implements Tool {
@@ -34,6 +34,7 @@ public class WordCountProtobuf extends Configured implements Tool {
 
         Pipe input = new Pipe(o.input);
         Pipe counts = new Pipe(o.output);
+        counts.setFormat(Formats.TAPPROTO_FORMAT);
         wordcount.produces(counts);
         
         Phase count = new Phase().reads(input).writes(counts).map(PipeMapper.class).
