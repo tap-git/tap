@@ -74,6 +74,8 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Long
         inputStream.read(bytes);
         assertEquals("datagzip", bytes);
         
+        inputStream.seek(e.getDataOffset()+8);
+        
         dataStream = CodedInputStream.newInstance(new GZIPInputStreamNoClose(inputStream));
         
         return true;
