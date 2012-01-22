@@ -9,7 +9,7 @@ public class WordCount extends Tap {
     
     @Override
     public int run(CommandOptions o) throws Exception {        
-        createPhase()
+        newPhase()
             .reads(o.input).map(WordCountMapper.class).combine(WordCountReducer.class)
             .groupBy("word")
             .writes(o.output).reduce(WordCountReducer.class);

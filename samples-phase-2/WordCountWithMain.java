@@ -10,7 +10,7 @@ public class WordCount extends Tap {
     public static main(String[] args) throws Exception {
         CommandOptions o = new CommandOptions(args);
         Tap tap = new Tap(o);
-        tap.createPhase()
+        tap.newPhase()
             .reads(o.input).map(WordCountMapper.class).combine(WordCountReducer.class)
             .groupBy("word")
             .writes(o.output).reduce(WordCountReducer.class);
