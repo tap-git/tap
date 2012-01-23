@@ -8,13 +8,13 @@ import CountRec;
 public class WordCount extends Tap {
     
     public static main(String[] args) throws Exception {
-        CommandOptions o = new CommandOptions(args);
+        CommandOptions o = new CommandOptions(args); // this version has to also parse standard Hadoop opts, like -libjars, and store in CommandOptions
         Tap tap = new Tap(o);
         tap.newPhase()
             .reads(o.input).map(WordCountMapper.class).combine(WordCountReducer.class)
             .groupBy("word")
             .writes(o.output).reduce(WordCountReducer.class);
-        return tap.make();
+        tap.make();
     }
 
     public static class WordCountMapper extends TapMapper {
