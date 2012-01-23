@@ -1,9 +1,12 @@
+
+// this needs to be modified to work with the new java 7 date class
+
 package tap.sample;
 
 import tap.*;
 import quantbench.Candle;
 
-public class Subscribe extends Tap {
+public class Subscribe {
     public static main(String[] args) throws Exception {
         Tap tap = new Tap();
         tap.startTime("2011-01-03 10:40:00.000");

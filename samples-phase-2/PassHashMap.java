@@ -6,10 +6,11 @@ import java.util.StringTokenizer;
 import tap.sample.CountRec;          
 import tap.*;
 
-public class PassHashMap extends Tap {
+public class PassHashMap {
     
-    @Override
-    public int run(CommandOptions o) throws Exception {
+    public static void main(String[] args) throws Exception {
+        CommandOptions o = new CommandOptions(args);
+        Tap tap = new Tap(o);
         HashMap<String,Integer> scores = new HashMap<String,Integer>();
         scores.put("apple", 2);
         scores.put("peach", -1);

@@ -5,7 +5,7 @@ import java.util.StringTokenizer;
 import tap.*;
 import CountRec;
 
-public class WordCount extends Tap {
+public class WordCount {
     
     public static main(String[] args) throws Exception {
         CommandOptions o = new CommandOptions(args); // this version has to also parse standard Hadoop opts, like -libjars, and store in CommandOptions
