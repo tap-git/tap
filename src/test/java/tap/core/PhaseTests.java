@@ -43,13 +43,15 @@ public class PhaseTests {
 
     @Test
     public void mapperSignatureTest() {
+    	String[] args = {"mapperTest", "-i", "share/wordcount.out.avro", "-o", "/tmp/out"};
+    	CommandOptions o = new CommandOptions(args);
         /* Set up a basic pipeline of map reduce */
-        Tap assembly = new Tap(getClass()).named("mapperTest");
+        Tap assembly = new Tap(o).named(o.program);
 
-        Pipe<CountRec> p1 = new Pipe<CountRec>("share/wordcount.out.avro");
+        Pipe<CountRec> p1 = new Pipe<CountRec>(o.input);
         p1.setPrototype(new CountRec());
 
-        Pipe<OutputLog> p2 = new Pipe<OutputLog>("/tmp/out");
+        Pipe<OutputLog> p2 = new Pipe<OutputLog>(o.output);
         p2.setPrototype(new OutputLog());
         assembly.produces(p2);
 
@@ -75,8 +77,11 @@ public class PhaseTests {
     
     @Test
     public void mapperSignatureTest2() {
+    	String[] args = {"mapperTest", "-i", "share/wordcount.out.avro", "-o", "/tmp/out"};
+    	CommandOptions o = new CommandOptions(args);
+    	
         /* Set up a basic pipeline of map reduce */
-        Tap assembly = new Tap(getClass()).named("mapperTest");
+        Tap assembly = new Tap(o).named("mapperTest");
 
         Pipe<CountRec> p1 = new Pipe("share/wordcount.out.avro");
         Pipe<OutputLog> p2 = new Pipe("/tmp/out");
@@ -104,8 +109,11 @@ public class PhaseTests {
 
     @Test
     public void mapperSignatureTest3() {
+    	String[] args = {"mapperTest", "-i", "share/wordcount.out.avro", "-o", "/tmp/out"};
+    	CommandOptions o = new CommandOptions(args);
+    	
         /* Set up a basic pipeline of map reduce */
-        Tap assembly = new Tap(getClass()).named("mapperTest");
+        Tap assembly = new Tap(o).named("mapperTest");
 
         Pipe<String> p1 = new Pipe("share/decameron.txt");
         p1.setPrototype("prototype");

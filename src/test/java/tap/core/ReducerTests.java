@@ -9,9 +9,7 @@ public class ReducerTests {
 
     @Test
     public void summation() {
-        /* Set up a basic pipeline of map reduce */
-        Tap summation = new Tap(getClass())
-                .named("summation");
+    	
         /*
          * Parse options - just use the standard options - input and output
          * location, time window, etc.
@@ -20,6 +18,9 @@ public class ReducerTests {
         String args[] = { "-o", "/tmp/wordcount", "-i", "/tmp/out", "-f" };
         Assert.assertEquals(5, args.length);
         CommandOptions o = new CommandOptions(args);
+        /* Set up a basic pipeline of map reduce */
+        Tap summation = new Tap(o).named("summation");
+        
         Assert.assertNotNull("must specify input directory", o.input);
         Assert.assertNotNull("must specify output directory", o.output);
 
