@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * Copyright 2010 Think Big Analytics. All Rights Reserved.
+ * Copyright 2012 Think Big Analytics. All Rights Reserved.
  */
 package tap.core;
 
@@ -29,8 +29,7 @@ import org.apache.hadoop.mapred.JobConf;
 import tap.util.Alerter;
 import tap.util.EmailAlerter;
 
-@SuppressWarnings("deprecation")
-public class Tap {
+public class Tap implements TapInterface {
     private List<Pipe> writes;
     private int parallelPhases = 2; // default to 2 phases at once - use
                                     // concurrency (also speeds up local
@@ -38,14 +37,33 @@ public class Tap {
     private JobConf baseConf = new JobConf();
     private Alerter alerter = new EmailAlerter();
     private String name = "";
-    private boolean forceRebuild = false;
+    private CommandOptions options;
 
-    public Tap() {
+    private Tap() {
+    	Class<?> jarClass = this.getClass();
+		baseConf.setJarByClass(jarClass);
+		init();
     }
 
-    public Tap(Class<?> jarClass) {
+    public Tap(CommandOptions o) {
+    	options = o;
+    	init();
+    	options.parse(this);
+    }
+    
+    //TODO: Integrate into framework or remove
+    public Tap(Class<?> jarClass, CommandOptions o) {
+    	options = o;
         baseConf.setJarByClass(jarClass);
-        baseConf.set("mapred.job.reuse.jvm.num.tasks", "-1");
+        init();
+        options.parse(this);
+    }
+
+	/**
+	 * @throws RuntimeException
+	 */
+	private void init() throws RuntimeException {
+		baseConf.set("mapred.job.reuse.jvm.num.tasks", "-1");
         try {
             FileSystem fs = FileSystem.get(new URI("/"), baseConf);
             FileSystem localfs = FileSystem.getLocal(baseConf);
@@ -58,7 +76,7 @@ public class Tap {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
+	}
 
     public Tap produces(List<Pipe> outputs) {
         if (writes == null) {
@@ -79,11 +97,11 @@ public class Tap {
     }
 
     public Tap forceRebuild() {
-        this.forceRebuild = true;
+        options.forceRebuild = true;
         return this;
     }
 
-    public Tap parallelPhases(int parallelPhases) {
+	public Tap parallelPhases(int parallelPhases) {
         this.parallelPhases = parallelPhases;
         return this;
     }
@@ -188,70 +206,95 @@ public class Tap {
         PipePlan plan = new PipePlan();
         while (!toGenerate.isEmpty()) {
             Pipe file = toGenerate.iterator().next();
-            toGenerate.remove(file);
-//            boolean exists = file.exists(baseConf);
-            boolean exists = true;
-//            if (exists && !file.isObsolete(baseConf)
-//                    && (!forceRebuild || file.getProducer() == null)) {
-            if (file.getProducer() == null) {
-                if (!generated.contains(file)) {
-                    System.out.println("File: " + file.getPath()
-                            + " exists and is up to date.");
-                    // ok already
-                    generated.add(file);
-                    plan.fileCreateWith(file, null);
-                }
-            } else {
-                Phase phase = file.getProducer();
-                plan.fileCreateWith(file, phase);
-                if (phase == null) {
-                    errors.add(new PhaseError("Don't know how to generate "
-                            + file.getPath()));
-                } else {
-                    if (!exists)
-                        missing.add(file);
-                    else if (file.isObsolete(baseConf))
-                        obsolete.add(file);
-                    List<Pipe> inputs = phase.getInputs();
-                    if (inputs != null) {
-                        for (Pipe input : inputs) {
-                            toGenerate.add(input);
-                            plan.processReads(phase, input);
-                        }
-                    }
-                    if (!planned.contains(phase)) {
-                        List<PhaseError> phaseErrors = phase.plan(this);
-                        if (!phaseErrors.isEmpty()) {
-                            errors.addAll(phaseErrors);
-                            return null;
-                        }
-                        planned.add(phase);
-                    }
-                }
-            }
+            toGenerate.remove(file); 
+            if (build(file)) {
+	            if (file.getProducer() == null) {
+	                if (!generated.contains(file)) {
+	                    log("File: " + file.getPath()
+	                            + " exists and is up to date.\n");
+	                    // ok already
+	                    generated.add(file);
+	                    plan.fileCreateWith(file, null);
+	                }
+	            } else {
+	                Phase phase = file.getProducer();
+	                plan.fileCreateWith(file, phase);
+	                if (phase == null) {
+	                    errors.add(new PhaseError("Don't know how to generate "
+	                            + file.getPath()));
+	                } else {
+	                    if (file.exists())
+	                        missing.add(file);
+	                    else if (file.isObsolete())
+	                        obsolete.add(file);
+	                    List<Pipe> inputs = phase.getInputs();
+	                    if (inputs != null) {
+	                        for (Pipe input : inputs) {
+	                            toGenerate.add(input);
+	                            plan.processReads(phase, input);
+	                        }
+	                    }
+	                    if (!planned.contains(phase)) {
+	                        List<PhaseError> phaseErrors = phase.plan(this);
+	                        if (!phaseErrors.isEmpty()) {
+	                            errors.addAll(phaseErrors);
+	                            return null;
+	                        }
+	                        planned.add(phase);
+	                    }
+	                }
+	            }
+            }  // if build
         }
         List<List<Phase>> waves = plan.plan();
 
         // partially ordered so we always print a producer before a consumer
         for (List<Phase> wave : waves) {
             for (Phase phase : wave) {
-                System.out.println("Will run " + phase.getSummary()
+                log("Will run " + phase.getSummary()
                         + ", producing: ");
                 for (Pipe output : phase.getOutputs()) {
-                    System.out.print("  " + output.getPath());
+                    log("  " + output.getPath());
                     if (missing.contains(output))
-                        System.out.println(": missing");
+                        log(": missing");
                     else if (obsolete.contains(output))
-                        System.out.println(": obsolete");
+                        log(": obsolete");
                     else
-                        System.out.println();
+                        log("");
                 }
             }
         }
         return plan;
     }
 
-    public String getName() {
+    /**
+     * Determine if we should build this file or not
+     * @param file
+     * @param exists - return true if underlying Pipe file exists
+     * @return
+     */
+    private boolean build(Pipe file) {
+    	if (null == file.getConf()) {
+    		file.setConf(this.getConf());
+    	}
+
+    	if (options.forceRebuild) {
+    		return true;
+    	}
+    	
+    	if (options.dryRun) {
+    		return false;
+    	}
+    	
+    	if (file.isObsolete()) {
+    		return true;
+    	}
+        		
+//              && (!forceRebuild || file.getProducer() == null)) {
+		return false;
+	}
+
+	public String getName() {
         return name;
     }
 
@@ -266,11 +309,90 @@ public class Tap {
             plan = optimize(plan, result);
         }
         if (!result.isEmpty()) {
-            System.out.println("Plan errors:");
+            log("Plan errors:");
             for (PhaseError e : result) {
-                System.out.println(e.getMessage());
+                log(e.getMessage());
             }
         }
     }
+
+    List<Phase> phases = new LinkedList<Phase>();
+
+	@Override
+	public Phase createPhase() {
+		Phase phase = new Phase();
+		phases.add(phase);
+		return phase;
+	}
+
+	/**
+	 * Build and run the job
+	 */
+	@Override
+	public int make() {
+		
+		// Produces
+		for(Phase phase: phases) {
+			produces(phase.output());
+		}
+		
+		// build plan for each phase
+		List<List<PhaseError>> errorCollection = new ArrayList<List<PhaseError>>();
+		for(Phase phase:phases) {
+			errorCollection.add(phase.plan(this));
+		}
+		int errorCount = emitErrors(errorCollection);
+		
+		if (0 != errorCount) {
+			return errorCount;
+		}
+
+
+		if (this.isDryRun()) {
+            this.dryRun();
+            return 0;
+        }
+
+		execute();
+	
+		return 0;
+	}
+
+	/**
+	 * @param errorCollection
+	 * @return
+	 */
+	private int emitErrors(List<List<PhaseError>> errorCollection) {
+		int errorCount = 0;
+		for (List<PhaseError> errors : errorCollection) {
+			for (PhaseError e : errors) {
+				logf("%s : %s \n", e.getMessage(), e.getException().toString());
+				errorCount++;
+			}
+		}
+		return errorCount;
+	}
+
+	/**
+	 * @return the dryRun
+	 */
+	private boolean isDryRun() {
+		return options.dryRun;
+	}
+
+	/**
+	 * @param dryRun the dryRun to set
+	 */
+	private void setDryRun(boolean dryRun) {
+		this.options.dryRun = dryRun;
+	}
+	
+	private void log(String message) {
+		System.out.print(message);
+	}
+	
+	private void logf(String string, String message, String exceptionMessage) {
+		System.out.printf(string, message, exceptionMessage);
+	}
 
 }

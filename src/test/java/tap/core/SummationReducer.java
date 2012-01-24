@@ -5,7 +5,7 @@ package tap.core;
  * Add up all of the word counts to produce a sum of all of the word counts
  */
 public class SummationReducer extends
-		BaseReducer<CountRec, OutputLog> {
+		TapReducer<CountRec, OutputLog> {
 
 	@Override
 	public void reduce(Iterable<CountRec> in, OutputLog out,

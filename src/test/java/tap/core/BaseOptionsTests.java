@@ -28,7 +28,7 @@ import org.joda.time.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import tap.core.BaseOptions;
+import tap.core.CommandOptions;
 import tap.core.Tap;
 
 
@@ -36,11 +36,11 @@ import tap.core.Tap;
 public class BaseOptionsTests {
 
     private Tap pipe;
-    private BaseOptions options;
+    private CommandOptions options;
 
     @Before
     public void setup() {
-        options = new BaseOptions();
+        options = new CommandOptions();
         pipe = new Tap();               
     }
     

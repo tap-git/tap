@@ -5,7 +5,7 @@ package tap.core;
  * Add up all of the word counts to produce a sum of all of the word counts
  */
 public class SummationPipeReducer extends
-		BaseReducer<CountRec, OutputLog> {
+		TapReducer<CountRec, OutputLog> {
 
     private OutputLog outLog = new OutputLog("sum of words", 0);
     

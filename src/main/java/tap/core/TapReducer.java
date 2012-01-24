@@ -19,11 +19,28 @@
  */
 package tap.core;
 
-import org.apache.hadoop.conf.Configurable;
+import org.apache.hadoop.conf.Configured;
 
-public interface TapReducer <IN,OUT> extends Configurable {
-    public void reduce(Iterable<IN> in, OUT out, TapContext<OUT> context);
-    public void reduce(Pipe<IN> in, Pipe<OUT> out);
-    
-    public void close(OUT out, TapContext<OUT> context);
+public class TapReducer<IN,OUT> extends Configured implements TapReducerInterface<IN,OUT> {
+    /** Override this method for a reducer */      
+    @SuppressWarnings("unchecked")
+    public void reduce(Iterable<IN> in, OUT out, TapContext<OUT> context) {
+        for (IN i : in) { 
+            context.write((OUT)i);
+        }
+    }
+ 
+    /** Override this method for a reducer */
+    @SuppressWarnings("unchecked")
+    public void reduce(Pipe<IN> in, Pipe<OUT> out) {
+        while (in.hasNext()) {
+            out.put((OUT)in.next());        
+        }
+    }
+
+    @Override
+    public void close(OUT out, TapContext<OUT> context) {
+        // no op by default
+    }
+
 }

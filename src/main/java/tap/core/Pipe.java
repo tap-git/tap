@@ -23,6 +23,7 @@ import tap.compression.Compressions;
 import tap.formats.*;
 import tap.util.ObjectFactory;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -40,7 +41,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     private TapContext<T> context; // for OutPipe
     private Iterator<AvroValue<T>> values; // for InPipe
     Formats format = Formats.UNKNOWN_FORMAT;
-    Phase producer;
+    private Phase producer;
     protected String path;
     protected T prototype;
     String uncompressedPath;
@@ -67,74 +68,118 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 
     public Pipe(String path) {
         setPath(path);
+        init();
+    }
+    
+    // Pipe's reference to the job configuration
+    Configuration conf = null;
+    /**
+     * Setup job configuration (and cache it) on the Pipe
+     * @param conf
+     */
+    void setConf(Configuration conf) {
+    	if (null == conf) {
+    		throw new IllegalArgumentException("Please don't give us a null Configuration object");
+    	}
+    	this.conf = conf;
+    }
+    
+    /**
+     * 
+     * @return The job configuration
+     */
+    Configuration getConf() {
+    	return conf;
     }
 
+    private TapPipeStat stat;
+    TapPipeStat stat() {
+    	if (null == stat) {
+    		this.stat = new TapPipeStat(path,getConf());
+    	}
+    	return stat;
+    }
+    
+    private class TapPipeStat {
+    	Path dfsPath = null;
+    	FileSystem fs = null;
+    	boolean exists = false;
+    	boolean isObsolete = true;
+    	boolean isFile = false;
+    	long timestamp = 0;
+    	FileStatus[] statuses = null;
+    	
+    	String path;
+    	Configuration conf;
+    	TapPipeStat(String path, Configuration conf) {
+    		this.path = path;
+    		this.conf = conf;
+    		init();
+    	}
+
+		private void init() {
+			dfsPath = new Path(path);
+			try {
+				fs = dfsPath.getFileSystem(conf);
+				exists = fs.exists(dfsPath);
+				isFile = fs.isFile(dfsPath);
+				timestamp = fs.getFileStatus(dfsPath).getModificationTime();
+				statuses = fs.listStatus(dfsPath);
+			} catch (FileNotFoundException e) {
+				exists = false;
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+    }
+    
     /*
      * Probe HDFS to determine if this.path exists.
      */
-    public boolean exists(Configuration conf) {
-        Path dfsPath = new Path(path);
-        try {
-            FileSystem fs = dfsPath.getFileSystem(conf);
-            return fs.exists(dfsPath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+     boolean exists() {
+    	 return stat().exists;
     }
 
     /**
      * Determine if file(s) in path are obsolete. Used in generating a work
      * plan.
-     * 
-     * @param conf
-     *            Job configuration
      * @return True if obsolete
      */
-    public boolean isObsolete(Configuration conf) {
-        Path dfsPath = new Path(path);
-        try {
-            FileSystem fs = dfsPath.getFileSystem(conf);
-            // this needs to be smart - we should encode in the file metadata
-            // the dependents and their dates used
-            // so we can verify that any existing antecedent is not newer and
-            // declare victory...
-            if (fs.exists(dfsPath)) {
-                FileStatus[] statuses = fs.listStatus(dfsPath);
-                for (FileStatus status : statuses) {
-                    if (!status.isDir()) {
-                        // TODO add other types?
-                        if (getFormat() != Formats.AVRO_FORMAT
-                                || status.getPath().toString()
-                                        .endsWith(".avro")) {
-                            return false; // may check for extension for other
-                                          // types
-                        }
-                    } else {
-                        if (!status.getPath().toString().endsWith("/_logs")
-                                && !status.getPath().toString()
-                                        .endsWith("/_temporary")) {
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true; // needs more work!
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	boolean isObsolete() {
+		// this needs to be smart - we should encode in the file metadata
+		// the dependents and their dates used
+		// so we can verify that any existing antecedent is not newer and
+		// declare victory...
+		if (stat().exists) {
+			for (FileStatus status : stat().statuses) {
+				if (stat().isFile) {
+					// TODO add other types?
+					if (getFormat() != Formats.AVRO_FORMAT
+							|| status.getPath().toString().endsWith(".avro")) {
+						return false; // may check for extension for other
+										// types
+					}
+				} else {
+					if (!status.getPath().toString().endsWith("/_logs")
+							&& !status.getPath().toString()
+									.endsWith("/_temporary")) {
+						return false;
+					}
+				}
+			}
+		}
+		return true; // needs more work!
+
+	}
 
     /**
      * 
      * @param conf
      */
-    protected void clearAndPrepareOutput(Configuration conf) {
+    protected void clearAndPrepareOutput() {
         try {
-            Path dfsPath = new Path(path);
-            FileSystem fs = dfsPath.getFileSystem(conf);
-            if (fs.exists(dfsPath)) {
-                FileStatus[] statuses = fs.listStatus(dfsPath);
-                for (FileStatus status : statuses) {
+            if (stat().exists) {
+                for (FileStatus status : stat().statuses) {
                     if (status.isDir()) {
                         if (!status.getPath().toString().endsWith("/_logs")
                                 && !status.getPath().toString()
@@ -146,16 +191,16 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
                     }
                 }
             } else {
-                fs.mkdirs(dfsPath);
+                stat().fs.mkdirs(stat().dfsPath);
             }
-            fs.delete(dfsPath, true);
+            stat().fs.delete(stat().dfsPath, true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void delete(JobConf conf) {
-        clearAndPrepareOutput(conf);
+    public void delete() {
+        clearAndPrepareOutput();
     }
 
     @SuppressWarnings("unchecked")
@@ -187,10 +232,10 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     }
 
     public Compressions getCompression() {
-        return this.compression;
+        return compression;
     }
 
-    public void setupOutput(JobConf conf) {
+    void setupOutput(JobConf conf) {
         getFormat().getFileFormat().setupOutput(conf,
                 prototype == null ? null : prototype.getClass());
         if (this.isCompressed == true) {
@@ -215,14 +260,8 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
      *            Environment configuration
      * @return the timestamp
      */
-    public long getTimestamp(JobConf conf) {
-        try {
-            Path dfsPath = new Path(path);
-            FileSystem fs = dfsPath.getFileSystem(conf);
-            return fs.getFileStatus(dfsPath).getModificationTime();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public long getTimestamp() {
+    	return stat().timestamp;
     }
 
     /**
@@ -337,6 +376,9 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
         this.context.write(out, multiName);
     }
 
+    /**
+     * @return The phase that produces this file.
+     */
     public Phase getProducer() {
         return producer;
     }

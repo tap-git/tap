@@ -40,7 +40,6 @@ import com.google.protobuf.Message;
 
 import tap.util.ObjectFactory;
 
-@SuppressWarnings("deprecation")
 public class Phase {
 
     private static final int MAPPER2_IN_PARAMETER_POSITION = 0;
@@ -80,9 +79,9 @@ public class Phase {
     private List<Pipe> mainWrites;
     /** any files written, including side writes */
     private List<Pipe> writes;
-    private Class<? extends Mapper>[] mappers;
-    private Class<? extends TapReducer>[] combiners;
-    private Class<? extends TapReducer>[] reducers;
+    private Class<? extends TapMapper>[] mappers;
+    private Class<? extends TapReducerInterface>[] combiners;
+    private Class<? extends TapReducerInterface>[] reducers;
     private String groupBy;
     private String sortBy;
     private Map<String, String> props = new LinkedHashMap<String, String>();
@@ -93,12 +92,12 @@ public class Phase {
     private Object reduceOutProto;
     private Class<?> reduceOutClass;
     private Schema reduceout;
-    private Class<? extends Mapper> mapperClass;
+    private Class<? extends TapMapper> mapperClass;
     private Method mapperMethod;
     private Class<?> mapOutClass;
     private Class<?> mapInClass;
-    private Schema mapin;
-    private Class<? extends TapReducer> reducerClass;
+    private Schema mapinSchema; // Map IN parameter schema
+    private Class<? extends TapReducerInterface> reducerClass;
     private Object inputPipeProto;
     private Class<?> mapOutPipeType;
     private Class<Pipe> reduceOutPipeType;
@@ -136,6 +135,15 @@ public class Phase {
 
     public Phase reads(Pipe... inputs) {
         return reads(Arrays.asList(inputs));
+    }
+    
+    /**
+     * Convert list of strings into pipes and then add them as reads.
+     * @param inputs filepath to read (file or directory)
+     * @return
+     */
+    public Phase reads(String input) {
+    	return reads(new Pipe(input));
     }
 
     public Phase reads(Collection<Pipe> inputs) {
@@ -181,8 +189,43 @@ public class Phase {
         } else {
             mainWrites.addAll(outputs);
         }
+        bindPhaseToPipes();
         return this;
     }
+
+	/**
+	 * Create pipe from path and add pipe to mainWrites
+	 * @param path Pipe file path
+	 * @return This phase
+	 */
+    public Phase writes(String path) {
+     	Pipe pipe = new Pipe(path);
+     	
+    	if (null == mainWrites) {
+    		mainWrites = new ArrayList<Pipe>();
+    	}
+    	mainWrites.add(pipe);
+    	
+    	if (null == writes) {
+    		writes = new ArrayList<Pipe>();
+    	}
+    	writes.add(pipe);    //??
+    	
+    	bindPhaseToPipes();
+ 
+    	return this;
+    }
+
+    /**
+	 * 
+	 */
+	private void bindPhaseToPipes() {
+		// bind pipes to this phase
+        for (Pipe pipe: mainWrites) {
+        	pipe.setProducer(this);
+        }
+	}
+    
 
     /**
      * side writes are files that are written but not as the output of a
@@ -218,12 +261,12 @@ public class Phase {
     /*
      * Specify the Mapper class
      */
-    public Phase map(Class<? extends Mapper>... mappers) {
+    public Phase map(Class<? extends TapMapper>... mappers) {
         this.mappers = mappers;
         return this;
     }
 
-    public Phase combine(Class<? extends TapReducer>... combiners) {
+    public Phase combine(Class<? extends TapReducerInterface>... combiners) {
         this.combiners = combiners;
         return this;
     }
@@ -231,7 +274,7 @@ public class Phase {
     /*
      * Specify the Reducer class
      */
-    public Phase reduce(Class<? extends TapReducer>... reducers) {
+    public Phase reduce(Class<? extends TapReducerInterface>... reducers) {
         this.reducers = reducers;
         return this;
     }
@@ -274,9 +317,15 @@ public class Phase {
         throw new UnsupportedOperationException("toJson not yet working");
     }
 
+    /**
+     * Generate plan for each phase in the Tap
+     * @param distPipeline
+     * @return List of Phase errors
+     */
     public List<PhaseError> plan(Tap distPipeline) {
         List<PhaseError> errors = new ArrayList<PhaseError>();
         conf = new JobConf(distPipeline.getConf());
+ 
         for (Map.Entry<String, String> entry : props.entrySet()) {
             conf.set(entry.getKey(), entry.getValue());
         }
@@ -355,11 +404,11 @@ public class Phase {
             }
             AvroInputFormat.setInputPaths(conf, inPaths);
 
-            if (mapin == null) {
+            if (mapinSchema == null) {
                 if (inputPipeProto == null) {
                     errors.add(new PhaseError("Undefined input format"));
                 } else {
-                    mapin = getSchema(inputPipeProto);
+                    mapinSchema = getSchema(inputPipeProto);
                     mapInClass = inputPipeProto.getClass();
                 }
             }
@@ -376,7 +425,7 @@ public class Phase {
     private void reducerPlan(List<PhaseError> errors) {
         reduceout = null;
         reduceOutClass = null;
-        Class<? extends TapReducer> reducerClass = null;
+        Class<? extends TapReducerInterface> reducerClass = null;
         if (reducers != null && reducers.length > 0) {
             if (reducers.length != 1) {
                 errors.add(new PhaseError(
@@ -389,7 +438,7 @@ public class Phase {
                 for (Method m : reducerClass.getMethods()) {
                     if ("reduce".equals(m.getName())
                             && !m.getDeclaringClass().equals(Object.class)
-                            && !m.getDeclaringClass().equals(BaseReducer.class)) {
+                            && !m.getDeclaringClass().equals(TapReducer.class)) {
                         Class<?>[] paramTypes = m.getParameterTypes();
                         if (paramTypes.length == 2) {
                             if (paramTypes[1].equals(Pipe.class)) {
@@ -475,7 +524,7 @@ public class Phase {
      * @param errors
      */
     private void mapperPlan(List<PhaseError> errors) throws Exception {
-        mapin = null;
+        mapinSchema = null;
         mapOutClass = null;
         mapInClass = null;
 
@@ -487,90 +536,103 @@ public class Phase {
                                 + name));
             } else {
                 mapperClass = mappers[0];
-                Class<?> foundIn = null;
-                // search for suitable map(...) methods
-                for (Method m : mapperClass.getMethods()) {
-                    // ignore base classes Object and BaseMapper
-                    if (!m.getDeclaringClass().equals(Object.class)
-                            && !m.getDeclaringClass().equals(BaseMapper.class)
-                            && "map".equals(m.getName())) {
-                        Class<?>[] paramTypes = m.getParameterTypes();
-
-                        /**
-                         * map(IN,OutPipe<OUT>)
-                         */
-                        if (paramTypes.length == 2) {
-                            if (paramTypes[1].equals(Pipe.class)) {
-                                // found the correct map function
-                                foundIn = m.getDeclaringClass();
-                                this.mapInClass = ReflectUtils
-                                        .getParameterClass(foundIn,
-                                                MAPPER2_IN_PARAMETER_POSITION);
-                                this.mapOutPipeType = Pipe.class;
-                                this.mapOutClass = ReflectUtils
-                                        .getParameterClass(foundIn,
-                                                MAPPER2_OUT_PARAMETER_POSITION);
-
-                                Object readProto = mainReads.get(0)
-                                        .getPrototype();
-                                if(readProto == null) {
-                                    readProto = ObjectFactory.newInstance(mapInClass);
-                                    mainReads.get(0).setPrototype(readProto);
-                                }
-                                
-                                this.mapin = getSchema(readProto);
-
-                                this.mapperMethod = m;
-                                break;
-                            }
-                        }
-                        /**
-                         * Find legacy map(<IN> in, <OUT> out, TapContext<OUT>
-                         * context)
-                         */
-                        if (paramTypes.length == 3
-                                && paramTypes[2].equals(TapContext.class)) {
-
-                            try {
-                                // prefer subclass methods to superclass
-                                // methods
-                                if (foundIn == null
-                                        || foundIn.isAssignableFrom(m
-                                                .getDeclaringClass())) {
-                                    if (paramTypes[0] == Object.class) {
-                                        if (foundIn == m.getDeclaringClass()) {
-                                            // skip the generated "override"
-                                            // of the generic method
-                                            continue;
-                                        }
-                                    } else {
-                                        // TODO: handle cases beyond Object
-                                        // where output isn't defined
-                                        mapInClass = paramTypes[0];
-                                        mapin = getSchema(ObjectFactory.newInstance(paramTypes[0]));
-                                        Object readProto = mainReads.get(0).getPrototype();
-                                        if (readProto == null) {
-                                            readProto = ObjectFactory.newInstance(mapInClass);
-                                            mainReads.get(0).setPrototype(readProto);
-                                        }
-                                        mapInClass = mapOutClass = readProto
-                                                .getClass();
-                                        mapin = getSchema(readProto);
-                                    }
-                                    mapOutClass = paramTypes[1];
-                                    foundIn = m.getDeclaringClass();
-                                }
-                            } catch (Exception e) {
-                                errors.add(new PhaseError(e,
-                                        "Can't create mapper: " + mapperClass));
-                            }
-                        }
-
-                    }
-                }
+                findMapperMethod(errors, mapperClass);
             }
         }
     }
+
+	/**
+	 * @param errors
+	 * @param mapperClass TODO
+	 * @return
+	 * @throws SecurityException
+	 * @throws Exception
+	 */
+	private Class<?> findMapperMethod(List<PhaseError> errors,
+			Class<? extends TapMapper> mapperClass)
+			throws SecurityException, Exception {
+		Class<?> foundIn = null;
+		for (Method m : mapperClass.getMethods()) {
+		    // ignore base classes Object and BaseMapper
+		    if (!m.getDeclaringClass().equals(Object.class)
+		            && !m.getDeclaringClass().equals(TapMapper.class)
+		            && "map".equals(m.getName())) {
+		        Class<?>[] paramTypes = m.getParameterTypes();
+
+		        /**
+		         * map(IN,OutPipe<OUT>)
+		         */
+		        if (paramTypes.length == 2) {
+		            if (paramTypes[1].equals(Pipe.class)) {
+		                // found the correct map function
+		                foundIn = m.getDeclaringClass();
+		                this.mapInClass = ReflectUtils
+		                        .getParameterClass(foundIn,
+		                                MAPPER2_IN_PARAMETER_POSITION);
+		                this.mapOutPipeType = Pipe.class;
+		                this.mapOutClass = ReflectUtils
+		                        .getParameterClass(foundIn,
+		                                MAPPER2_OUT_PARAMETER_POSITION);
+
+		                Object readProto = mainReads.get(0)
+		                        .getPrototype();
+		                if(readProto == null) {
+		                    readProto = ObjectFactory.newInstance(mapInClass);
+		                    mainReads.get(0).setPrototype(readProto);
+		                }
+		                
+		                this.mapinSchema = getSchema(readProto);
+
+		                this.mapperMethod = m;
+		                break;
+		            }
+		        }
+		        /**
+		         * Find legacy map(<IN> in, <OUT> out, TapContext<OUT>
+		         * context)
+		         */
+		        if (paramTypes.length == 3
+		                && paramTypes[2].equals(TapContext.class)) {
+
+		            try {
+		                // prefer subclass methods to superclass
+		                // methods
+		                if (foundIn == null
+		                        || foundIn.isAssignableFrom(m
+		                                .getDeclaringClass())) {
+		                    if (paramTypes[0] == Object.class) {
+		                        if (foundIn == m.getDeclaringClass()) {
+		                            // skip the generated "override"
+		                            // of the generic method
+		                            continue;
+		                        }
+		                    } else {
+		                        // TODO: handle cases beyond Object
+		                        // where output isn't defined
+		                        mapInClass = paramTypes[0];
+		                        mapinSchema = getSchema(ObjectFactory.newInstance(paramTypes[0]));
+		                        Object readProto = mainReads.get(0).getPrototype();
+		                        if (readProto == null) {
+		                            readProto = ObjectFactory.newInstance(mapInClass);
+		                            mainReads.get(0).setPrototype(readProto);
+		                        }
+		                        mapInClass = mapOutClass = readProto
+		                                .getClass();
+		                        mapinSchema = getSchema(readProto);
+		                    }
+		                    mapOutClass = paramTypes[1];
+		                    foundIn = m.getDeclaringClass();
+		                }
+		            } catch (Exception e) {
+		                errors.add(new PhaseError(e,
+		                        "Can't create mapper: " + mapperClass));
+		            }
+		        }
+
+		    }
+		}
+		return foundIn;
+	}
 
     /**
      * @param errors
@@ -651,8 +713,8 @@ public class Phase {
 
         if (inputPipeProto != null) {
             conf.set(AvroJob.INPUT_SCHEMA, getSchema(inputPipeProto).toString());
-        } else if (mapin != null) {
-            conf.set(AvroJob.INPUT_SCHEMA, mapin.toString());
+        } else if (mapinSchema != null) {
+            conf.set(AvroJob.INPUT_SCHEMA, mapinSchema.toString());
         } else {
             errors.add(new PhaseError("No map input defined"));
         }
@@ -734,13 +796,14 @@ public class Phase {
         return this.conf;
     }
 
-    public PhaseError submit() {
+    PhaseError submit() {
         try {
             System.out.println("Submitting job:");
             System.out.println(getDetail());
             // probably should just make a conf right here?
             for (Pipe file : writes) {
-                file.clearAndPrepareOutput(this.conf);
+            	file.setConf(conf);
+                file.clearAndPrepareOutput();
             }
 
             if (reads != null) {
@@ -756,7 +819,7 @@ public class Phase {
                     AvroJob.setOutputMeta(conf, "input.file.name." + i,
                             file.getPath());
                     AvroJob.setOutputMeta(conf, "input.file.mtime." + i,
-                            file.getTimestamp(conf));
+                            file.getTimestamp());
                     i++;
                 }
             }
@@ -767,7 +830,7 @@ public class Phase {
             t.printStackTrace();
             // clean up failed job output
             for (Pipe file : getOutputs()) {
-                file.delete(conf);
+                file.delete();
             }
             return new PhaseError(t, name);
         }

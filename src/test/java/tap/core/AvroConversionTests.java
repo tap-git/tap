@@ -1,6 +1,5 @@
 package tap.core;
 
-import static org.junit.Assert.*;
 import junit.framework.Assert;
 
 import org.apache.avro.mapred.AvroValue;

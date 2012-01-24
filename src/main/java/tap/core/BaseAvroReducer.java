@@ -31,7 +31,7 @@ import tap.util.ObjectFactory;
 @SuppressWarnings("deprecation")
 abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implements Reducer<AvroKey<K>, AvroValue<V>, KO, VO> {
 
-    private TapReducer<V, OUT> reducer;
+    private TapReducerInterface<V, OUT> reducer;
     private AvroMultiCollector<OUT> collector;
     private ReduceIterable reduceIterable = new ReduceIterable();
     private TapContext<OUT> context;
@@ -39,7 +39,7 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
     protected OUT out;
     protected Pipe<OUT> outpipe = null;
 
-    protected abstract TapReducer<V, OUT> getReducer(JobConf conf);
+    protected abstract TapReducerInterface<V, OUT> getReducer(JobConf conf);
 
     protected abstract AvroMultiCollector<OUT> getCollector(OutputCollector<KO, VO> c, Reporter reporter);
 

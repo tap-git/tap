@@ -141,20 +141,20 @@ public class PhaseTests {
         assembly.dryRun();
     }
 
-    public class Test3Mapper extends BaseMapper<String, CountRec> {
+    public class Test3Mapper extends TapMapper<String, CountRec> {
         @Override
         public void map(String in, CountRec out, TapContext<CountRec> context) {
             context.write(out);
         }
     }
 
-    public class Test3Reducer extends BaseReducer<CountRec, OutputLog> {
+    public class Test3Reducer extends TapReducer<CountRec, OutputLog> {
         @Override
         public void reduce(Pipe<CountRec> in, Pipe<OutputLog> out) {
         }
     }
 
-    public class Test2Mapper extends BaseMapper<CountRec, CountRec> {
+    public class Test2Mapper extends TapMapper<CountRec, CountRec> {
         @Override
         public void map(CountRec in, Pipe<CountRec> out) {
             // preferred
@@ -174,7 +174,7 @@ public class PhaseTests {
         }
     }
 
-    public class Test2Reducer extends BaseReducer<CountRec, OutputLog> {
+    public class Test2Reducer extends TapReducer<CountRec, OutputLog> {
         @Override
         public void reduce(Pipe<CountRec> in, Pipe<OutputLog> out) {
         }

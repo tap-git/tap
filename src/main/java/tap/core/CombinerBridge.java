@@ -33,7 +33,6 @@ import org.apache.hadoop.util.ReflectionUtils;
  * Bridge between a {@link org.apache.hadoop.mapred.Reducer} and an {@link AvroReducer} used when combining. When combining, map
  * output pairs must be split before they're collected.
  */
-@SuppressWarnings("deprecation")
 class CombinerBridge<K, V> extends BaseAvroReducer<K, V, V, AvroKey<K>, AvroValue<V>> {
 
     private Schema schema;
@@ -42,8 +41,8 @@ class CombinerBridge<K, V> extends BaseAvroReducer<K, V, V, AvroKey<K>, AvroValu
 
     @Override
     @SuppressWarnings("unchecked")
-    protected TapReducer<V, V> getReducer(JobConf conf) {
-        return ReflectionUtils.newInstance(conf.getClass(Phase.COMBINER, BaseReducer.class, TapReducer.class), conf);
+    protected TapReducerInterface<V, V> getReducer(JobConf conf) {
+        return ReflectionUtils.newInstance(conf.getClass(Phase.COMBINER, TapReducer.class, TapReducerInterface.class), conf);
     }
 
     @Override

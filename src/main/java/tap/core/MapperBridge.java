@@ -20,12 +20,8 @@
 package tap.core;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.avro.Schema;
 import org.apache.avro.generic.*;
 import org.apache.avro.io.*;
@@ -45,14 +41,13 @@ import tap.core.mapreduce.io.ProtobufWritable;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 import tap.formats.avro.JsonToGenericRecord;
-import tap.formats.text.TextFormat;
 
 @SuppressWarnings("deprecation")
 public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
         implements org.apache.hadoop.mapred.Mapper<KEY, VALUE, KO, VO> {
 
     private static final int SNIFF_HEADER_SIZE = 1000;
-    private Mapper<IN, OUT> mapper;
+    private TapMapper<IN, OUT> mapper;
     private boolean isMapOnly;
     private OUT out;
     private TapContext<OUT> context;
@@ -76,7 +71,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     @Override
     public void configure(JobConf conf) {
         this.mapper = ReflectionUtils.newInstance(
-                conf.getClass(Phase.MAPPER, BaseMapper.class, Mapper.class),
+                conf.getClass(Phase.MAPPER, TapMapper.class, TapMapper.class),
                 conf);
         this.isMapOnly = conf.getNumReduceTasks() == 0;
         try {

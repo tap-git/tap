@@ -20,8 +20,6 @@
 package tap.core;
 
 import java.io.IOException;
-
-import org.apache.avro.mapred.AvroCollector;
 import org.apache.hadoop.mapred.Counters.Counter;
 import org.apache.hadoop.mapred.*;
 

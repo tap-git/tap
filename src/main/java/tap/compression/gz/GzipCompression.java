@@ -9,12 +9,13 @@ import tap.compression.Compressions;
 import tap.compression.FileCompression;
 import tap.core.Pipe;
 
-@SuppressWarnings("deprecation")
+
 public class GzipCompression extends FileCompression {
 
 	public GzipCompression() {
 		super(GzipCodec.class);
 	}
+	
 	@Override
 	public String fileExtension() {
 		return "gz";

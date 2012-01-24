@@ -35,7 +35,6 @@ import tap.core.Pipe;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 
-@SuppressWarnings("deprecation")
 public class AvroFormat extends FileFormat {
 
 	public static final byte FILE_SIGNATURE[] = {0x4F,0x62,0x6A,0x01};

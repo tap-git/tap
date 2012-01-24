@@ -19,9 +19,7 @@ public class ReducerTests {
 
         String args[] = { "-o", "/tmp/wordcount", "-i", "/tmp/out", "-f" };
         Assert.assertEquals(5, args.length);
-        BaseOptions o = new BaseOptions();
-        int result = o.parse(summation, args);
-        Assert.assertEquals(0, result);
+        CommandOptions o = new CommandOptions(args);
         Assert.assertNotNull("must specify input directory", o.input);
         Assert.assertNotNull("must specify output directory", o.output);
 
