@@ -13,8 +13,7 @@ public class Subscribe {
         Tap tap = new Tap(o);
         
         Pipe<Candle> candles = tap.subscribe("//cta/candle/1min[AAPL]");
-        while (candles.more()) {
-            Candle m = candles.get();
+        for (Candle m: candles) {
             Date time = Tap.newDate(m.getStartTime());
             System.out.println(time.toString + " symbol " + m.getSymbol() + 
                                " open " + m.getOpen() + " volume " + m.getVolume());
