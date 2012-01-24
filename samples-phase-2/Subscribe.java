@@ -7,7 +7,7 @@ import quantbench.Candle;
 
 public class Subscribe {
     
-    // Usage: ... -s 2011-01-03 10:40:00.000 -e 2011-01-03 10:50:00.000
+    // Usage: ... -s 2011-01-03T10:40:00.000 -e 2011-01-03T10:50:00.000
     public static main(String[] args) throws Exception {
         CommandOptions o = new CommandOptions(args);
         Tap tap = new Tap(o);
