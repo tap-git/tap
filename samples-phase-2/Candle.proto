@@ -1,0 +1,25 @@
+//
+//  Copyright (c) 2011 Quantbench Corporation, All Rights Reserved.
+//
+
+import "Tap.proto";
+
+package quantbench;
+
+message Candle {
+    optional Timestamp          time = 1;       
+    optional Timestamp          expires = 2;       
+    optional Instrument         instrument = 3;       
+    optional string             symbol = 4;       
+    optional double             open = 5;       
+    optional double             high = 6;       
+    optional double             low = 7;       
+    optional double             close = 8;       
+    optional int64              volume = 9;       
+    optional int64              trade_count = 10;
+    optional int64              total_volume = 11;       
+    optional double             vwap = 12;       
+    optional double             total_vwap = 13;       
+    optional double             period_return = 14;  
+    optional Currency           currency = 15;
+}
