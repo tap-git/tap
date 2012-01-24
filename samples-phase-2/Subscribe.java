@@ -1,4 +1,3 @@
-
 // this needs to be modified to work with the new java 7 date class
 
 package tap.sample;
@@ -7,10 +6,12 @@ import tap.*;
 import quantbench.Candle;
 
 public class Subscribe {
+    
+    // Usage: hadoop jar yourjar.jar -s 2011-01-03 10:40:00.000 -e 2011-01-03 10:50:00.000
     public static main(String[] args) throws Exception {
-        Tap tap = new Tap();
-        tap.startTime("2011-01-03 10:40:00.000");
-        tap.endTime("2011-01-03 10:50:00.000");
+        CommandOptions o = new CommandOptions(args);
+        Tap tap = new Tap(o);
+        
         Pipe<Candle> candles = tap.subscribe("//cta/candle/1min[AAPL]");
         while (candles.more()) {
             Candle m = candles.get();
