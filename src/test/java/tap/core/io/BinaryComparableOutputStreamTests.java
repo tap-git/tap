@@ -12,37 +12,37 @@ public class BinaryComparableOutputStreamTests {
 	BinaryComparableOutputStream output;
 
 	@Before
-	void initialize() {
+	public void initialize() {
 		array = new ByteArrayOutputStream();
 		output = new BinaryComparableOutputStream(array);
 	}
 	
 	@Test
-	public void writeBoolAsc(boolean value, SortOrder order) {
+	public void writeBoolAsc() {
 	}
 	
 	@Test
-	public void writeIntAsc(int value, SortOrder order) {
+	public void writeIntAsc() {
 	}
 	
 	@Test
-	public void writeLongAsc(long value, SortOrder order) {
+	public void writeLongAsc() {
 	}
 	
 	@Test
-	public void writeStringAsc(String value, SortOrder order) {
+	public void writeStringAsc() {
 	}
 	
 	@Test
-	public void writeFloatAsc(float value, SortOrder order) {
+	public void writeFloatAsc() {
 	}
 	
 	@Test
-	public void writeDoubleAsc(double value, SortOrder order) {
+	public void writeDoubleAsc() {
 	}
 	
 	@Test
-	public void writeNullAsc(SortOrder order) {
+	public void writeNullAsc() {
 	}
 	
 	@Test
@@ -50,31 +50,31 @@ public class BinaryComparableOutputStreamTests {
 	}
 	
 	@Test
-	public void writeBoolDesc(boolean value, SortOrder order) {
+	public void writeBoolDesc() {
 	}
 	
 	@Test
-	public void writeIntDesc(int value, SortOrder order) {
+	public void writeIntDesc() {
 	}
 	
 	@Test
-	public void writeLongDesc(long value, SortOrder order) {
+	public void writeLongDesc() {
 	}
 	
 	@Test
-	public void writeStringDesc(String value, SortOrder order) {
+	public void writeStringDesc() {
 	}
 	
 	@Test
-	public void writeFloatDesc(float value, SortOrder order) {
+	public void writeFloatDesc() {
 	}
 	
 	@Test
-	public void writeDoubleDesc(double value, SortOrder order) {
+	public void writeDoubleDesc() {
 	}
 	
 	@Test
-	public void writeNullDesc(SortOrder order) {
+	public void writeNullDesc() {
 	}
 	
 	@Test
