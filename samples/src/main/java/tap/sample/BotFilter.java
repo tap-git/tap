@@ -1,14 +1,18 @@
 package tap.sample;
 
-import tap.core.BaseReducer;
-import tap.core.TapContext;
+import tap.core.Pipe;
+import tap.core.TapReducer;
 
-public class BotFilter extends BaseReducer<LogRec,LogRec> {
+/**
+ * Remove Bots from log file
+ *
+ */
+public class BotFilter extends TapReducer<LogRec,LogRec> {
 
     @Override
-    public void reduce(Iterable<LogRec> in, LogRec out, TapContext<LogRec> context) {
+    public void reduce(Pipe<LogRec> in, Pipe<LogRec> out) {
         for (LogRec r : in) {
-            context.write(r);
+            out.put(r);
         }
     }
     

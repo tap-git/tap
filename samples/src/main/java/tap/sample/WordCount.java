@@ -13,14 +13,12 @@ public class WordCount extends Configured implements Tool {
 
     @Override
     public int run(String[] args) throws Exception {
-
+    	 CommandOptions o = new CommandOptions(args);
+    	 
         /* Set up a basic pipeline of map reduce */
-        Tap wordcount = new Tap(getClass()).named("wordcount");
+        Tap wordcount = new Tap(o).named("wordcount");
         /* Parse options - just use the standard options - input and output location, time window, etc. */
-        BaseOptions o = new BaseOptions();
-        int result = o.parse(wordcount, args);
-        if (result != 0)
-            return result;
+       
         if (o.input == null) {
             System.err.println("Must specify input directory");
             return 1;
@@ -30,21 +28,10 @@ public class WordCount extends Configured implements Tool {
             return 1;
         }
 
-        Pipe input = new Pipe(o.input);
-        Pipe counts = new Pipe(o.output);
-        wordcount.produces(counts);
-        
-        Phase count = new Phase().reads(input).writes(counts).map(Mapper.class).
+        wordcount.createPhase().reads(o.input).writes(o.output).map(Mapper.class).
             groupBy("word").reduce(Reducer.class);
         
-        
-        if (o.forceRebuild) wordcount.forceRebuild();
-        if (o.dryRun) {
-            wordcount.dryRun();
-            return 0;
-        }
-        
-        wordcount.execute();
+        wordcount.make();
         
         return 0;
     }
@@ -55,28 +42,31 @@ public class WordCount extends Configured implements Tool {
     }
     
 
-    public static class Mapper extends BaseMapper<String,CountRec> {
+    public static class Mapper extends TapMapper<String,CountRec> {
+    	private CountRec outrec = new CountRec();
+    	
         @Override
-        public void map(String line, CountRec out, TapContext<CountRec> context) {
+        public void map(String line, Pipe<CountRec> out) {
             StringTokenizer tokenizer = new StringTokenizer(line);
             while (tokenizer.hasMoreTokens()) {
-                out.word = tokenizer.nextToken();
-                out.count = 1;
-                context.write(out);
+                outrec.word = tokenizer.nextToken();
+                outrec.count = 1;
+                out.put(outrec);
             }
         }        
     }
 
-    public static class Reducer extends BaseReducer<CountRec,CountRec> {
+    public static class Reducer extends TapReducer<CountRec,CountRec> {
+    	CountRec outrec = new CountRec();
 
         @Override
-        public void reduce(Iterable<CountRec> in, CountRec out, TapContext<CountRec> context) {
-            out.count = 0;
+        public void reduce(Pipe<CountRec> in, Pipe<CountRec> out) {
+            outrec.count = 0;
             for (CountRec rec : in) {
-                out.word = rec.word;
-                out.count += rec.count;
+            	outrec.word = rec.word;
+            	outrec.count += rec.count;
             }
-            context.write(out);
+            out.put(outrec);
         }
         
     }
