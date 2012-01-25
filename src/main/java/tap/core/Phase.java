@@ -103,7 +103,7 @@ public class Phase {
     private Class<Pipe> reduceOutPipeType;
     private Class<?> reduceInClass;
 
-    public Phase() {
+    Phase() {
     }
 
     public Phase(String name) {

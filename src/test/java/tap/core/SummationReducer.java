@@ -6,16 +6,15 @@ package tap.core;
  */
 public class SummationReducer extends
 		TapReducer<CountRec, OutputLog> {
-
+	private OutputLog outrec = new OutputLog();
 	@Override
-	public void reduce(Iterable<CountRec> in, OutputLog out,
-			TapContext<OutputLog> context) {
-		out.description = "sum of words";
-		out.count = 0;
+	public void reduce(Pipe<CountRec> in, Pipe<OutputLog> out) {
+		outrec.description = "sum of words";
+		outrec.count = 0;
 		for (CountRec rec : in) {
-			out.count += rec.count;
+			outrec.count += rec.count;
 		}
-		context.write(out);
+		out.put(outrec);
 	}
 
 }

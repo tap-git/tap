@@ -241,8 +241,6 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     private void map(IN value) {
         if (this.isPipeOutput) {
             mapper.map(value, this.outPipe);
-        } else {
-            mapper.map(value, out, context);
         }
     }
 

@@ -22,8 +22,6 @@ package tap.core;
 import static org.kohsuke.args4j.ExampleMode.ALL;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.util.GenericOptionsParser;

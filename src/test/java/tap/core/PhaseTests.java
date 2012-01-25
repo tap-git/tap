@@ -151,8 +151,8 @@ public class PhaseTests {
 
     public class Test3Mapper extends TapMapper<String, CountRec> {
         @Override
-        public void map(String in, CountRec out, TapContext<CountRec> context) {
-            context.write(out);
+        public void map(String in, Pipe<CountRec> out) {
+            //TODO: Need a body here
         }
     }
 
@@ -166,11 +166,6 @@ public class PhaseTests {
         @Override
         public void map(CountRec in, Pipe<CountRec> out) {
             // preferred
-        }
-
-        @Override
-        public void map(CountRec in, CountRec out, TapContext<CountRec> context) {
-            // legacy
         }
 
         public void map(Pipe<CountRec> in, Pipe<CountRec> out) {

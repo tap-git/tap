@@ -97,11 +97,6 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
                 this.outpipe.setContext(new TapContext<OUT>(this.collector, reporter));
             }
             reducer.reduce(inPipe, this.outpipe);
-        } else {
-            if(this.context == null)
-                this.context = new TapContext<OUT>(this.collector, reporter);
-            reduceIterable.values = values;
-            reducer.reduce(reduceIterable, out, context);
         }
     }
 

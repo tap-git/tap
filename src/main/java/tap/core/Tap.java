@@ -87,7 +87,7 @@ public class Tap implements TapInterface {
         return this;
     }
 
-    public Tap produces(Pipe... outputs) {
+    Tap produces(Pipe... outputs) {
         return produces(Arrays.asList(outputs));
     }
 
@@ -96,7 +96,7 @@ public class Tap implements TapInterface {
         return this;
     }
 
-    public Tap forceRebuild() {
+    Tap forceRebuild() {
         options.forceRebuild = true;
         return this;
     }
@@ -110,7 +110,11 @@ public class Tap implements TapInterface {
         return parallelPhases;
     }
 
-    public void execute() throws InfeasiblePlanException {
+    /**
+     * Runs the plan from the Tap interface
+     * @throws InfeasiblePlanException
+     */
+    void execute() throws InfeasiblePlanException {
         List<PhaseError> result = new ArrayList<PhaseError>();
         PipePlan plan = generatePlan(result);
         if (result.isEmpty()) {
@@ -302,7 +306,7 @@ public class Tap implements TapInterface {
         return baseConf;
     }
 
-    public void dryRun() throws InfeasiblePlanException {
+    void dryRun() throws InfeasiblePlanException {
         List<PhaseError> result = new ArrayList<PhaseError>();
         PipePlan plan = generatePlan(result);
         if (result.isEmpty()) {
@@ -379,13 +383,6 @@ public class Tap implements TapInterface {
 	private boolean isDryRun() {
 		return options.dryRun;
 	}
-
-	/**
-	 * @param dryRun the dryRun to set
-	 */
-	private void setDryRun(boolean dryRun) {
-		this.options.dryRun = dryRun;
-	}
 	
 	private void log(String message) {
 		System.out.print(message);
@@ -393,6 +390,11 @@ public class Tap implements TapInterface {
 	
 	private void logf(String string, String message, String exceptionMessage) {
 		System.out.printf(string, message, exceptionMessage);
+	}
+
+	@Override
+	public Pipe subscribe(String URI) {
+		return null;
 	}
 
 }

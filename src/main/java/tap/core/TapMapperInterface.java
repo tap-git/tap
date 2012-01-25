@@ -22,8 +22,9 @@ package tap.core;
 import org.apache.hadoop.conf.*;
 
 public interface TapMapperInterface<IN,OUT> extends Configurable {
-    public void map(IN in, OUT out, TapContext<OUT> context);
     public void map(IN in, Pipe<OUT> out);
     
     public void close(OUT out, TapContext<OUT> context);
+    public void init(String path);
+    public void finish();
 }

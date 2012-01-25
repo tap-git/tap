@@ -61,12 +61,12 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     }
 
     @Deprecated
-    public Pipe(T prototype) {
+	public Pipe(T prototype) {
         this.prototype = prototype;
         init();
     }
 
-    public Pipe(String path) {
+    Pipe(String path) {
         setPath(path);
         init();
     }

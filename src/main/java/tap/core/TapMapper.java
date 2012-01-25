@@ -22,13 +22,6 @@ package tap.core;
 import org.apache.hadoop.conf.Configured;
 
 public class TapMapper<IN,OUT> extends Configured implements TapMapperInterface<IN,OUT> {
-
-    /** Override this method for a mapper */      
-    @SuppressWarnings("unchecked")
-    @Deprecated
-    public void map(IN in, OUT out, TapContext<OUT> context) {
-        context.write((OUT)in);
-    }
     
     @SuppressWarnings("unchecked")
     public void map(IN in, Pipe<OUT> out) {
@@ -39,5 +32,17 @@ public class TapMapper<IN,OUT> extends Configured implements TapMapperInterface<
     public void close(OUT out, TapContext<OUT> context) {
         // no op by default
     }
+
+	@Override
+	public void init(String path) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void finish() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

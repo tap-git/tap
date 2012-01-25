@@ -24,7 +24,7 @@ message Timestamp {
 //      - id is the the underlying instrument
 //      - other fields are present as needed
 
-enum OptionType         {PUT, CALL};
+enum OptionType         {PUT=0; CALL=1;}
 
 message Instrument {
     optional uint64     id = 1;             
