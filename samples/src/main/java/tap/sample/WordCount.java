@@ -1,7 +1,9 @@
 package tap.sample;
 
+/**
+ * Usage .... -i ../../tap/share/decameron.txt -o /tmp/wordcount.out
+ */
 import java.util.StringTokenizer;
-
 import tap.core.*;
 
 public class WordCount {

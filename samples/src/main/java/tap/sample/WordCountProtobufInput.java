@@ -32,14 +32,14 @@ public class WordCountProtobufInput {
     
 
     public static class Mapper extends TapMapper<Protos.CountRec,CountRec> {
-    	CountRec outRec;
+    	private CountRec outrec = new CountRec();
         @Override
         public void map(
                 Protos.CountRec in,
                 Pipe<CountRec> out) {
-            this.outRec.word = in.getWord();
-            this.outRec.count = 1;
-            out.put(this.outRec);
+            outrec.word = in.getWord();
+            outrec.count = 1;
+            out.put(this.outrec);
         } 
     }
 

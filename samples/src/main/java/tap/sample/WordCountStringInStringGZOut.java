@@ -29,7 +29,7 @@ public class WordCountStringInStringGZOut {
     }
 
     public static class Mapper extends TapMapper<String,CountRec> {
-    	private CountRec outrec;
+    	private CountRec outrec = new CountRec();
     	
         @Override
         public void map(String in, Pipe<CountRec> out) {
