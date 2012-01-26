@@ -1,8 +1,0 @@
-// CountRec for the WordCount examples
-
-package tap.sample;
- 
-message CountRec {
-    required string word = 1;
-    required int32 count = 2;
-}

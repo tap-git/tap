@@ -1,6 +1,8 @@
 package tap.sample;
 
-import tap.*;
+import tap.core.*;
+import tap.core.Tap;
+
 public class PureSort {
     public static void main(String[] args) throws Exception {    
     	CommandOptions o = new CommandOptions(args);
@@ -9,6 +11,6 @@ public class PureSort {
             .reads(o.input)
             .groupBy("word")
             .writes(o.output);
-        tap.make(); ack
+        tap.make();
     }
 }

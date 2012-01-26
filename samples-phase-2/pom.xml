@@ -14,6 +14,12 @@
 	</properties>
 
 	<build>
+		<sourceDirectory>/Users/dmoore-apple/development/workspace/tap/samples-phase-2/src</sourceDirectory>
+		<scriptSourceDirectory>/Users/dmoore-apple/development/workspace/tap/samples-phase-2/src</scriptSourceDirectory>
+		<testSourceDirectory>/Users/dmoore-apple/development/workspace/tap/samples-phase-2/src</testSourceDirectory>
+		<outputDirectory>/Users/dmoore-apple/development/workspace/tap/samples-phase-2/target/classes</outputDirectory>
+		<testOutputDirectory>/Users/dmoore-apple/development/workspace/tap/samples-phase-2/target/test-classes</testOutputDirectory>
+
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -23,7 +29,7 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 	<repositories>

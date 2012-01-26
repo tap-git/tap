@@ -1,10 +1,13 @@
-//
-//  Copyright (c) 2011 Quantbench Corporation, All Rights Reserved.
-//
-
-import "Tapfile.proto";
+// CountRec for the WordCount examples
 
 package tap.sample;
+ 
+import "Tapfile.proto";
+
+message CountRec {
+    required string word = 1;
+    required int32 count = 2;
+}
 
 message Candle {
     optional Timestamp          time = 1;       

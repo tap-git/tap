@@ -1,14 +1,11 @@
 package tap.formats.tapproto;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FilterOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -19,21 +16,14 @@ import java.util.zip.GZIPOutputStream;
 
 import junit.framework.Assert;
 
-import org.apache.avro.util.ByteBufferOutputStream;
-import org.apache.commons.lang.CharSet;
 import org.junit.Test;
 
 import tap.formats.tapproto.Tapfile.IndexEntry;
 
-import com.google.common.io.FileBackedOutputStream;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.Message;
-import tap.core.mapreduce.io.ProtobufConverter;
 
 public class TapfileTests {
     
