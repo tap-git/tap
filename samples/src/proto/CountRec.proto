@@ -1,7 +1,6 @@
 package tap.sample;
 
 option java_outer_classname = "Protos";
-
 message CountRec {
 	required string word = 1;
 	required int32 count = 2;
