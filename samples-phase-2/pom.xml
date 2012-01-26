@@ -14,6 +14,11 @@
 	</properties>
 
 	<build>
+		<sourceDirectory>.</sourceDirectory>
+		<scriptSourceDirectory>.</scriptSourceDirectory>
+		<testSourceDirectory>.</testSourceDirectory>
+		<outputDirectory>./target/classes</outputDirectory>
+		<testOutputDirectory>./target/test-classes</testOutputDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -61,4 +66,3 @@
 		</dependency>
 	</dependencies>
 </project>
-

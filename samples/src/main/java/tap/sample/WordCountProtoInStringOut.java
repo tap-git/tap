@@ -5,7 +5,7 @@ import tap.sample.WordCountProtobufInput.CountRec;
 
 public class WordCountProtoInStringOut  {
 
-    public static int main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
     	 CommandOptions o = new CommandOptions(args);
         /* Set up a basic pipeline of map reduce */
         Tap wordcount = new Tap(o).named("wordcount");
@@ -13,19 +13,17 @@ public class WordCountProtoInStringOut  {
        
         if (o.input == null) {
             System.err.println("Must specify input directory");
-            return 1;
+            return;
         }
         if (o.output == null) {
             System.err.println("Must specify output directory");
-            return 1;
+            return;
         }
 
         wordcount.createPhase().reads(o.input).writes(o.output).map(Mapper.class).
             groupBy("word").reduce(Reducer.class);
         
         wordcount.make();
-        
-        return 0;
     }
 
     public static class Mapper extends TapMapper<Protos.CountRec,CountRec> {

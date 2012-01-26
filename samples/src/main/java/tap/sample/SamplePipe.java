@@ -5,9 +5,8 @@ import tap.util.DefaultTimeShard;
 
 public class SamplePipe {
 
-    public static int main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
        
-
         /* Parse options - just use the standard options - input and output location, time window, etc. */
         CommandOptions o = new CommandOptions(args);
         Tap pipeline = new Tap(o);
@@ -23,8 +22,7 @@ public class SamplePipe {
         pipeline.createPhase().reads(cleanLog).writes(conversions).groupBy("cookie").sortBy("ts")
                 .reduce(ConversionCount.class);
         
-        pipeline.make();
-        return 0;        
+        pipeline.make();   
     }
 
 }

@@ -2,22 +2,12 @@ package tap.sample;
 
 import java.util.StringTokenizer;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.util.Tool;
-import org.apache.hadoop.util.ToolRunner;
-
-import tap.core.Tap;
-import tap.core.TapMapper;
-import tap.core.CommandOptions;
-import tap.core.TapReducer;
-import tap.core.Pipe;
+import tap.core.*;
 import tap.sample.WordCountProtobufInput.CountRec;
 
-public class WordCountStringInStringGZOut extends Configured implements Tool {
+public class WordCountStringInStringGZOut {
 
-    @Override
-    public int run(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 
     	CommandOptions o = new CommandOptions(args);
         /* Set up a basic pipeline of map reduce */
@@ -25,19 +15,17 @@ public class WordCountStringInStringGZOut extends Configured implements Tool {
     
         if (o.input == null) {
             System.err.println("Must specify input directory");
-            return 1;
+            return;
         }
         if (o.output == null) {
             System.err.println("Must specify output directory");
-            return 1;
+            return;
         }
 
         wordcount.createPhase().reads(o.input).writes(o.output).map(Mapper.class).
             groupBy("word").reduce(Reducer.class);
         
         wordcount.make();
-        
-        return 0;
     }
 
     public static class Mapper extends TapMapper<String,CountRec> {
@@ -75,9 +63,4 @@ public class WordCountStringInStringGZOut extends Configured implements Tool {
         }
     }
     
-    public static void main(String[] args) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new WordCountStringInStringGZOut(), args);
-        System.exit(res);
-    }
-
 }

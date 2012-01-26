@@ -9,21 +9,20 @@ import org.apache.hadoop.util.ToolRunner;
 
 import tap.core.*;
 
-public class WordCountProtobuf extends Configured implements Tool {
+public class WordCountProtobuf {
 
-    @Override
-    public int run(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
     	CommandOptions o = new CommandOptions(args);
         /* Set up a basic pipeline of map reduce */
         Tap wordcount = new Tap(o).named("wordcount");
         /* Parse options - just use the standard options - input and output location, time window, etc. */
         if (o.input == null) {
             System.err.println("Must specify input directory");
-            return 1;
+            return;
         }
         if (o.output == null) {
             System.err.println("Must specify output directory");
-            return 1;
+            return;
         }
         
         wordcount.createPhase().reads(o.input).writes(o.output).map(Mapper.class).
@@ -34,8 +33,6 @@ public class WordCountProtobuf extends Configured implements Tool {
             groupBy("word").reduce(PipeReducer.class);
         */
         wordcount.make();
-        
-        return 0;
     }
 
     public static class CountRec {
@@ -117,11 +114,4 @@ public class WordCountProtobuf extends Configured implements Tool {
             out.put(rec);
         }
     }
-    
-    
-    public static void main(String[] args) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new WordCountProtobuf(), args);
-        System.exit(res);
-    }
-
 }
