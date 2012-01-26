@@ -14,8 +14,7 @@ import tap.core.mapreduce.output.TapfileOutputFormat;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 
-@SuppressWarnings("deprecation")
-public class TapprotoFormat extends FileFormat {
+public class TapprotoFormat extends FileFormat { 
 
 	private static final byte FILE_SIGNATURE[] = "tapproto".getBytes();
 		

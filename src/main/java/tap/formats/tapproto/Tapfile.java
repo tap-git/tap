@@ -8,11 +8,31 @@ public final class Tapfile {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  public interface IndexEntryOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional bytes first_key = 1;
+    boolean hasFirstKey();
+    com.google.protobuf.ByteString getFirstKey();
+    
+    // optional uint64 data_offset = 2;
+    boolean hasDataOffset();
+    long getDataOffset();
+    
+    // optional uint64 data_bytes = 3;
+    boolean hasDataBytes();
+    long getDataBytes();
+    
+    // optional uint32 message_count = 6;
+    boolean hasMessageCount();
+    int getMessageCount();
+  }
   public static final class IndexEntry extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements IndexEntryOrBuilder {
     // Use IndexEntry.newBuilder() to construct.
-    private IndexEntry() {
-      initFields();
+    private IndexEntry(Builder builder) {
+      super(builder);
     }
     private IndexEntry(boolean noInit) {}
     
@@ -35,54 +55,76 @@ public final class Tapfile {
       return tap.formats.tapproto.Tapfile.internal_static_tap_formats_tapproto_IndexEntry_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // optional bytes first_key = 1;
     public static final int FIRST_KEY_FIELD_NUMBER = 1;
-    private boolean hasFirstKey;
-    private com.google.protobuf.ByteString firstKey_ = com.google.protobuf.ByteString.EMPTY;
-    public boolean hasFirstKey() { return hasFirstKey; }
-    public com.google.protobuf.ByteString getFirstKey() { return firstKey_; }
+    private com.google.protobuf.ByteString firstKey_;
+    public boolean hasFirstKey() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public com.google.protobuf.ByteString getFirstKey() {
+      return firstKey_;
+    }
     
     // optional uint64 data_offset = 2;
     public static final int DATA_OFFSET_FIELD_NUMBER = 2;
-    private boolean hasDataOffset;
-    private long dataOffset_ = 0L;
-    public boolean hasDataOffset() { return hasDataOffset; }
-    public long getDataOffset() { return dataOffset_; }
+    private long dataOffset_;
+    public boolean hasDataOffset() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public long getDataOffset() {
+      return dataOffset_;
+    }
     
     // optional uint64 data_bytes = 3;
     public static final int DATA_BYTES_FIELD_NUMBER = 3;
-    private boolean hasDataBytes;
-    private long dataBytes_ = 0L;
-    public boolean hasDataBytes() { return hasDataBytes; }
-    public long getDataBytes() { return dataBytes_; }
+    private long dataBytes_;
+    public boolean hasDataBytes() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public long getDataBytes() {
+      return dataBytes_;
+    }
     
     // optional uint32 message_count = 6;
     public static final int MESSAGE_COUNT_FIELD_NUMBER = 6;
-    private boolean hasMessageCount;
-    private int messageCount_ = 0;
-    public boolean hasMessageCount() { return hasMessageCount; }
-    public int getMessageCount() { return messageCount_; }
+    private int messageCount_;
+    public boolean hasMessageCount() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public int getMessageCount() {
+      return messageCount_;
+    }
     
     private void initFields() {
+      firstKey_ = com.google.protobuf.ByteString.EMPTY;
+      dataOffset_ = 0L;
+      dataBytes_ = 0L;
+      messageCount_ = 0;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasFirstKey()) {
-        output.writeBytes(1, getFirstKey());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, firstKey_);
       }
-      if (hasDataOffset()) {
-        output.writeUInt64(2, getDataOffset());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeUInt64(2, dataOffset_);
       }
-      if (hasDataBytes()) {
-        output.writeUInt64(3, getDataBytes());
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeUInt64(3, dataBytes_);
       }
-      if (hasMessageCount()) {
-        output.writeUInt32(6, getMessageCount());
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeUInt32(6, messageCount_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -93,25 +135,32 @@ public final class Tapfile {
       if (size != -1) return size;
     
       size = 0;
-      if (hasFirstKey()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getFirstKey());
+          .computeBytesSize(1, firstKey_);
       }
-      if (hasDataOffset()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(2, getDataOffset());
+          .computeUInt64Size(2, dataOffset_);
       }
-      if (hasDataBytes()) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(3, getDataBytes());
+          .computeUInt64Size(3, dataBytes_);
       }
-      if (hasMessageCount()) {
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(6, getMessageCount());
+          .computeUInt32Size(6, messageCount_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static tap.formats.tapproto.Tapfile.IndexEntry parseFrom(
@@ -188,34 +237,57 @@ public final class Tapfile {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private tap.formats.tapproto.Tapfile.IndexEntry result;
-      
-      // Construct using tap.formats.tapproto.Tapfile.IndexEntry.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new tap.formats.tapproto.Tapfile.IndexEntry();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements tap.formats.tapproto.Tapfile.IndexEntryOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return tap.formats.tapproto.Tapfile.internal_static_tap_formats_tapproto_IndexEntry_descriptor;
       }
       
-      protected tap.formats.tapproto.Tapfile.IndexEntry internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return tap.formats.tapproto.Tapfile.internal_static_tap_formats_tapproto_IndexEntry_fieldAccessorTable;
+      }
+      
+      // Construct using tap.formats.tapproto.Tapfile.IndexEntry.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new tap.formats.tapproto.Tapfile.IndexEntry();
+        super.clear();
+        firstKey_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        dataOffset_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        dataBytes_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        messageCount_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -227,33 +299,47 @@ public final class Tapfile {
         return tap.formats.tapproto.Tapfile.IndexEntry.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public tap.formats.tapproto.Tapfile.IndexEntry build() {
-        if (result != null && !isInitialized()) {
+        tap.formats.tapproto.Tapfile.IndexEntry result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private tap.formats.tapproto.Tapfile.IndexEntry buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        tap.formats.tapproto.Tapfile.IndexEntry result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public tap.formats.tapproto.Tapfile.IndexEntry buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        tap.formats.tapproto.Tapfile.IndexEntry result = new tap.formats.tapproto.Tapfile.IndexEntry(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        tap.formats.tapproto.Tapfile.IndexEntry returnMe = result;
-        result = null;
-        return returnMe;
+        result.firstKey_ = firstKey_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.dataOffset_ = dataOffset_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.dataBytes_ = dataBytes_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.messageCount_ = messageCount_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -283,6 +369,10 @@ public final class Tapfile {
         return this;
       }
       
+      public final boolean isInitialized() {
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -295,108 +385,127 @@ public final class Tapfile {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 10: {
-              setFirstKey(input.readBytes());
+              bitField0_ |= 0x00000001;
+              firstKey_ = input.readBytes();
               break;
             }
             case 16: {
-              setDataOffset(input.readUInt64());
+              bitField0_ |= 0x00000002;
+              dataOffset_ = input.readUInt64();
               break;
             }
             case 24: {
-              setDataBytes(input.readUInt64());
+              bitField0_ |= 0x00000004;
+              dataBytes_ = input.readUInt64();
               break;
             }
             case 48: {
-              setMessageCount(input.readUInt32());
+              bitField0_ |= 0x00000008;
+              messageCount_ = input.readUInt32();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // optional bytes first_key = 1;
+      private com.google.protobuf.ByteString firstKey_ = com.google.protobuf.ByteString.EMPTY;
       public boolean hasFirstKey() {
-        return result.hasFirstKey();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public com.google.protobuf.ByteString getFirstKey() {
-        return result.getFirstKey();
+        return firstKey_;
       }
       public Builder setFirstKey(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasFirstKey = true;
-        result.firstKey_ = value;
+  bitField0_ |= 0x00000001;
+        firstKey_ = value;
+        onChanged();
         return this;
       }
       public Builder clearFirstKey() {
-        result.hasFirstKey = false;
-        result.firstKey_ = getDefaultInstance().getFirstKey();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        firstKey_ = getDefaultInstance().getFirstKey();
+        onChanged();
         return this;
       }
       
       // optional uint64 data_offset = 2;
+      private long dataOffset_ ;
       public boolean hasDataOffset() {
-        return result.hasDataOffset();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public long getDataOffset() {
-        return result.getDataOffset();
+        return dataOffset_;
       }
       public Builder setDataOffset(long value) {
-        result.hasDataOffset = true;
-        result.dataOffset_ = value;
+        bitField0_ |= 0x00000002;
+        dataOffset_ = value;
+        onChanged();
         return this;
       }
       public Builder clearDataOffset() {
-        result.hasDataOffset = false;
-        result.dataOffset_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        dataOffset_ = 0L;
+        onChanged();
         return this;
       }
       
       // optional uint64 data_bytes = 3;
+      private long dataBytes_ ;
       public boolean hasDataBytes() {
-        return result.hasDataBytes();
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public long getDataBytes() {
-        return result.getDataBytes();
+        return dataBytes_;
       }
       public Builder setDataBytes(long value) {
-        result.hasDataBytes = true;
-        result.dataBytes_ = value;
+        bitField0_ |= 0x00000004;
+        dataBytes_ = value;
+        onChanged();
         return this;
       }
       public Builder clearDataBytes() {
-        result.hasDataBytes = false;
-        result.dataBytes_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        dataBytes_ = 0L;
+        onChanged();
         return this;
       }
       
       // optional uint32 message_count = 6;
+      private int messageCount_ ;
       public boolean hasMessageCount() {
-        return result.hasMessageCount();
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       public int getMessageCount() {
-        return result.getMessageCount();
+        return messageCount_;
       }
       public Builder setMessageCount(int value) {
-        result.hasMessageCount = true;
-        result.messageCount_ = value;
+        bitField0_ |= 0x00000008;
+        messageCount_ = value;
+        onChanged();
         return this;
       }
       public Builder clearMessageCount() {
-        result.hasMessageCount = false;
-        result.messageCount_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        messageCount_ = 0;
+        onChanged();
         return this;
       }
       
@@ -405,18 +514,90 @@ public final class Tapfile {
     
     static {
       defaultInstance = new IndexEntry(true);
-      tap.formats.tapproto.Tapfile.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:tap.formats.tapproto.IndexEntry)
   }
   
+  public interface HeaderOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional string copyright_notice = 100;
+    boolean hasCopyrightNotice();
+    String getCopyrightNotice();
+    
+    // optional uint32 partition_count = 101;
+    boolean hasPartitionCount();
+    int getPartitionCount();
+    
+    // optional uint32 partition_number = 102;
+    boolean hasPartitionNumber();
+    int getPartitionNumber();
+    
+    // optional string initial_pipe_name = 103;
+    boolean hasInitialPipeName();
+    String getInitialPipeName();
+    
+    // optional string message_name = 104;
+    boolean hasMessageName();
+    String getMessageName();
+    
+    // optional string key_descriptor = 105;
+    boolean hasKeyDescriptor();
+    String getKeyDescriptor();
+    
+    // optional uint64 target_decomp_size = 106;
+    boolean hasTargetDecompSize();
+    long getTargetDecompSize();
+    
+    // optional uint64 index_offset = 200;
+    boolean hasIndexOffset();
+    long getIndexOffset();
+    
+    // optional uint64 index_bytes = 201;
+    boolean hasIndexBytes();
+    long getIndexBytes();
+    
+    // optional bytes first_key = 202;
+    boolean hasFirstKey();
+    com.google.protobuf.ByteString getFirstKey();
+    
+    // optional bytes last_key = 203;
+    boolean hasLastKey();
+    com.google.protobuf.ByteString getLastKey();
+    
+    // optional uint64 message_count = 204;
+    boolean hasMessageCount();
+    long getMessageCount();
+    
+    // optional uint64 data_block_count = 205;
+    boolean hasDataBlockCount();
+    long getDataBlockCount();
+    
+    // optional uint64 uncompressed_bytes = 206;
+    boolean hasUncompressedBytes();
+    long getUncompressedBytes();
+    
+    // optional uint64 max_decomp_size = 207;
+    boolean hasMaxDecompSize();
+    long getMaxDecompSize();
+    
+    // repeated bytes format_descriptor = 301;
+    java.util.List<com.google.protobuf.ByteString> getFormatDescriptorList();
+    int getFormatDescriptorCount();
+    com.google.protobuf.ByteString getFormatDescriptor(int index);
+    
+    // optional uint32 metadata_count = 302;
+    boolean hasMetadataCount();
+    int getMetadataCount();
+  }
   public static final class Header extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements HeaderOrBuilder {
     // Use Header.newBuilder() to construct.
-    private Header() {
-      initFields();
+    private Header(Builder builder) {
+      super(builder);
     }
     private Header(boolean noInit) {}
     
@@ -439,189 +620,350 @@ public final class Tapfile {
       return tap.formats.tapproto.Tapfile.internal_static_tap_formats_tapproto_Header_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // optional string copyright_notice = 100;
     public static final int COPYRIGHT_NOTICE_FIELD_NUMBER = 100;
-    private boolean hasCopyrightNotice;
-    private java.lang.String copyrightNotice_ = "";
-    public boolean hasCopyrightNotice() { return hasCopyrightNotice; }
-    public java.lang.String getCopyrightNotice() { return copyrightNotice_; }
+    private java.lang.Object copyrightNotice_;
+    public boolean hasCopyrightNotice() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getCopyrightNotice() {
+      java.lang.Object ref = copyrightNotice_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          copyrightNotice_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getCopyrightNoticeBytes() {
+      java.lang.Object ref = copyrightNotice_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        copyrightNotice_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional uint32 partition_count = 101;
     public static final int PARTITION_COUNT_FIELD_NUMBER = 101;
-    private boolean hasPartitionCount;
-    private int partitionCount_ = 0;
-    public boolean hasPartitionCount() { return hasPartitionCount; }
-    public int getPartitionCount() { return partitionCount_; }
+    private int partitionCount_;
+    public boolean hasPartitionCount() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getPartitionCount() {
+      return partitionCount_;
+    }
     
     // optional uint32 partition_number = 102;
     public static final int PARTITION_NUMBER_FIELD_NUMBER = 102;
-    private boolean hasPartitionNumber;
-    private int partitionNumber_ = 0;
-    public boolean hasPartitionNumber() { return hasPartitionNumber; }
-    public int getPartitionNumber() { return partitionNumber_; }
+    private int partitionNumber_;
+    public boolean hasPartitionNumber() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public int getPartitionNumber() {
+      return partitionNumber_;
+    }
     
     // optional string initial_pipe_name = 103;
     public static final int INITIAL_PIPE_NAME_FIELD_NUMBER = 103;
-    private boolean hasInitialPipeName;
-    private java.lang.String initialPipeName_ = "";
-    public boolean hasInitialPipeName() { return hasInitialPipeName; }
-    public java.lang.String getInitialPipeName() { return initialPipeName_; }
+    private java.lang.Object initialPipeName_;
+    public boolean hasInitialPipeName() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public String getInitialPipeName() {
+      java.lang.Object ref = initialPipeName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          initialPipeName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getInitialPipeNameBytes() {
+      java.lang.Object ref = initialPipeName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        initialPipeName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional string message_name = 104;
     public static final int MESSAGE_NAME_FIELD_NUMBER = 104;
-    private boolean hasMessageName;
-    private java.lang.String messageName_ = "";
-    public boolean hasMessageName() { return hasMessageName; }
-    public java.lang.String getMessageName() { return messageName_; }
+    private java.lang.Object messageName_;
+    public boolean hasMessageName() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public String getMessageName() {
+      java.lang.Object ref = messageName_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          messageName_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getMessageNameBytes() {
+      java.lang.Object ref = messageName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        messageName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional string key_descriptor = 105;
     public static final int KEY_DESCRIPTOR_FIELD_NUMBER = 105;
-    private boolean hasKeyDescriptor;
-    private java.lang.String keyDescriptor_ = "";
-    public boolean hasKeyDescriptor() { return hasKeyDescriptor; }
-    public java.lang.String getKeyDescriptor() { return keyDescriptor_; }
+    private java.lang.Object keyDescriptor_;
+    public boolean hasKeyDescriptor() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    public String getKeyDescriptor() {
+      java.lang.Object ref = keyDescriptor_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          keyDescriptor_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getKeyDescriptorBytes() {
+      java.lang.Object ref = keyDescriptor_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        keyDescriptor_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional uint64 target_decomp_size = 106;
     public static final int TARGET_DECOMP_SIZE_FIELD_NUMBER = 106;
-    private boolean hasTargetDecompSize;
-    private long targetDecompSize_ = 0L;
-    public boolean hasTargetDecompSize() { return hasTargetDecompSize; }
-    public long getTargetDecompSize() { return targetDecompSize_; }
+    private long targetDecompSize_;
+    public boolean hasTargetDecompSize() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    public long getTargetDecompSize() {
+      return targetDecompSize_;
+    }
     
     // optional uint64 index_offset = 200;
     public static final int INDEX_OFFSET_FIELD_NUMBER = 200;
-    private boolean hasIndexOffset;
-    private long indexOffset_ = 0L;
-    public boolean hasIndexOffset() { return hasIndexOffset; }
-    public long getIndexOffset() { return indexOffset_; }
+    private long indexOffset_;
+    public boolean hasIndexOffset() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    public long getIndexOffset() {
+      return indexOffset_;
+    }
     
     // optional uint64 index_bytes = 201;
     public static final int INDEX_BYTES_FIELD_NUMBER = 201;
-    private boolean hasIndexBytes;
-    private long indexBytes_ = 0L;
-    public boolean hasIndexBytes() { return hasIndexBytes; }
-    public long getIndexBytes() { return indexBytes_; }
+    private long indexBytes_;
+    public boolean hasIndexBytes() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    public long getIndexBytes() {
+      return indexBytes_;
+    }
     
     // optional bytes first_key = 202;
     public static final int FIRST_KEY_FIELD_NUMBER = 202;
-    private boolean hasFirstKey;
-    private com.google.protobuf.ByteString firstKey_ = com.google.protobuf.ByteString.EMPTY;
-    public boolean hasFirstKey() { return hasFirstKey; }
-    public com.google.protobuf.ByteString getFirstKey() { return firstKey_; }
+    private com.google.protobuf.ByteString firstKey_;
+    public boolean hasFirstKey() {
+      return ((bitField0_ & 0x00000200) == 0x00000200);
+    }
+    public com.google.protobuf.ByteString getFirstKey() {
+      return firstKey_;
+    }
     
     // optional bytes last_key = 203;
     public static final int LAST_KEY_FIELD_NUMBER = 203;
-    private boolean hasLastKey;
-    private com.google.protobuf.ByteString lastKey_ = com.google.protobuf.ByteString.EMPTY;
-    public boolean hasLastKey() { return hasLastKey; }
-    public com.google.protobuf.ByteString getLastKey() { return lastKey_; }
+    private com.google.protobuf.ByteString lastKey_;
+    public boolean hasLastKey() {
+      return ((bitField0_ & 0x00000400) == 0x00000400);
+    }
+    public com.google.protobuf.ByteString getLastKey() {
+      return lastKey_;
+    }
     
     // optional uint64 message_count = 204;
     public static final int MESSAGE_COUNT_FIELD_NUMBER = 204;
-    private boolean hasMessageCount;
-    private long messageCount_ = 0L;
-    public boolean hasMessageCount() { return hasMessageCount; }
-    public long getMessageCount() { return messageCount_; }
+    private long messageCount_;
+    public boolean hasMessageCount() {
+      return ((bitField0_ & 0x00000800) == 0x00000800);
+    }
+    public long getMessageCount() {
+      return messageCount_;
+    }
     
     // optional uint64 data_block_count = 205;
     public static final int DATA_BLOCK_COUNT_FIELD_NUMBER = 205;
-    private boolean hasDataBlockCount;
-    private long dataBlockCount_ = 0L;
-    public boolean hasDataBlockCount() { return hasDataBlockCount; }
-    public long getDataBlockCount() { return dataBlockCount_; }
+    private long dataBlockCount_;
+    public boolean hasDataBlockCount() {
+      return ((bitField0_ & 0x00001000) == 0x00001000);
+    }
+    public long getDataBlockCount() {
+      return dataBlockCount_;
+    }
     
     // optional uint64 uncompressed_bytes = 206;
     public static final int UNCOMPRESSED_BYTES_FIELD_NUMBER = 206;
-    private boolean hasUncompressedBytes;
-    private long uncompressedBytes_ = 0L;
-    public boolean hasUncompressedBytes() { return hasUncompressedBytes; }
-    public long getUncompressedBytes() { return uncompressedBytes_; }
+    private long uncompressedBytes_;
+    public boolean hasUncompressedBytes() {
+      return ((bitField0_ & 0x00002000) == 0x00002000);
+    }
+    public long getUncompressedBytes() {
+      return uncompressedBytes_;
+    }
     
     // optional uint64 max_decomp_size = 207;
     public static final int MAX_DECOMP_SIZE_FIELD_NUMBER = 207;
-    private boolean hasMaxDecompSize;
-    private long maxDecompSize_ = 0L;
-    public boolean hasMaxDecompSize() { return hasMaxDecompSize; }
-    public long getMaxDecompSize() { return maxDecompSize_; }
+    private long maxDecompSize_;
+    public boolean hasMaxDecompSize() {
+      return ((bitField0_ & 0x00004000) == 0x00004000);
+    }
+    public long getMaxDecompSize() {
+      return maxDecompSize_;
+    }
     
     // repeated bytes format_descriptor = 301;
     public static final int FORMAT_DESCRIPTOR_FIELD_NUMBER = 301;
-    private java.util.List<com.google.protobuf.ByteString> formatDescriptor_ =
-      java.util.Collections.emptyList();
-    public java.util.List<com.google.protobuf.ByteString> getFormatDescriptorList() {
+    private java.util.List<com.google.protobuf.ByteString> formatDescriptor_;
+    public java.util.List<com.google.protobuf.ByteString>
+        getFormatDescriptorList() {
       return formatDescriptor_;
     }
-    public int getFormatDescriptorCount() { return formatDescriptor_.size(); }
+    public int getFormatDescriptorCount() {
+      return formatDescriptor_.size();
+    }
     public com.google.protobuf.ByteString getFormatDescriptor(int index) {
       return formatDescriptor_.get(index);
     }
     
     // optional uint32 metadata_count = 302;
     public static final int METADATA_COUNT_FIELD_NUMBER = 302;
-    private boolean hasMetadataCount;
-    private int metadataCount_ = 0;
-    public boolean hasMetadataCount() { return hasMetadataCount; }
-    public int getMetadataCount() { return metadataCount_; }
+    private int metadataCount_;
+    public boolean hasMetadataCount() {
+      return ((bitField0_ & 0x00008000) == 0x00008000);
+    }
+    public int getMetadataCount() {
+      return metadataCount_;
+    }
     
     private void initFields() {
+      copyrightNotice_ = "";
+      partitionCount_ = 0;
+      partitionNumber_ = 0;
+      initialPipeName_ = "";
+      messageName_ = "";
+      keyDescriptor_ = "";
+      targetDecompSize_ = 0L;
+      indexOffset_ = 0L;
+      indexBytes_ = 0L;
+      firstKey_ = com.google.protobuf.ByteString.EMPTY;
+      lastKey_ = com.google.protobuf.ByteString.EMPTY;
+      messageCount_ = 0L;
+      dataBlockCount_ = 0L;
+      uncompressedBytes_ = 0L;
+      maxDecompSize_ = 0L;
+      formatDescriptor_ = java.util.Collections.emptyList();;
+      metadataCount_ = 0;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasCopyrightNotice()) {
-        output.writeString(100, getCopyrightNotice());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(100, getCopyrightNoticeBytes());
       }
-      if (hasPartitionCount()) {
-        output.writeUInt32(101, getPartitionCount());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeUInt32(101, partitionCount_);
       }
-      if (hasPartitionNumber()) {
-        output.writeUInt32(102, getPartitionNumber());
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeUInt32(102, partitionNumber_);
       }
-      if (hasInitialPipeName()) {
-        output.writeString(103, getInitialPipeName());
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(103, getInitialPipeNameBytes());
       }
-      if (hasMessageName()) {
-        output.writeString(104, getMessageName());
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBytes(104, getMessageNameBytes());
       }
-      if (hasKeyDescriptor()) {
-        output.writeString(105, getKeyDescriptor());
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBytes(105, getKeyDescriptorBytes());
       }
-      if (hasTargetDecompSize()) {
-        output.writeUInt64(106, getTargetDecompSize());
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeUInt64(106, targetDecompSize_);
       }
-      if (hasIndexOffset()) {
-        output.writeUInt64(200, getIndexOffset());
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeUInt64(200, indexOffset_);
       }
-      if (hasIndexBytes()) {
-        output.writeUInt64(201, getIndexBytes());
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeUInt64(201, indexBytes_);
       }
-      if (hasFirstKey()) {
-        output.writeBytes(202, getFirstKey());
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        output.writeBytes(202, firstKey_);
       }
-      if (hasLastKey()) {
-        output.writeBytes(203, getLastKey());
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        output.writeBytes(203, lastKey_);
       }
-      if (hasMessageCount()) {
-        output.writeUInt64(204, getMessageCount());
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+        output.writeUInt64(204, messageCount_);
       }
-      if (hasDataBlockCount()) {
-        output.writeUInt64(205, getDataBlockCount());
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        output.writeUInt64(205, dataBlockCount_);
       }
-      if (hasUncompressedBytes()) {
-        output.writeUInt64(206, getUncompressedBytes());
+      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+        output.writeUInt64(206, uncompressedBytes_);
       }
-      if (hasMaxDecompSize()) {
-        output.writeUInt64(207, getMaxDecompSize());
+      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+        output.writeUInt64(207, maxDecompSize_);
       }
-      for (com.google.protobuf.ByteString element : getFormatDescriptorList()) {
-        output.writeBytes(301, element);
+      for (int i = 0; i < formatDescriptor_.size(); i++) {
+        output.writeBytes(301, formatDescriptor_.get(i));
       }
-      if (hasMetadataCount()) {
-        output.writeUInt32(302, getMetadataCount());
+      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+        output.writeUInt32(302, metadataCount_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -632,82 +974,89 @@ public final class Tapfile {
       if (size != -1) return size;
     
       size = 0;
-      if (hasCopyrightNotice()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(100, getCopyrightNotice());
+          .computeBytesSize(100, getCopyrightNoticeBytes());
       }
-      if (hasPartitionCount()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(101, getPartitionCount());
+          .computeUInt32Size(101, partitionCount_);
       }
-      if (hasPartitionNumber()) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(102, getPartitionNumber());
+          .computeUInt32Size(102, partitionNumber_);
       }
-      if (hasInitialPipeName()) {
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(103, getInitialPipeName());
+          .computeBytesSize(103, getInitialPipeNameBytes());
       }
-      if (hasMessageName()) {
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(104, getMessageName());
+          .computeBytesSize(104, getMessageNameBytes());
       }
-      if (hasKeyDescriptor()) {
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(105, getKeyDescriptor());
+          .computeBytesSize(105, getKeyDescriptorBytes());
       }
-      if (hasTargetDecompSize()) {
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(106, getTargetDecompSize());
+          .computeUInt64Size(106, targetDecompSize_);
       }
-      if (hasIndexOffset()) {
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(200, getIndexOffset());
+          .computeUInt64Size(200, indexOffset_);
       }
-      if (hasIndexBytes()) {
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(201, getIndexBytes());
+          .computeUInt64Size(201, indexBytes_);
       }
-      if (hasFirstKey()) {
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(202, getFirstKey());
+          .computeBytesSize(202, firstKey_);
       }
-      if (hasLastKey()) {
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(203, getLastKey());
+          .computeBytesSize(203, lastKey_);
       }
-      if (hasMessageCount()) {
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(204, getMessageCount());
+          .computeUInt64Size(204, messageCount_);
       }
-      if (hasDataBlockCount()) {
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(205, getDataBlockCount());
+          .computeUInt64Size(205, dataBlockCount_);
       }
-      if (hasUncompressedBytes()) {
+      if (((bitField0_ & 0x00002000) == 0x00002000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(206, getUncompressedBytes());
+          .computeUInt64Size(206, uncompressedBytes_);
       }
-      if (hasMaxDecompSize()) {
+      if (((bitField0_ & 0x00004000) == 0x00004000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(207, getMaxDecompSize());
+          .computeUInt64Size(207, maxDecompSize_);
       }
       {
         int dataSize = 0;
-        for (com.google.protobuf.ByteString element : getFormatDescriptorList()) {
+        for (int i = 0; i < formatDescriptor_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeBytesSizeNoTag(element);
+            .computeBytesSizeNoTag(formatDescriptor_.get(i));
         }
         size += dataSize;
         size += 2 * getFormatDescriptorList().size();
       }
-      if (hasMetadataCount()) {
+      if (((bitField0_ & 0x00008000) == 0x00008000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(302, getMetadataCount());
+          .computeUInt32Size(302, metadataCount_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static tap.formats.tapproto.Tapfile.Header parseFrom(
@@ -784,34 +1133,83 @@ public final class Tapfile {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private tap.formats.tapproto.Tapfile.Header result;
-      
-      // Construct using tap.formats.tapproto.Tapfile.Header.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new tap.formats.tapproto.Tapfile.Header();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements tap.formats.tapproto.Tapfile.HeaderOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return tap.formats.tapproto.Tapfile.internal_static_tap_formats_tapproto_Header_descriptor;
       }
       
-      protected tap.formats.tapproto.Tapfile.Header internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return tap.formats.tapproto.Tapfile.internal_static_tap_formats_tapproto_Header_fieldAccessorTable;
+      }
+      
+      // Construct using tap.formats.tapproto.Tapfile.Header.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new tap.formats.tapproto.Tapfile.Header();
+        super.clear();
+        copyrightNotice_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        partitionCount_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        partitionNumber_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        initialPipeName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        messageName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
+        keyDescriptor_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
+        targetDecompSize_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000040);
+        indexOffset_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000080);
+        indexBytes_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000100);
+        firstKey_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000200);
+        lastKey_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000400);
+        messageCount_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000800);
+        dataBlockCount_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00001000);
+        uncompressedBytes_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00002000);
+        maxDecompSize_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00004000);
+        formatDescriptor_ = java.util.Collections.emptyList();;
+        bitField0_ = (bitField0_ & ~0x00008000);
+        metadataCount_ = 0;
+        bitField0_ = (bitField0_ & ~0x00010000);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -823,37 +1221,100 @@ public final class Tapfile {
         return tap.formats.tapproto.Tapfile.Header.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public tap.formats.tapproto.Tapfile.Header build() {
-        if (result != null && !isInitialized()) {
+        tap.formats.tapproto.Tapfile.Header result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private tap.formats.tapproto.Tapfile.Header buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        tap.formats.tapproto.Tapfile.Header result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public tap.formats.tapproto.Tapfile.Header buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        tap.formats.tapproto.Tapfile.Header result = new tap.formats.tapproto.Tapfile.Header(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        if (result.formatDescriptor_ != java.util.Collections.EMPTY_LIST) {
-          result.formatDescriptor_ =
-            java.util.Collections.unmodifiableList(result.formatDescriptor_);
+        result.copyrightNotice_ = copyrightNotice_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
         }
-        tap.formats.tapproto.Tapfile.Header returnMe = result;
-        result = null;
-        return returnMe;
+        result.partitionCount_ = partitionCount_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.partitionNumber_ = partitionNumber_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.initialPipeName_ = initialPipeName_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.messageName_ = messageName_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.keyDescriptor_ = keyDescriptor_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.targetDecompSize_ = targetDecompSize_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
+        }
+        result.indexOffset_ = indexOffset_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.indexBytes_ = indexBytes_;
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000200;
+        }
+        result.firstKey_ = firstKey_;
+        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
+          to_bitField0_ |= 0x00000400;
+        }
+        result.lastKey_ = lastKey_;
+        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
+          to_bitField0_ |= 0x00000800;
+        }
+        result.messageCount_ = messageCount_;
+        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
+          to_bitField0_ |= 0x00001000;
+        }
+        result.dataBlockCount_ = dataBlockCount_;
+        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
+          to_bitField0_ |= 0x00002000;
+        }
+        result.uncompressedBytes_ = uncompressedBytes_;
+        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
+          to_bitField0_ |= 0x00004000;
+        }
+        result.maxDecompSize_ = maxDecompSize_;
+        if (((bitField0_ & 0x00008000) == 0x00008000)) {
+          formatDescriptor_ = java.util.Collections.unmodifiableList(formatDescriptor_);
+          bitField0_ = (bitField0_ & ~0x00008000);
+        }
+        result.formatDescriptor_ = formatDescriptor_;
+        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
+          to_bitField0_ |= 0x00008000;
+        }
+        result.metadataCount_ = metadataCount_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -913,16 +1374,24 @@ public final class Tapfile {
           setMaxDecompSize(other.getMaxDecompSize());
         }
         if (!other.formatDescriptor_.isEmpty()) {
-          if (result.formatDescriptor_.isEmpty()) {
-            result.formatDescriptor_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
+          if (formatDescriptor_.isEmpty()) {
+            formatDescriptor_ = other.formatDescriptor_;
+            bitField0_ = (bitField0_ & ~0x00008000);
+          } else {
+            ensureFormatDescriptorIsMutable();
+            formatDescriptor_.addAll(other.formatDescriptor_);
           }
-          result.formatDescriptor_.addAll(other.formatDescriptor_);
+          onChanged();
         }
         if (other.hasMetadataCount()) {
           setMetadataCount(other.getMetadataCount());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
       }
       
       public Builder mergeFrom(
@@ -937,431 +1406,558 @@ public final class Tapfile {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 802: {
-              setCopyrightNotice(input.readString());
+              bitField0_ |= 0x00000001;
+              copyrightNotice_ = input.readBytes();
               break;
             }
             case 808: {
-              setPartitionCount(input.readUInt32());
+              bitField0_ |= 0x00000002;
+              partitionCount_ = input.readUInt32();
               break;
             }
             case 816: {
-              setPartitionNumber(input.readUInt32());
+              bitField0_ |= 0x00000004;
+              partitionNumber_ = input.readUInt32();
               break;
             }
             case 826: {
-              setInitialPipeName(input.readString());
+              bitField0_ |= 0x00000008;
+              initialPipeName_ = input.readBytes();
               break;
             }
             case 834: {
-              setMessageName(input.readString());
+              bitField0_ |= 0x00000010;
+              messageName_ = input.readBytes();
               break;
             }
             case 842: {
-              setKeyDescriptor(input.readString());
+              bitField0_ |= 0x00000020;
+              keyDescriptor_ = input.readBytes();
               break;
             }
             case 848: {
-              setTargetDecompSize(input.readUInt64());
+              bitField0_ |= 0x00000040;
+              targetDecompSize_ = input.readUInt64();
               break;
             }
             case 1600: {
-              setIndexOffset(input.readUInt64());
+              bitField0_ |= 0x00000080;
+              indexOffset_ = input.readUInt64();
               break;
             }
             case 1608: {
-              setIndexBytes(input.readUInt64());
+              bitField0_ |= 0x00000100;
+              indexBytes_ = input.readUInt64();
               break;
             }
             case 1618: {
-              setFirstKey(input.readBytes());
+              bitField0_ |= 0x00000200;
+              firstKey_ = input.readBytes();
               break;
             }
             case 1626: {
-              setLastKey(input.readBytes());
+              bitField0_ |= 0x00000400;
+              lastKey_ = input.readBytes();
               break;
             }
             case 1632: {
-              setMessageCount(input.readUInt64());
+              bitField0_ |= 0x00000800;
+              messageCount_ = input.readUInt64();
               break;
             }
             case 1640: {
-              setDataBlockCount(input.readUInt64());
+              bitField0_ |= 0x00001000;
+              dataBlockCount_ = input.readUInt64();
               break;
             }
             case 1648: {
-              setUncompressedBytes(input.readUInt64());
+              bitField0_ |= 0x00002000;
+              uncompressedBytes_ = input.readUInt64();
               break;
             }
             case 1656: {
-              setMaxDecompSize(input.readUInt64());
+              bitField0_ |= 0x00004000;
+              maxDecompSize_ = input.readUInt64();
               break;
             }
             case 2410: {
-              addFormatDescriptor(input.readBytes());
+              ensureFormatDescriptorIsMutable();
+              formatDescriptor_.add(input.readBytes());
               break;
             }
             case 2416: {
-              setMetadataCount(input.readUInt32());
+              bitField0_ |= 0x00010000;
+              metadataCount_ = input.readUInt32();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // optional string copyright_notice = 100;
+      private java.lang.Object copyrightNotice_ = "";
       public boolean hasCopyrightNotice() {
-        return result.hasCopyrightNotice();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public java.lang.String getCopyrightNotice() {
-        return result.getCopyrightNotice();
+      public String getCopyrightNotice() {
+        java.lang.Object ref = copyrightNotice_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          copyrightNotice_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setCopyrightNotice(java.lang.String value) {
+      public Builder setCopyrightNotice(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasCopyrightNotice = true;
-        result.copyrightNotice_ = value;
+  bitField0_ |= 0x00000001;
+        copyrightNotice_ = value;
+        onChanged();
         return this;
       }
       public Builder clearCopyrightNotice() {
-        result.hasCopyrightNotice = false;
-        result.copyrightNotice_ = getDefaultInstance().getCopyrightNotice();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        copyrightNotice_ = getDefaultInstance().getCopyrightNotice();
+        onChanged();
         return this;
+      }
+      void setCopyrightNotice(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        copyrightNotice_ = value;
+        onChanged();
       }
       
       // optional uint32 partition_count = 101;
+      private int partitionCount_ ;
       public boolean hasPartitionCount() {
-        return result.hasPartitionCount();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public int getPartitionCount() {
-        return result.getPartitionCount();
+        return partitionCount_;
       }
       public Builder setPartitionCount(int value) {
-        result.hasPartitionCount = true;
-        result.partitionCount_ = value;
+        bitField0_ |= 0x00000002;
+        partitionCount_ = value;
+        onChanged();
         return this;
       }
       public Builder clearPartitionCount() {
-        result.hasPartitionCount = false;
-        result.partitionCount_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        partitionCount_ = 0;
+        onChanged();
         return this;
       }
       
       // optional uint32 partition_number = 102;
+      private int partitionNumber_ ;
       public boolean hasPartitionNumber() {
-        return result.hasPartitionNumber();
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public int getPartitionNumber() {
-        return result.getPartitionNumber();
+        return partitionNumber_;
       }
       public Builder setPartitionNumber(int value) {
-        result.hasPartitionNumber = true;
-        result.partitionNumber_ = value;
+        bitField0_ |= 0x00000004;
+        partitionNumber_ = value;
+        onChanged();
         return this;
       }
       public Builder clearPartitionNumber() {
-        result.hasPartitionNumber = false;
-        result.partitionNumber_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        partitionNumber_ = 0;
+        onChanged();
         return this;
       }
       
       // optional string initial_pipe_name = 103;
+      private java.lang.Object initialPipeName_ = "";
       public boolean hasInitialPipeName() {
-        return result.hasInitialPipeName();
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
-      public java.lang.String getInitialPipeName() {
-        return result.getInitialPipeName();
+      public String getInitialPipeName() {
+        java.lang.Object ref = initialPipeName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          initialPipeName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setInitialPipeName(java.lang.String value) {
+      public Builder setInitialPipeName(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasInitialPipeName = true;
-        result.initialPipeName_ = value;
+  bitField0_ |= 0x00000008;
+        initialPipeName_ = value;
+        onChanged();
         return this;
       }
       public Builder clearInitialPipeName() {
-        result.hasInitialPipeName = false;
-        result.initialPipeName_ = getDefaultInstance().getInitialPipeName();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        initialPipeName_ = getDefaultInstance().getInitialPipeName();
+        onChanged();
         return this;
+      }
+      void setInitialPipeName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000008;
+        initialPipeName_ = value;
+        onChanged();
       }
       
       // optional string message_name = 104;
+      private java.lang.Object messageName_ = "";
       public boolean hasMessageName() {
-        return result.hasMessageName();
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
-      public java.lang.String getMessageName() {
-        return result.getMessageName();
+      public String getMessageName() {
+        java.lang.Object ref = messageName_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          messageName_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setMessageName(java.lang.String value) {
+      public Builder setMessageName(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasMessageName = true;
-        result.messageName_ = value;
+  bitField0_ |= 0x00000010;
+        messageName_ = value;
+        onChanged();
         return this;
       }
       public Builder clearMessageName() {
-        result.hasMessageName = false;
-        result.messageName_ = getDefaultInstance().getMessageName();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        messageName_ = getDefaultInstance().getMessageName();
+        onChanged();
         return this;
+      }
+      void setMessageName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000010;
+        messageName_ = value;
+        onChanged();
       }
       
       // optional string key_descriptor = 105;
+      private java.lang.Object keyDescriptor_ = "";
       public boolean hasKeyDescriptor() {
-        return result.hasKeyDescriptor();
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
-      public java.lang.String getKeyDescriptor() {
-        return result.getKeyDescriptor();
+      public String getKeyDescriptor() {
+        java.lang.Object ref = keyDescriptor_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          keyDescriptor_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setKeyDescriptor(java.lang.String value) {
+      public Builder setKeyDescriptor(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasKeyDescriptor = true;
-        result.keyDescriptor_ = value;
+  bitField0_ |= 0x00000020;
+        keyDescriptor_ = value;
+        onChanged();
         return this;
       }
       public Builder clearKeyDescriptor() {
-        result.hasKeyDescriptor = false;
-        result.keyDescriptor_ = getDefaultInstance().getKeyDescriptor();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        keyDescriptor_ = getDefaultInstance().getKeyDescriptor();
+        onChanged();
         return this;
+      }
+      void setKeyDescriptor(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000020;
+        keyDescriptor_ = value;
+        onChanged();
       }
       
       // optional uint64 target_decomp_size = 106;
+      private long targetDecompSize_ ;
       public boolean hasTargetDecompSize() {
-        return result.hasTargetDecompSize();
+        return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       public long getTargetDecompSize() {
-        return result.getTargetDecompSize();
+        return targetDecompSize_;
       }
       public Builder setTargetDecompSize(long value) {
-        result.hasTargetDecompSize = true;
-        result.targetDecompSize_ = value;
+        bitField0_ |= 0x00000040;
+        targetDecompSize_ = value;
+        onChanged();
         return this;
       }
       public Builder clearTargetDecompSize() {
-        result.hasTargetDecompSize = false;
-        result.targetDecompSize_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000040);
+        targetDecompSize_ = 0L;
+        onChanged();
         return this;
       }
       
       // optional uint64 index_offset = 200;
+      private long indexOffset_ ;
       public boolean hasIndexOffset() {
-        return result.hasIndexOffset();
+        return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       public long getIndexOffset() {
-        return result.getIndexOffset();
+        return indexOffset_;
       }
       public Builder setIndexOffset(long value) {
-        result.hasIndexOffset = true;
-        result.indexOffset_ = value;
+        bitField0_ |= 0x00000080;
+        indexOffset_ = value;
+        onChanged();
         return this;
       }
       public Builder clearIndexOffset() {
-        result.hasIndexOffset = false;
-        result.indexOffset_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000080);
+        indexOffset_ = 0L;
+        onChanged();
         return this;
       }
       
       // optional uint64 index_bytes = 201;
+      private long indexBytes_ ;
       public boolean hasIndexBytes() {
-        return result.hasIndexBytes();
+        return ((bitField0_ & 0x00000100) == 0x00000100);
       }
       public long getIndexBytes() {
-        return result.getIndexBytes();
+        return indexBytes_;
       }
       public Builder setIndexBytes(long value) {
-        result.hasIndexBytes = true;
-        result.indexBytes_ = value;
+        bitField0_ |= 0x00000100;
+        indexBytes_ = value;
+        onChanged();
         return this;
       }
       public Builder clearIndexBytes() {
-        result.hasIndexBytes = false;
-        result.indexBytes_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000100);
+        indexBytes_ = 0L;
+        onChanged();
         return this;
       }
       
       // optional bytes first_key = 202;
+      private com.google.protobuf.ByteString firstKey_ = com.google.protobuf.ByteString.EMPTY;
       public boolean hasFirstKey() {
-        return result.hasFirstKey();
+        return ((bitField0_ & 0x00000200) == 0x00000200);
       }
       public com.google.protobuf.ByteString getFirstKey() {
-        return result.getFirstKey();
+        return firstKey_;
       }
       public Builder setFirstKey(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasFirstKey = true;
-        result.firstKey_ = value;
+  bitField0_ |= 0x00000200;
+        firstKey_ = value;
+        onChanged();
         return this;
       }
       public Builder clearFirstKey() {
-        result.hasFirstKey = false;
-        result.firstKey_ = getDefaultInstance().getFirstKey();
+        bitField0_ = (bitField0_ & ~0x00000200);
+        firstKey_ = getDefaultInstance().getFirstKey();
+        onChanged();
         return this;
       }
       
       // optional bytes last_key = 203;
+      private com.google.protobuf.ByteString lastKey_ = com.google.protobuf.ByteString.EMPTY;
       public boolean hasLastKey() {
-        return result.hasLastKey();
+        return ((bitField0_ & 0x00000400) == 0x00000400);
       }
       public com.google.protobuf.ByteString getLastKey() {
-        return result.getLastKey();
+        return lastKey_;
       }
       public Builder setLastKey(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasLastKey = true;
-        result.lastKey_ = value;
+  bitField0_ |= 0x00000400;
+        lastKey_ = value;
+        onChanged();
         return this;
       }
       public Builder clearLastKey() {
-        result.hasLastKey = false;
-        result.lastKey_ = getDefaultInstance().getLastKey();
+        bitField0_ = (bitField0_ & ~0x00000400);
+        lastKey_ = getDefaultInstance().getLastKey();
+        onChanged();
         return this;
       }
       
       // optional uint64 message_count = 204;
+      private long messageCount_ ;
       public boolean hasMessageCount() {
-        return result.hasMessageCount();
+        return ((bitField0_ & 0x00000800) == 0x00000800);
       }
       public long getMessageCount() {
-        return result.getMessageCount();
+        return messageCount_;
       }
       public Builder setMessageCount(long value) {
-        result.hasMessageCount = true;
-        result.messageCount_ = value;
+        bitField0_ |= 0x00000800;
+        messageCount_ = value;
+        onChanged();
         return this;
       }
       public Builder clearMessageCount() {
-        result.hasMessageCount = false;
-        result.messageCount_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000800);
+        messageCount_ = 0L;
+        onChanged();
         return this;
       }
       
       // optional uint64 data_block_count = 205;
+      private long dataBlockCount_ ;
       public boolean hasDataBlockCount() {
-        return result.hasDataBlockCount();
+        return ((bitField0_ & 0x00001000) == 0x00001000);
       }
       public long getDataBlockCount() {
-        return result.getDataBlockCount();
+        return dataBlockCount_;
       }
       public Builder setDataBlockCount(long value) {
-        result.hasDataBlockCount = true;
-        result.dataBlockCount_ = value;
+        bitField0_ |= 0x00001000;
+        dataBlockCount_ = value;
+        onChanged();
         return this;
       }
       public Builder clearDataBlockCount() {
-        result.hasDataBlockCount = false;
-        result.dataBlockCount_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00001000);
+        dataBlockCount_ = 0L;
+        onChanged();
         return this;
       }
       
       // optional uint64 uncompressed_bytes = 206;
+      private long uncompressedBytes_ ;
       public boolean hasUncompressedBytes() {
-        return result.hasUncompressedBytes();
+        return ((bitField0_ & 0x00002000) == 0x00002000);
       }
       public long getUncompressedBytes() {
-        return result.getUncompressedBytes();
+        return uncompressedBytes_;
       }
       public Builder setUncompressedBytes(long value) {
-        result.hasUncompressedBytes = true;
-        result.uncompressedBytes_ = value;
+        bitField0_ |= 0x00002000;
+        uncompressedBytes_ = value;
+        onChanged();
         return this;
       }
       public Builder clearUncompressedBytes() {
-        result.hasUncompressedBytes = false;
-        result.uncompressedBytes_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00002000);
+        uncompressedBytes_ = 0L;
+        onChanged();
         return this;
       }
       
       // optional uint64 max_decomp_size = 207;
+      private long maxDecompSize_ ;
       public boolean hasMaxDecompSize() {
-        return result.hasMaxDecompSize();
+        return ((bitField0_ & 0x00004000) == 0x00004000);
       }
       public long getMaxDecompSize() {
-        return result.getMaxDecompSize();
+        return maxDecompSize_;
       }
       public Builder setMaxDecompSize(long value) {
-        result.hasMaxDecompSize = true;
-        result.maxDecompSize_ = value;
+        bitField0_ |= 0x00004000;
+        maxDecompSize_ = value;
+        onChanged();
         return this;
       }
       public Builder clearMaxDecompSize() {
-        result.hasMaxDecompSize = false;
-        result.maxDecompSize_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00004000);
+        maxDecompSize_ = 0L;
+        onChanged();
         return this;
       }
       
       // repeated bytes format_descriptor = 301;
-      public java.util.List<com.google.protobuf.ByteString> getFormatDescriptorList() {
-        return java.util.Collections.unmodifiableList(result.formatDescriptor_);
+      private java.util.List<com.google.protobuf.ByteString> formatDescriptor_ = java.util.Collections.emptyList();;
+      private void ensureFormatDescriptorIsMutable() {
+        if (!((bitField0_ & 0x00008000) == 0x00008000)) {
+          formatDescriptor_ = new java.util.ArrayList<com.google.protobuf.ByteString>(formatDescriptor_);
+          bitField0_ |= 0x00008000;
+         }
+      }
+      public java.util.List<com.google.protobuf.ByteString>
+          getFormatDescriptorList() {
+        return java.util.Collections.unmodifiableList(formatDescriptor_);
       }
       public int getFormatDescriptorCount() {
-        return result.getFormatDescriptorCount();
+        return formatDescriptor_.size();
       }
       public com.google.protobuf.ByteString getFormatDescriptor(int index) {
-        return result.getFormatDescriptor(index);
+        return formatDescriptor_.get(index);
       }
-      public Builder setFormatDescriptor(int index, com.google.protobuf.ByteString value) {
+      public Builder setFormatDescriptor(
+          int index, com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.formatDescriptor_.set(index, value);
+  ensureFormatDescriptorIsMutable();
+        formatDescriptor_.set(index, value);
+        onChanged();
         return this;
       }
       public Builder addFormatDescriptor(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  if (result.formatDescriptor_.isEmpty()) {
-          result.formatDescriptor_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
-        }
-        result.formatDescriptor_.add(value);
+  ensureFormatDescriptorIsMutable();
+        formatDescriptor_.add(value);
+        onChanged();
         return this;
       }
       public Builder addAllFormatDescriptor(
           java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
-        if (result.formatDescriptor_.isEmpty()) {
-          result.formatDescriptor_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
-        }
-        super.addAll(values, result.formatDescriptor_);
+        ensureFormatDescriptorIsMutable();
+        super.addAll(values, formatDescriptor_);
+        onChanged();
         return this;
       }
       public Builder clearFormatDescriptor() {
-        result.formatDescriptor_ = java.util.Collections.emptyList();
+        formatDescriptor_ = java.util.Collections.emptyList();;
+        bitField0_ = (bitField0_ & ~0x00008000);
+        onChanged();
         return this;
       }
       
       // optional uint32 metadata_count = 302;
+      private int metadataCount_ ;
       public boolean hasMetadataCount() {
-        return result.hasMetadataCount();
+        return ((bitField0_ & 0x00010000) == 0x00010000);
       }
       public int getMetadataCount() {
-        return result.getMetadataCount();
+        return metadataCount_;
       }
       public Builder setMetadataCount(int value) {
-        result.hasMetadataCount = true;
-        result.metadataCount_ = value;
+        bitField0_ |= 0x00010000;
+        metadataCount_ = value;
+        onChanged();
         return this;
       }
       public Builder clearMetadataCount() {
-        result.hasMetadataCount = false;
-        result.metadataCount_ = 0;
+        bitField0_ = (bitField0_ & ~0x00010000);
+        metadataCount_ = 0;
+        onChanged();
         return this;
       }
       
@@ -1370,18 +1966,41 @@ public final class Tapfile {
     
     static {
       defaultInstance = new Header(true);
-      tap.formats.tapproto.Tapfile.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:tap.formats.tapproto.Header)
   }
   
+  public interface MetadataOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // optional string key = 1;
+    boolean hasKey();
+    String getKey();
+    
+    // optional string string_value = 2;
+    boolean hasStringValue();
+    String getStringValue();
+    
+    // optional uint64 integer_value = 3;
+    boolean hasIntegerValue();
+    long getIntegerValue();
+    
+    // optional double double_value = 4;
+    boolean hasDoubleValue();
+    double getDoubleValue();
+    
+    // optional bytes bytes_value = 5;
+    boolean hasBytesValue();
+    com.google.protobuf.ByteString getBytesValue();
+  }
   public static final class Metadata extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements MetadataOrBuilder {
     // Use Metadata.newBuilder() to construct.
-    private Metadata() {
-      initFields();
+    private Metadata(Builder builder) {
+      super(builder);
     }
     private Metadata(boolean noInit) {}
     
@@ -1404,64 +2023,134 @@ public final class Tapfile {
       return tap.formats.tapproto.Tapfile.internal_static_tap_formats_tapproto_Metadata_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // optional string key = 1;
     public static final int KEY_FIELD_NUMBER = 1;
-    private boolean hasKey;
-    private java.lang.String key_ = "";
-    public boolean hasKey() { return hasKey; }
-    public java.lang.String getKey() { return key_; }
+    private java.lang.Object key_;
+    public boolean hasKey() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          key_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional string string_value = 2;
     public static final int STRING_VALUE_FIELD_NUMBER = 2;
-    private boolean hasStringValue;
-    private java.lang.String stringValue_ = "";
-    public boolean hasStringValue() { return hasStringValue; }
-    public java.lang.String getStringValue() { return stringValue_; }
+    private java.lang.Object stringValue_;
+    public boolean hasStringValue() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public String getStringValue() {
+      java.lang.Object ref = stringValue_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          stringValue_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getStringValueBytes() {
+      java.lang.Object ref = stringValue_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        stringValue_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional uint64 integer_value = 3;
     public static final int INTEGER_VALUE_FIELD_NUMBER = 3;
-    private boolean hasIntegerValue;
-    private long integerValue_ = 0L;
-    public boolean hasIntegerValue() { return hasIntegerValue; }
-    public long getIntegerValue() { return integerValue_; }
+    private long integerValue_;
+    public boolean hasIntegerValue() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public long getIntegerValue() {
+      return integerValue_;
+    }
     
     // optional double double_value = 4;
     public static final int DOUBLE_VALUE_FIELD_NUMBER = 4;
-    private boolean hasDoubleValue;
-    private double doubleValue_ = 0D;
-    public boolean hasDoubleValue() { return hasDoubleValue; }
-    public double getDoubleValue() { return doubleValue_; }
+    private double doubleValue_;
+    public boolean hasDoubleValue() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public double getDoubleValue() {
+      return doubleValue_;
+    }
     
     // optional bytes bytes_value = 5;
     public static final int BYTES_VALUE_FIELD_NUMBER = 5;
-    private boolean hasBytesValue;
-    private com.google.protobuf.ByteString bytesValue_ = com.google.protobuf.ByteString.EMPTY;
-    public boolean hasBytesValue() { return hasBytesValue; }
-    public com.google.protobuf.ByteString getBytesValue() { return bytesValue_; }
+    private com.google.protobuf.ByteString bytesValue_;
+    public boolean hasBytesValue() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public com.google.protobuf.ByteString getBytesValue() {
+      return bytesValue_;
+    }
     
     private void initFields() {
+      key_ = "";
+      stringValue_ = "";
+      integerValue_ = 0L;
+      doubleValue_ = 0D;
+      bytesValue_ = com.google.protobuf.ByteString.EMPTY;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasKey()) {
-        output.writeString(1, getKey());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getKeyBytes());
       }
-      if (hasStringValue()) {
-        output.writeString(2, getStringValue());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getStringValueBytes());
       }
-      if (hasIntegerValue()) {
-        output.writeUInt64(3, getIntegerValue());
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeUInt64(3, integerValue_);
       }
-      if (hasDoubleValue()) {
-        output.writeDouble(4, getDoubleValue());
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeDouble(4, doubleValue_);
       }
-      if (hasBytesValue()) {
-        output.writeBytes(5, getBytesValue());
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBytes(5, bytesValue_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1472,29 +2161,36 @@ public final class Tapfile {
       if (size != -1) return size;
     
       size = 0;
-      if (hasKey()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getKey());
+          .computeBytesSize(1, getKeyBytes());
       }
-      if (hasStringValue()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(2, getStringValue());
+          .computeBytesSize(2, getStringValueBytes());
       }
-      if (hasIntegerValue()) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(3, getIntegerValue());
+          .computeUInt64Size(3, integerValue_);
       }
-      if (hasDoubleValue()) {
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(4, getDoubleValue());
+          .computeDoubleSize(4, doubleValue_);
       }
-      if (hasBytesValue()) {
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, getBytesValue());
+          .computeBytesSize(5, bytesValue_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static tap.formats.tapproto.Tapfile.Metadata parseFrom(
@@ -1571,34 +2267,59 @@ public final class Tapfile {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private tap.formats.tapproto.Tapfile.Metadata result;
-      
-      // Construct using tap.formats.tapproto.Tapfile.Metadata.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new tap.formats.tapproto.Tapfile.Metadata();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements tap.formats.tapproto.Tapfile.MetadataOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return tap.formats.tapproto.Tapfile.internal_static_tap_formats_tapproto_Metadata_descriptor;
       }
       
-      protected tap.formats.tapproto.Tapfile.Metadata internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return tap.formats.tapproto.Tapfile.internal_static_tap_formats_tapproto_Metadata_fieldAccessorTable;
+      }
+      
+      // Construct using tap.formats.tapproto.Tapfile.Metadata.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new tap.formats.tapproto.Tapfile.Metadata();
+        super.clear();
+        key_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        stringValue_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        integerValue_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        doubleValue_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        bytesValue_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -1610,33 +2331,51 @@ public final class Tapfile {
         return tap.formats.tapproto.Tapfile.Metadata.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public tap.formats.tapproto.Tapfile.Metadata build() {
-        if (result != null && !isInitialized()) {
+        tap.formats.tapproto.Tapfile.Metadata result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private tap.formats.tapproto.Tapfile.Metadata buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        tap.formats.tapproto.Tapfile.Metadata result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public tap.formats.tapproto.Tapfile.Metadata buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        tap.formats.tapproto.Tapfile.Metadata result = new tap.formats.tapproto.Tapfile.Metadata(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        tap.formats.tapproto.Tapfile.Metadata returnMe = result;
-        result = null;
-        return returnMe;
+        result.key_ = key_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.stringValue_ = stringValue_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.integerValue_ = integerValue_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.doubleValue_ = doubleValue_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.bytesValue_ = bytesValue_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -1669,6 +2408,10 @@ public final class Tapfile {
         return this;
       }
       
+      public final boolean isInitialized() {
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1681,136 +2424,183 @@ public final class Tapfile {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 10: {
-              setKey(input.readString());
+              bitField0_ |= 0x00000001;
+              key_ = input.readBytes();
               break;
             }
             case 18: {
-              setStringValue(input.readString());
+              bitField0_ |= 0x00000002;
+              stringValue_ = input.readBytes();
               break;
             }
             case 24: {
-              setIntegerValue(input.readUInt64());
+              bitField0_ |= 0x00000004;
+              integerValue_ = input.readUInt64();
               break;
             }
             case 33: {
-              setDoubleValue(input.readDouble());
+              bitField0_ |= 0x00000008;
+              doubleValue_ = input.readDouble();
               break;
             }
             case 42: {
-              setBytesValue(input.readBytes());
+              bitField0_ |= 0x00000010;
+              bytesValue_ = input.readBytes();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // optional string key = 1;
+      private java.lang.Object key_ = "";
       public boolean hasKey() {
-        return result.hasKey();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public java.lang.String getKey() {
-        return result.getKey();
+      public String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setKey(java.lang.String value) {
+      public Builder setKey(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasKey = true;
-        result.key_ = value;
+  bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
         return this;
       }
       public Builder clearKey() {
-        result.hasKey = false;
-        result.key_ = getDefaultInstance().getKey();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        key_ = getDefaultInstance().getKey();
+        onChanged();
         return this;
+      }
+      void setKey(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
       }
       
       // optional string string_value = 2;
+      private java.lang.Object stringValue_ = "";
       public boolean hasStringValue() {
-        return result.hasStringValue();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      public java.lang.String getStringValue() {
-        return result.getStringValue();
+      public String getStringValue() {
+        java.lang.Object ref = stringValue_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          stringValue_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setStringValue(java.lang.String value) {
+      public Builder setStringValue(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasStringValue = true;
-        result.stringValue_ = value;
+  bitField0_ |= 0x00000002;
+        stringValue_ = value;
+        onChanged();
         return this;
       }
       public Builder clearStringValue() {
-        result.hasStringValue = false;
-        result.stringValue_ = getDefaultInstance().getStringValue();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        stringValue_ = getDefaultInstance().getStringValue();
+        onChanged();
         return this;
+      }
+      void setStringValue(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000002;
+        stringValue_ = value;
+        onChanged();
       }
       
       // optional uint64 integer_value = 3;
+      private long integerValue_ ;
       public boolean hasIntegerValue() {
-        return result.hasIntegerValue();
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public long getIntegerValue() {
-        return result.getIntegerValue();
+        return integerValue_;
       }
       public Builder setIntegerValue(long value) {
-        result.hasIntegerValue = true;
-        result.integerValue_ = value;
+        bitField0_ |= 0x00000004;
+        integerValue_ = value;
+        onChanged();
         return this;
       }
       public Builder clearIntegerValue() {
-        result.hasIntegerValue = false;
-        result.integerValue_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        integerValue_ = 0L;
+        onChanged();
         return this;
       }
       
       // optional double double_value = 4;
+      private double doubleValue_ ;
       public boolean hasDoubleValue() {
-        return result.hasDoubleValue();
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       public double getDoubleValue() {
-        return result.getDoubleValue();
+        return doubleValue_;
       }
       public Builder setDoubleValue(double value) {
-        result.hasDoubleValue = true;
-        result.doubleValue_ = value;
+        bitField0_ |= 0x00000008;
+        doubleValue_ = value;
+        onChanged();
         return this;
       }
       public Builder clearDoubleValue() {
-        result.hasDoubleValue = false;
-        result.doubleValue_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        doubleValue_ = 0D;
+        onChanged();
         return this;
       }
       
       // optional bytes bytes_value = 5;
+      private com.google.protobuf.ByteString bytesValue_ = com.google.protobuf.ByteString.EMPTY;
       public boolean hasBytesValue() {
-        return result.hasBytesValue();
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       public com.google.protobuf.ByteString getBytesValue() {
-        return result.getBytesValue();
+        return bytesValue_;
       }
       public Builder setBytesValue(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasBytesValue = true;
-        result.bytesValue_ = value;
+  bitField0_ |= 0x00000010;
+        bytesValue_ = value;
+        onChanged();
         return this;
       }
       public Builder clearBytesValue() {
-        result.hasBytesValue = false;
-        result.bytesValue_ = getDefaultInstance().getBytesValue();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        bytesValue_ = getDefaultInstance().getBytesValue();
+        onChanged();
         return this;
       }
       
@@ -1819,7 +2609,6 @@ public final class Tapfile {
     
     static {
       defaultInstance = new Metadata(true);
-      tap.formats.tapproto.Tapfile.internalForceInit();
       defaultInstance.initFields();
     }
     
@@ -1905,8 +2694,6 @@ public final class Tapfile {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
   }
-  
-  public static void internalForceInit() {}
   
   // @@protoc_insertion_point(outer_class_scope)
 }

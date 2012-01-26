@@ -3,7 +3,7 @@
 //
 //  Standard metadata fields in Tap messages
 
-package tap;
+package tap.sample;
 
 // Timestamp is signed 100 nanosecond ticks since 1 Jan, 1970
 // Timestamp is always stored on disk as GMT

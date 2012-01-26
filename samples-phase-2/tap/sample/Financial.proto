@@ -4,7 +4,7 @@
 
 import "Tap.proto";
 
-package quantbench;
+package tap.sample;
 
 message Candle {
     optional Timestamp          time = 1;       
