@@ -82,7 +82,8 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
         }
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public final void reduce(AvroKey<K> key, Iterator<AvroValue<V>> values,
             OutputCollector<KO, VO> collector, Reporter reporter)
             throws IOException {
@@ -96,6 +97,11 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
             if (null == this.outpipe.getContext()) {
                 this.outpipe.setContext(new TapContext<OUT>(this.collector, reporter));
             }
+            
+            if(this.collector instanceof BinaryKeyAwareCollector) {
+            	byte[] binaryKey = null; // TODO: generate byte representation from Phase.MAP_OUT_KEY_SCHEMA
+            	((BinaryKeyAwareCollector) this.collector).setCurrentKey(binaryKey);
+            }
             reducer.reduce(inPipe, this.outpipe);
         }
     }
@@ -103,6 +109,10 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
     @Override
     public void close() throws IOException {
         reducer.close(out, context);
+    }
+    
+    interface BinaryKeyAwareCollector {
+    	void setCurrentKey(byte[] key);
     }
 
 }

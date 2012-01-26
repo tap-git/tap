@@ -72,11 +72,12 @@ class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OU
         return ReflectionUtils.newInstance(conf.getClass(Phase.REDUCER, TapReducer.class, TapReducerInterface.class), conf);
     }
 
-    private class ReduceCollector<AO, OUT> extends AvroMultiCollector<AO> {
+    private class ReduceCollector<AO, OUT> extends AvroMultiCollector<AO> implements BinaryKeyAwareCollector {
         private final AvroWrapper<OUT> wrapper = new AvroWrapper<OUT>(null);
         private Reporter reporter;
         private OutputCollector originalCollector;
         private ProtobufWritable protobufWritable = new ProtobufWritable();
+        private byte[] currentBinaryKey; 
 
         public ReduceCollector(OutputCollector<?, NullWritable> out, Reporter reporter) {
             this.originalCollector = out;
@@ -91,7 +92,7 @@ class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OU
                 if(datum != null)
                     protobufWritable.setConverter(datum.getClass());
                 protobufWritable.set(datum);
-                out.collect(NullWritable.get(), protobufWritable);
+                out.collect(currentBinaryKey, protobufWritable);
             }
             else {
                 wrapper.datum((OUT) datum);
@@ -109,6 +110,11 @@ class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OU
             OutputCollector collector = multiOutput.getCollector(multiOutputPrefix, multiName, reporter);
             _collect(datum, collector);
         }
+
+		@Override
+		public void setCurrentKey(byte[] key) {
+			currentBinaryKey = key;
+		}
     }
 
     @Override
@@ -123,3 +129,4 @@ class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OU
     }
 
 }
+
