@@ -2,7 +2,7 @@
 //  Copyright (c) 2011 Quantbench Corporation, All Rights Reserved.
 //
 
-import "Tap.proto";
+import "Tapfile.proto";
 
 package tap.sample;
 

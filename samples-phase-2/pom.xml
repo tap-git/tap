@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>tap-git</groupId>
-	<artifactId>tap-samples-phase-2</artifactId>
+	<artifactId>tap-samples-2</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Tap Framework Samples</name>
@@ -14,11 +14,6 @@
 	</properties>
 
 	<build>
-		<sourceDirectory>.</sourceDirectory>
-		<scriptSourceDirectory>.</scriptSourceDirectory>
-		<testSourceDirectory>.</testSourceDirectory>
-		<outputDirectory>./target/classes</outputDirectory>
-		<testOutputDirectory>./target/test-classes</testOutputDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -28,6 +23,7 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+			
 		</plugins>
 	</build>
 	<repositories>
@@ -46,7 +42,6 @@
 		<dependency>
 			<groupId>tap-git</groupId>
 			<artifactId>tap</artifactId>
-			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
@@ -65,4 +60,13 @@
 			<version>2.0</version>
 		</dependency>
 	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>tap-git</groupId>
+				<artifactId>tap</artifactId>
+				<version>1.0-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

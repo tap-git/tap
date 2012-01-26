@@ -3,12 +3,12 @@ package tap.sample;
 // This example shows how a HashMap is passed into mappers using Phase.mapParam()
 
 import java.util.StringTokenizer;
-import tap.sample.CountRec;          
+import tap.sample.Samples.CountRec;
 import tap.*;
 
 public class PassHashMap {
     
-    public static int main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         CommandOptions o = new CommandOptions(args);
         Tap tap = new Tap(o);
         HashMap<String,Integer> scores = new HashMap<String,Integer>();
@@ -19,11 +19,11 @@ public class PassHashMap {
         tap.createPhase()
             .reads(o.input)
             .map(ScoreMapper.class)
-            //.mapParam("scoreParam", scores)
+            //.set("scoreParam", scores)
             .groupBy("word")
             .writes(o.output)
             .reduce(ScoreReducer.class);
-        return tap.make();
+        tap.make();
     }
     
     public static class ScoreMapper extends TapMapper {
