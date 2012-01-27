@@ -1,12 +1,19 @@
 package tap.core.io.avro;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
 
 public class BinaryKeyDecoder extends Decoder {
+	
+	private InputStream in;
+	
+	public BinaryKeyDecoder(InputStream in) {
+		this.in = in;
+	}
 
 	@Override
 	public void readNull() throws IOException {
