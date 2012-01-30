@@ -2,13 +2,15 @@ package tap.sample;
 
 // This example shows how a HashMap is passed into mappers using Phase.mapParam()
 
+import java.util.HashMap;
 import java.util.StringTokenizer;
-import tap.sample.CountRec;          
-import tap.*;
+//import tap.sample.Samples.*; // this includes the protobuc classes generated from Samples.proto
+import tap.sample.Samples.CountRec;
+import tap.core.*;
 
 public class PassHashMap {
     
-    public static int main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         CommandOptions o = new CommandOptions(args);
         Tap tap = new Tap(o);
         HashMap<String,Integer> scores = new HashMap<String,Integer>();
@@ -19,14 +21,14 @@ public class PassHashMap {
         tap.createPhase()
             .reads(o.input)
             .map(ScoreMapper.class)
-            //.mapParam("scoreParam", scores)
+            .set("scoreParam", scores)
             .groupBy("word")
             .writes(o.output)
             .reduce(ScoreReducer.class);
-        return tap.make();
+        tap.make();
     }
     
-    public static class ScoreMapper extends TapMapper {
+    public static class ScoreMapper extends TapMapper<String,CountRec> {
         HashMap<String, Integer> scoreParam;
         @Override
         public void map(String in, Pipe<CountRec> out) {
@@ -45,7 +47,7 @@ public class PassHashMap {
     /**
      *
      */
-    public static class ScoreReducer extends TapReducer {
+    public static class ScoreReducer extends TapReducer<CountRec,CountRec> {
         @Override
         public void reduce(Pipe<CountRec> in, Pipe<CountRec> out) {
             String word = null;
@@ -60,16 +62,3 @@ public class PassHashMap {
         }
     }
 }
-    /*
-     * CountRec.proto
-     *
-     
-     package tap.sample;
-     
-     message CountRec {
-     required string word = 1;
-     required int32 count = 2;
-     }
-     
-     *
-     */

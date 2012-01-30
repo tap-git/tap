@@ -1,13 +1,16 @@
 package tap.sample;
-import tap.*;
+
+import tap.core.*;
+import tap.core.Tap;
+
 public class PureSort {
-    public static int main(String[] args) throws Exception {    
+    public static void main(String[] args) throws Exception {    
     	CommandOptions o = new CommandOptions(args);
-    	Tap pipeline = new Tap(o);
-        pipeline.createPhase()
+    	Tap tap = new Tap(o);
+        tap.createPhase()
             .reads(o.input)
             .groupBy("word")
             .writes(o.output);
-        return pipeline.make();
+        tap.make();
     }
 }

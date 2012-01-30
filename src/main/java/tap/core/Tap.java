@@ -368,12 +368,15 @@ public class Tap implements TapInterface {
 	 */
 	private int emitErrors(List<List<PhaseError>> errorCollection) {
 		int errorCount = 0;
-		for (List<PhaseError> errors : errorCollection) {
-			for (PhaseError e : errors) {
-				logf("%s : %s \n", e.getMessage(), e.getException().toString());
-				errorCount++;
+		if (null != errorCollection)
+			for (List<PhaseError> errors : errorCollection) {
+				if (null != errors)
+					for (PhaseError e : errors) {
+						logf("%s : %s \n", e.getMessage(), 
+								(null == e.getException()) ? "" : e.getException().toString());
+						errorCount++;
+					}
 			}
-		}
 		return errorCount;
 	}
 

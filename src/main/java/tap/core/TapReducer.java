@@ -22,7 +22,12 @@ package tap.core;
 import org.apache.hadoop.conf.Configured;
 
 public class TapReducer<IN,OUT> extends Configured implements TapReducerInterface<IN,OUT> {
- 
+
+	@Override
+	public void init(String path) {
+		// TODO Auto-generated method stub
+	}
+
     /** Override this method for a reducer */
     @SuppressWarnings("unchecked")
     public void reduce(Pipe<IN> in, Pipe<OUT> out) {
@@ -32,20 +37,13 @@ public class TapReducer<IN,OUT> extends Configured implements TapReducerInterfac
     }
 
     @Override
-    public void close(OUT out, TapContext<OUT> context) {
-        // no op by default
+    public void close(Pipe<OUT> out) {
+    	finish();
     }
-
-	@Override
-	public void init(String path) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void finish() {
 		// TODO Auto-generated method stub
-		
 	}
 
 }
