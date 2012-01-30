@@ -5,135 +5,119 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import org.apache.avro.io.Decoder;
+import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.util.Utf8;
 
 public class BinaryKeyDecoder extends Decoder {
 	
 	private InputStream in;
 	
+	private Decoder decoder;
+	
 	public BinaryKeyDecoder(InputStream in) {
 		this.in = in;
+		decoder = DecoderFactory.get().directBinaryDecoder(in, null);
 	}
 
 	@Override
 	public void readNull() throws IOException {
-		// TODO Auto-generated method stub
-		
+		decoder.readNull();
 	}
 
 	@Override
 	public boolean readBoolean() throws IOException {
-		// TODO Auto-generated method stub
-		return false;
+		return decoder.readBoolean();
 	}
 
 	@Override
 	public int readInt() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return decoder.readInt();
 	}
 
 	@Override
 	public long readLong() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return decoder.readLong();
 	}
 
 	@Override
 	public float readFloat() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return decoder.readFloat();
 	}
 
 	@Override
 	public double readDouble() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return decoder.readDouble();
 	}
 
 	@Override
 	public Utf8 readString(Utf8 old) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return decoder.readString(old);
 	}
 
 	@Override
 	public void skipString() throws IOException {
-		// TODO Auto-generated method stub
-		
+		decoder.skipString();
 	}
 
 	@Override
 	public ByteBuffer readBytes(ByteBuffer old) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return decoder.readBytes(old);
 	}
 
 	@Override
 	public void skipBytes() throws IOException {
-		// TODO Auto-generated method stub
-		
+		decoder.skipBytes();
 	}
 
 	@Override
 	public void readFixed(byte[] bytes, int start, int length)
 			throws IOException {
-		// TODO Auto-generated method stub
-		
+		decoder.readFixed(bytes, start, length);
 	}
 
 	@Override
 	public void skipFixed(int length) throws IOException {
-		// TODO Auto-generated method stub
-		
+		decoder.skipFixed(length);
 	}
 
 	@Override
 	public int readEnum() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return decoder.readEnum();
 	}
 
 	@Override
 	public long readArrayStart() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return decoder.readArrayStart();
 	}
 
 	@Override
 	public long arrayNext() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return decoder.arrayNext();
 	}
 
 	@Override
 	public long skipArray() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return decoder.skipArray();
 	}
 
 	@Override
 	public long readMapStart() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return decoder.readMapStart();
 	}
 
 	@Override
 	public long mapNext() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return decoder.mapNext();
 	}
 
 	@Override
 	public long skipMap() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return decoder.skipMap();
 	}
 
 	@Override
 	public int readIndex() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return decoder.readIndex();
 	}
 
 }
