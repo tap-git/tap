@@ -86,6 +86,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
         }
 
         mapper.setConf(conf);
+        mapper.init(conf.get("map.input.file"));
     }
 
     @SuppressWarnings("unchecked")
@@ -240,7 +241,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     
     private void map(IN value) {
         if (this.isPipeOutput) {
-            mapper.map(value, this.outPipe);
+            mapper.map(value, outPipe);
         }
     }
 
@@ -347,6 +348,6 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
 
     @Override
     public void close() throws IOException {
-        mapper.close(out, context);
+        mapper.close(outPipe);
     }
 }

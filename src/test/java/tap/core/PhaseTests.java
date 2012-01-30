@@ -45,7 +45,7 @@ public class PhaseTests {
 
     @Test
     public void setTest() {
-    	String[] args = {"Phase.setTest", "-i", "share/*.txt", "-o", "/tmp/out", "--force"};
+    	String[] args = {"Phase.setTest", "-i", "share/decameron.txt", "-o", "/tmp/out", "--force"};
     	CommandOptions o = new CommandOptions(args);
         /* Set up a basic pipeline of map reduce */
         Tap tap = new Tap(o);
@@ -59,7 +59,7 @@ public class PhaseTests {
         .createPhase()
         .reads(o.input)
         .map(SetMapper.class)
-        .reduce(Test2Reducer.class)
+        .reduce(SetReducer.class)
         //.combine(Test2Reducer.class)
         .groupBy("word")
         .writes(o.output)
@@ -71,13 +71,22 @@ public class PhaseTests {
     public static class SetMapper extends TapMapper<String, CountRec> {
     	private HashMap<String,String> myMapParam = null;
     	
-    	private HashMap<String,String> getMyMap() {
+    	@Override
+    	public void init(String Path) {
+    		Assert.assertNotNull(Path);
+    		Assert.assertEquals(true, Path.contains("decameron.txt"));
     		if (null == myMapParam) {
     			myMapParam = (HashMap<String, String>) this.getMapperParameter("mykey");
     		}
+    		Assert.assertNotNull(myMapParam);
+    		System.out.println("SetMapper.init called");
+    	}
+
+    	private HashMap<String,String> getMyMap() {
 			return myMapParam;
     	}
 
+    	private CountRec outrec = new CountRec();
     	@Override
     	public void map(String in, Pipe<CountRec> out) {
     		Assert.assertNotNull(getMyMap());
@@ -85,14 +94,34 @@ public class PhaseTests {
     		Assert.assertEquals("dog", getMyMap().get("animal"));
     		Assert.assertEquals("One", getMyMap().get("bob"));
     		Assert.assertEquals("Orange", getMyMap().get("fruit"));
+    		outrec.word = in;
+    		outrec.count = 1;
+    		out.put(outrec);
+    	}
+    	
+    	@Override
+    	public void finish() {
+    		System.out.println("SetMapper.finish called");
     	}
     }
     
     public static class SetReducer extends TapReducer<CountRec, OutputLog> {
-        @Override
+        
+    	@Override
+    	public void init(String path) {
+    		System.out.println("SetReducer.init("+path+") called");
+    	}
+    	
+    	@Override
         public void reduce(Pipe<CountRec> in, Pipe<OutputLog> out) {
         	
         }
+        
+        @Override
+        public void finish() {
+        	System.out.println("SetReducer.finish called");
+        }
+       
     }
 
     @Test

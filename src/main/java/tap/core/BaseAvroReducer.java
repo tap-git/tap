@@ -56,9 +56,12 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
             throw new RuntimeException(e);
         }
         // Determine if we are using legacy reduce signature or newer Pipe based signature
-        this.isPipeReducer = (null != conf.get(Phase.REDUCER_OUT_PIPE_CLASS));
+        isPipeReducer = (null != conf.get(Phase.REDUCER_OUT_PIPE_CLASS));
         if (isPipeReducer) {
-            this.outpipe = new Pipe<OUT>(out);
+            outpipe = new Pipe<OUT>(out);
+        }
+        if (null != reducer) {
+        	reducer.init(conf.get("mapred.output.dir"));
         }
     }
 
@@ -102,13 +105,13 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
             	byte[] binaryKey = null; // TODO: generate byte representation from Phase.MAP_OUT_KEY_SCHEMA
             	((BinaryKeyAwareCollector) this.collector).setCurrentKey(binaryKey);
             }
-            reducer.reduce(inPipe, this.outpipe);
+            reducer.reduce(inPipe, outpipe);
         }
     }
 
     @Override
     public void close() throws IOException {
-        reducer.close(out, context);
+        reducer.close(outpipe);
     }
     
     interface BinaryKeyAwareCollector {

@@ -33,7 +33,6 @@ import tap.core.mapreduce.output.TapfileOutputFormat;
 /**
  * Bridge between a {@link org.apache.hadoop.mapred.Reducer} and an {@link AvroReducer}.
  */
-@SuppressWarnings("deprecation")
 class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OUT>, NullWritable> {
     
     private boolean isTextOutput = false;

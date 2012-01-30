@@ -21,14 +21,16 @@ package tap.core;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.HashMap;
-
 import org.apache.hadoop.conf.Configured;
-
 import tap.util.CacheUtils;
 
 public class TapMapper<IN,OUT> extends Configured implements TapMapperInterface<IN,OUT> {
-    
+
+	@Override
+	public void init(String path) {
+		// TODO Auto-generated method stub
+	}
+	
     /**
      * To be used by map method to access mapper parameters stored serialized into the Distributed Cache.
      * @return The Distributed Cache object cast as a Serializable
@@ -53,21 +55,14 @@ public class TapMapper<IN,OUT> extends Configured implements TapMapperInterface<
         out.put((OUT)in);
     }
 
-    @Override
-    public void close(OUT out, TapContext<OUT> context) {
+    public void close(Pipe<OUT> out) {
         // no op by default
+    	finish();
     }
-
-	@Override
-	public void init(String path) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void finish() {
 		// TODO Auto-generated method stub
-		
 	}
 
 }
