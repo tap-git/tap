@@ -4,7 +4,7 @@ package tap.sample;
 
 import java.util.HashMap;
 import java.util.StringTokenizer;
-import tap.sample.Samples.*; // this includes the protobuc classes generated from Samples.proto
+//import tap.sample.Samples.*; // this includes the protobuc classes generated from Samples.proto
 import tap.sample.Samples.CountRec;
 import tap.core.*;
 
@@ -21,7 +21,7 @@ public class PassHashMap {
         tap.createPhase()
             .reads(o.input)
             .map(ScoreMapper.class)
-            //.set("scoreParam", scores)
+            .set("scoreParam", scores)
             .groupBy("word")
             .writes(o.output)
             .reduce(ScoreReducer.class);

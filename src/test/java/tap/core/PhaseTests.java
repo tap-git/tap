@@ -3,6 +3,8 @@
  */
 package tap.core;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -42,18 +44,70 @@ public class PhaseTests {
     }
 
     @Test
-    public void mapperSignatureTest() {
-    	String[] args = {"mapperTest", "-i", "share/wordcount.out.avro", "-o", "/tmp/out"};
+    public void setTest() {
+    	String[] args = {"Phase.setTest", "-i", "share/*.txt", "-o", "/tmp/out", "--force"};
     	CommandOptions o = new CommandOptions(args);
         /* Set up a basic pipeline of map reduce */
-        Tap assembly = new Tap(o).named(o.program);
+        Tap tap = new Tap(o);
+        HashMap<String, String> hash = new HashMap<String,String>();
+        hash.put("bob", "One");
+        hash.put("fruit", "apple");
+        hash.put("fruit", "Orange");
+        hash.put("animal", "dog");
+        
+        tap
+        .createPhase()
+        .reads(o.input)
+        .map(SetMapper.class)
+        .reduce(Test2Reducer.class)
+        //.combine(Test2Reducer.class)
+        .groupBy("word")
+        .writes(o.output)
+        .set("mykey", hash);
+        int rc = tap.named(args[0]).make();
+        Assert.assertEquals(0, rc);
+    }
+    
+    public static class SetMapper extends TapMapper<String, CountRec> {
+    	private HashMap<String,String> myMapParam = null;
+    	
+    	private HashMap<String,String> getMyMap() {
+    		if (null == myMapParam) {
+    			myMapParam = (HashMap<String, String>) this.getMapperParameter("mykey");
+    		}
+			return myMapParam;
+    	}
+
+    	@Override
+    	public void map(String in, Pipe<CountRec> out) {
+    		Assert.assertNotNull(getMyMap());
+    		Assert.assertEquals(3, getMyMap().size());
+    		Assert.assertEquals("dog", getMyMap().get("animal"));
+    		Assert.assertEquals("One", getMyMap().get("bob"));
+    		Assert.assertEquals("Orange", getMyMap().get("fruit"));
+    	}
+    }
+    
+    public static class SetReducer extends TapReducer<CountRec, OutputLog> {
+        @Override
+        public void reduce(Pipe<CountRec> in, Pipe<OutputLog> out) {
+        	
+        }
+    }
+
+    @Test
+    public void mapperSignatureTest() {
+    	String[] args = {"mapperTest", "-i", "share/wordcount.out.avro", "-o", "/tmp/out", "--force"};
+    	CommandOptions o = new CommandOptions(args);
+        /* Set up a basic pipeline of map reduce */
+        Tap tap = new Tap(o).named(o.program);
 
         Pipe<CountRec> p1 = new Pipe<CountRec>(o.input);
         p1.setPrototype(new CountRec());
 
         Pipe<OutputLog> p2 = new Pipe<OutputLog>(o.output);
         p2.setPrototype(new OutputLog());
-        assembly.produces(p2);
+        tap.produces(p2);
 
         Phase phase = new Phase();
         phase.reads(p1).writes(p2).map(Test2Mapper.class).groupBy("word")
@@ -61,7 +115,7 @@ public class PhaseTests {
 
         System.out.println(phase.getSummary());
 
-        List<PhaseError> errors = phase.plan(assembly);
+        List<PhaseError> errors = phase.plan(tap);
 
         Assert.assertEquals(0, errors.size());
 
@@ -177,7 +231,7 @@ public class PhaseTests {
         }
     }
 
-    public class Test2Reducer extends TapReducer<CountRec, OutputLog> {
+    public static class Test2Reducer extends TapReducer<CountRec, OutputLog> {
         @Override
         public void reduce(Pipe<CountRec> in, Pipe<OutputLog> out) {
         }

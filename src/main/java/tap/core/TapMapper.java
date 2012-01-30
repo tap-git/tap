@@ -19,10 +19,35 @@
  */
 package tap.core;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
+
 import org.apache.hadoop.conf.Configured;
+
+import tap.util.CacheUtils;
 
 public class TapMapper<IN,OUT> extends Configured implements TapMapperInterface<IN,OUT> {
     
+    /**
+     * To be used by map method to access mapper parameters stored serialized into the Distributed Cache.
+     * @return The Distributed Cache object cast as a Serializable
+     * @throws ClassNotFoundException 
+     * @throws IOException 
+     */
+    protected Serializable getMapperParameter(String key) {
+    	try {
+			return (Serializable) CacheUtils.getFromCache(key, getConf());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+    }
+
     @SuppressWarnings("unchecked")
     public void map(IN in, Pipe<OUT> out) {
         out.put((OUT)in);
