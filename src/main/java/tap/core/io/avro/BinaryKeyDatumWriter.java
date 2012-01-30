@@ -22,7 +22,7 @@ public class BinaryKeyDatumWriter<T> extends GenericDatumWriter<T>{
 		super(root, data);
 		this.data = data;
 	}
-
+	
 	@Override
 	protected void writeRecord(Schema schema, Object datum, Encoder out)
 			throws IOException {

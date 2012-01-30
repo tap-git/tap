@@ -27,6 +27,7 @@ import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.mapred.lib.MultipleOutputs;
 import org.apache.hadoop.util.ReflectionUtils;
 
+import tap.core.io.BinaryKey;
 import tap.core.mapreduce.io.ProtobufWritable;
 import tap.core.mapreduce.output.TapfileOutputFormat;
 
@@ -77,7 +78,7 @@ class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OU
         private Reporter reporter;
         private OutputCollector originalCollector;
         private ProtobufWritable protobufWritable = new ProtobufWritable();
-        private byte[] currentBinaryKey; 
+        private BinaryKey binaryKey;
 
         public ReduceCollector(OutputCollector<?, NullWritable> out, Reporter reporter) {
             this.originalCollector = out;
@@ -92,7 +93,7 @@ class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OU
                 if(datum != null)
                     protobufWritable.setConverter(datum.getClass());
                 protobufWritable.set(datum);
-                out.collect(currentBinaryKey, protobufWritable);
+                out.collect(binaryKey, protobufWritable);
             }
             else {
                 wrapper.datum((OUT) datum);
@@ -112,8 +113,8 @@ class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OU
         }
 
 		@Override
-		public void setCurrentKey(byte[] key) {
-			currentBinaryKey = key;
+		public void setCurrentKey(BinaryKey key) {
+			binaryKey = key;
 		}
     }
 

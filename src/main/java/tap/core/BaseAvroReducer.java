@@ -19,12 +19,17 @@
  */
 package tap.core;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.apache.avro.Schema;
 import org.apache.avro.mapred.*;
 import org.apache.hadoop.mapred.*;
 
+import tap.core.io.BinaryKey;
+import tap.core.io.avro.BinaryKeyDatumWriter;
+import tap.core.io.avro.BinaryKeyEncoder;
 import tap.util.ObjectFactory;
 
 /** Base class for a combiner or a reducer */
@@ -38,6 +43,12 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
     protected boolean isPipeReducer = false;
     protected OUT out;
     protected Pipe<OUT> outpipe = null;
+    
+    // binary key support
+    private BinaryKeyDatumWriter<K> keyWriter;
+    private ReuseableByteArrayOutputStream keyStream;
+    private BinaryKeyEncoder keyEncoder;
+    private BinaryKey binaryKey = new BinaryKey();
 
     protected abstract TapReducerInterface<V, OUT> getReducer(JobConf conf);
 
@@ -50,6 +61,10 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
 
         try {
             this.out = (OUT) ObjectFactory.newInstance(Class.forName(conf.get(Phase.REDUCE_OUT_CLASS)));
+            
+            this.keyStream = new ReuseableByteArrayOutputStream();
+            this.keyWriter = new BinaryKeyDatumWriter<K>(Schema.parse(conf.get(Phase.MAP_OUT_KEY_SCHEMA)));
+            this.keyEncoder = new BinaryKeyEncoder(keyStream);
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -84,6 +99,15 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
             return this;
         }
     }
+    
+    class ReuseableByteArrayOutputStream extends ByteArrayOutputStream {
+    	public byte[] getBuffer() {
+    		return buf;
+    	}
+    	public int getCount() {
+    		return count;
+    	}
+    }
 
     @SuppressWarnings("unchecked")
 	@Override
@@ -102,7 +126,9 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
             }
             
             if(this.collector instanceof BinaryKeyAwareCollector) {
-            	byte[] binaryKey = null; // TODO: generate byte representation from Phase.MAP_OUT_KEY_SCHEMA
+            	keyStream.reset();
+            	keyWriter.write(key.datum(), keyEncoder);
+            	binaryKey.reset(keyStream.getBuffer(), keyStream.getCount());
             	((BinaryKeyAwareCollector) this.collector).setCurrentKey(binaryKey);
             }
             reducer.reduce(inPipe, outpipe);
@@ -115,7 +141,7 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
     }
     
     interface BinaryKeyAwareCollector {
-    	void setCurrentKey(byte[] key);
+    	void setCurrentKey(BinaryKey key);
     }
 
 }
