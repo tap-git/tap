@@ -108,7 +108,11 @@ public class Phase {
     private Object inputPipeProto;
     private Class<?> mapOutPipeType;
     private Class<Pipe> reduceOutPipeType;
+    private HashMap<String, Serializable> mapperParameters = null;
     
+    /**
+     * default constructor hidden to encourage use of the Tap.createPhase.
+     */
     Phase() {
     }
 
@@ -116,10 +120,19 @@ public class Phase {
         this.name = name;
     }
 
+    /**
+     * Returns the first and default output of this phase.
+     * @return The output Pipe.
+     */
     public Pipe output() {
         return output(0);
     }
 
+    /**
+     * Return the Pipe at index n
+     * @param n the index.
+     * @return The Pipe.
+     */
     public Pipe output(int n) {
         if (mainWrites == null) {
             // this *should* set up a promise to get the nth output ...
@@ -135,8 +148,26 @@ public class Phase {
      * @return This phase.
      */
     public Phase reads(Phase phase) {
-        this.reads(phase.getOutputs().get(0));  //TODO: Only one input is supported
+    	if (null == phase.getOutputs()) {
+    		// Set a temporary output
+    		phase.writes(phase.getTmpOutputName());
+    	}
+        reads(phase.getOutputs().get(0));  //TODO: Only one input is supported
         return this;
+    }
+    
+    // TODO: Needs to be stronger
+    String getTmpOutputName() {
+    	return "/tmp/tap/phase-out"+ this.getID();
+    }
+    
+    private static int globalPhaseID = 0;
+    private int phaseID = -1;
+    private synchronized int getID() {
+    	if (-1 == phaseID) {
+    		phaseID = ++globalPhaseID;
+    	}
+    	return phaseID;
     }
 
     /**
@@ -157,6 +188,11 @@ public class Phase {
     	return reads(new Pipe(input));
     }
 
+    /**
+     * 
+     * @param inputs
+     * @return
+     */
     public Phase reads(Collection<Pipe> inputs) {
         if (mainReads == null) {
             mainReads = new ArrayList<Pipe>(inputs);
@@ -319,11 +355,6 @@ public class Phase {
         props.put(key, value);
         return this;
     }
-
-    /**
-     * Store HashMap until plan()
-     */
-    private HashMap<String, java.io.Serializable> mapperParameters = null;
     
     private HashMap getMapperParameters() {
     	if (null == mapperParameters) {
@@ -471,8 +502,9 @@ public class Phase {
                 }
             }
             mainReads.get(0).setupInput(conf);
-            if (conf.get("mapred.input.format.class") == null)
+            if (conf.get("mapred.input.format.class") == null) {
                 conf.setInputFormat(AvroInputFormat.class);
+            }
         }
     }
 
@@ -492,7 +524,7 @@ public class Phase {
 			return;
 		} 
 		reducerClass = reducers[0];
-		conf.set(REDUCER, reducers[0].getName());
+		conf.set(REDUCER, reducerClass.getName());
 		
 		String methodName = "reduce";
 		findReducerMethod(reducerClass, methodName);
@@ -850,6 +882,9 @@ public class Phase {
     }
 
     public List<Pipe> getOutputs() {
+    	if (null == writes) {
+    		return null;
+    	}
         return Collections.unmodifiableList(writes);
     }
 

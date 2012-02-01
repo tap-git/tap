@@ -19,6 +19,7 @@
  */
 package tap.core;
 
+import java.io.File;
 import java.util.StringTokenizer;
 
 import junit.framework.Assert;
@@ -47,9 +48,11 @@ public class TapTests {
 		CommandOptions o = new CommandOptions(args);
 		Tap pipeline = new Tap(o);
 
-		pipeline.createPhase().reads(o.input).map(TapTests.Mapper.class)
-				.combine(TapTests.Reducer.class).reduce(TapTests.Reducer.class).writes(o.output).sortBy("word");
-		pipeline.named(args[0]).make();
+		pipeline.createPhase().reads(o.input)
+				.map(WordCountMapper.class)
+				.combine(WordCountReducer.class)
+				.reduce(WordCountReducer.class).writes(o.output).sortBy("word");
+		pipeline.named(o.program).make();
 	}
 
 	@Test
@@ -58,6 +61,9 @@ public class TapTests {
 				"/tmp/TapTestsOutput", "--force" };
 
 		buildPipeline1(args);
+		File f = new File(args[4]+"/part-00000.avro");
+		Assert.assertTrue("File exists", f.exists());
+		Assert.assertTrue("File length", 200000 < f.length());
 	}
 
 	@Test
@@ -87,31 +93,4 @@ public class TapTests {
 		buildPipeline1(args);
 	}
 
-	public static class Mapper extends TapMapper<String, CountRec> {
-		CountRec outrec = new CountRec();
-
-		@Override
-		public void map(String line, Pipe<CountRec> out) {
-			StringTokenizer tokenizer = new StringTokenizer(line);
-			while (tokenizer.hasMoreTokens()) {
-				outrec.word = tokenizer.nextToken();
-				outrec.count = 1;
-				out.put(outrec);
-			}
-		}
-	}
-
-	public static class Reducer extends TapReducer<CountRec, CountRec> {
-		CountRec outrec = new CountRec();
-
-		@Override
-		public void reduce(Pipe<CountRec> in, Pipe<CountRec> out) {
-			outrec.count = 0;
-			for (CountRec rec : in) {
-				outrec.word = rec.word;
-				outrec.count += rec.count;
-			}
-			out.put(outrec);
-		}
-	}
 }
