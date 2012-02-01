@@ -394,6 +394,20 @@ public class Phase {
 
     /**
      * Generate plan for each phase in the Tap
+     * - Sniff Output Class type
+     * - Compute Output Format
+     * - Set Output Format
+     * - File stat output (exists, time stamp)
+     * - Dependency calculation (abort if up to date)
+     * - Prepare output (remove target)
+     * - Sniff Input Class type
+     * - Sniff Input File
+     * -- File stat (time, exists...)
+     * -- File, Files, Directory, or Partion set
+     * -- Format
+     * - Compute Input Format
+     * - Setup Input Format
+     * 
      * @param tap
      * @return List of Phase errors
      */
@@ -401,7 +415,21 @@ public class Phase {
         List<PhaseError> errors = new ArrayList<PhaseError>();
         conf = new JobConf(tap.getConf());
  
-        for (Map.Entry<String, String> entry : props.entrySet()) {
+        addParameters(errors);
+        
+        mapperPlan(errors);
+        combinersPlan(errors);
+        reducerPlan(errors);
+        formatPlan(errors);
+
+        Schema mapValueSchema = mapOutPlan(errors);
+
+        configurationSetup(errors, mapValueSchema);
+        return errors;
+    }
+
+	private void addParameters(List<PhaseError> errors) {
+		for (Map.Entry<String, String> entry : props.entrySet()) {
             conf.set(entry.getKey(), entry.getValue());
         }
         
@@ -416,21 +444,7 @@ public class Phase {
 				}
 			}
 		}
-
-        try {
-            mapperPlan(errors);
-        } catch(Exception e) {
-           errors.add(new PhaseError(e.toString()));
-        }
-        combinersPlan(errors);
-        reducerPlan(errors);
-        formatPlan(errors);
-
-        Schema mapValueSchema = mapOutPlan(errors);
-
-        configurationSetup(errors, mapValueSchema);
-        return errors;
-    }
+	}
 
     /**
      * @param errors
@@ -607,7 +621,7 @@ public class Phase {
      * 
      * @param errors
      */
-    private void mapperPlan(List<PhaseError> errors) throws Exception {
+    private void mapperPlan(List<PhaseError> errors) {
         mapperClass = null;
 
         if (mappers == null || mappers.length != 1) {
@@ -618,61 +632,61 @@ public class Phase {
         }
         mapperClass = mappers[0];
         findMapperMethod(errors, mapperClass, "map");
+       
     }
 
 	/**
 	 * @param errors
-	 * @param mapperClass TODO
-	 * @param methodName TODO
+	 * @param mapperClass
+	 * @param methodName
 	 * @return
-	 * @throws SecurityException
-	 * @throws Exception
 	 */
-	private Class<?> findMapperMethod(List<PhaseError> errors,
-			Class<? extends TapMapper> mapperClass, String methodName)
-			throws SecurityException, Exception {
-        mapinSchema = null;
-        mapOutClass = null;
-        mapInClass = null;
-	    Class<?> foundIn = null;
-		for (Method m : mapperClass.getMethods()) {
-		    // ignore base classes Object and BaseMapper
+	private void findMapperMethod(List<PhaseError> errors,
+			Class<? extends TapMapper> mapperClass, String methodName) {
+		try {
+			mapinSchema = null;
+			mapOutClass = null;
+			mapInClass = null;
+			Class<?> foundIn = null;
+			for (Method m : mapperClass.getMethods()) {
+				// ignore base classes Object and BaseMapper
 
-			if (!m.getDeclaringClass().equals(Object.class)
-		            && !m.getDeclaringClass().equals(TapMapper.class)
-		            && methodName.equals(m.getName())) {
-		        Class<?>[] paramTypes = m.getParameterTypes();
+				if (!m.getDeclaringClass().equals(Object.class)
+						&& !m.getDeclaringClass().equals(TapMapper.class)
+						&& methodName.equals(m.getName())) {
+					Class<?>[] paramTypes = m.getParameterTypes();
 
-		        /**
-		         * map(IN, Pipe<OUT>)
-		         */
-		        if (paramTypes.length == 2) {
-		            if (paramTypes[1].equals(Pipe.class)) {
-		                // found the correct map function
-		                foundIn = m.getDeclaringClass();
-		                this.mapInClass = ReflectUtils
-		                        .getParameterClass(foundIn,
-		                                MAPPER2_IN_PARAMETER_POSITION);
-		                this.mapOutPipeType = Pipe.class;
-		                this.mapOutClass = ReflectUtils
-		                        .getParameterClass(foundIn,
-		                                MAPPER2_OUT_PARAMETER_POSITION);
+					/**
+					 * map(IN, Pipe<OUT>)
+					 */
+					if (paramTypes.length == 2) {
+						if (paramTypes[1].equals(Pipe.class)) {
+							// found the correct map function
+							foundIn = m.getDeclaringClass();
+							this.mapInClass = ReflectUtils.getParameterClass(
+									foundIn, MAPPER2_IN_PARAMETER_POSITION);
+							this.mapOutPipeType = Pipe.class;
+							this.mapOutClass = ReflectUtils.getParameterClass(
+									foundIn, MAPPER2_OUT_PARAMETER_POSITION);
 
-		                Object readProto = mainReads.get(0)
-		                        .getPrototype();
-		                if(readProto == null) {
-		                    readProto = ObjectFactory.newInstance(mapInClass);
-		                    mainReads.get(0).setPrototype(readProto);
-		                }
-		                
-		                this.mapinSchema = getSchema(readProto);
+							Pipe inpipe = mainReads.get(0);
+							Object readProto = inpipe.getPrototype();
+							if (readProto == null) {
+								readProto = ObjectFactory
+										.newInstance(mapInClass);
+								inpipe.setPrototype(readProto);
+							}
 
-		                break;
-		            }
-		        }
-		    }
+							this.mapinSchema = getSchema(readProto);
+							break;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return foundIn;
 	}
 
     /**

@@ -395,6 +395,9 @@ public class Tap implements TapInterface {
 		System.out.printf(string, message, exceptionMessage);
 	}
 
+	/**
+	 * Open file, assign to pipe, pipe will return an Iterator
+	 */
 	@Override
 	public Pipe subscribe(String URI) {
 		return null;
