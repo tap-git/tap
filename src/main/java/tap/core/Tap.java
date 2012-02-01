@@ -87,7 +87,7 @@ public class Tap implements TapInterface {
         return this;
     }
 
-    Tap produces(Pipe... outputs) {
+    public Tap produces(Pipe... outputs) {
         return produces(Arrays.asList(outputs));
     }
 

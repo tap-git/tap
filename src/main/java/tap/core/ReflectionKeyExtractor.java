@@ -59,7 +59,7 @@ public class ReflectionKeyExtractor<OUT> implements KeyExtractor<GenericData.Rec
 
     @Override
     public void setKey(OUT value, GenericData.Record key) {
-        if (inFields.isEmpty()) {
+        if (inFields.isEmpty() && inGetters.isEmpty()) {
             Class<?> inClass = value.getClass();
 
             try {
