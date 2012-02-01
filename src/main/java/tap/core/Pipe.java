@@ -20,7 +20,9 @@
 package tap.core;
 
 import tap.compression.Compressions;
+import tap.core.mapreduce.output.TapfileOutputFormat;
 import tap.formats.*;
+import tap.formats.avro.AvroFormat;
 import tap.util.ObjectFactory;
 
 import java.io.FileNotFoundException;
@@ -34,6 +36,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 //import org.apache.hadoop.fs.*;
 import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.TextOutputFormat;
 
 @SuppressWarnings("deprecation")
 public class Pipe<T> implements Iterable<T>, Iterator<T> {
@@ -407,8 +410,9 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 
     public void setPrototype(T prototype) {
         this.prototype = prototype;
+        determineFormat();
     }
-
+    
     public Formats getFormat() {
         return format;
     }

@@ -1,5 +1,6 @@
 package tap.formats.unknown;
 
+import org.apache.avro.mapred.AvroInputFormat;
 import org.apache.avro.mapred.AvroOutputFormat;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
@@ -15,7 +16,8 @@ public class UnknownFormat extends FileFormat {
 		conf.setOutputFormat(AvroOutputFormat.class);
 	}
 
-	public void setupInput(JobConf conf, Class<?> ignore) {    
+	public void setupInput(JobConf conf, Class<?> ignore) {   
+		conf.setInputFormat(AvroInputFormat.class);
     }
 
 	public String fileExtension() {
