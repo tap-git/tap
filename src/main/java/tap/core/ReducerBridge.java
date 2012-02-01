@@ -93,7 +93,8 @@ class ReducerBridge<K, V, OUT> extends BaseAvroReducer<K, V, OUT, AvroWrapper<OU
                 if(datum != null)
                     protobufWritable.setConverter(datum.getClass());
                 protobufWritable.set(datum);
-                out.collect(binaryKey, protobufWritable);
+                // TODO: out.collect(binaryKey, protobufWritable);
+                out.collect(NullWritable.get(), protobufWritable);
             }
             else {
                 wrapper.datum((OUT) datum);

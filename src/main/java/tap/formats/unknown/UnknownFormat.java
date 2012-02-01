@@ -12,12 +12,9 @@ import tap.formats.Formats;
 public class UnknownFormat extends FileFormat {
 
 	public void setupOutput(JobConf conf, Class<?> ignore) {
-		// Default to Avro output
-		conf.setOutputFormat(AvroOutputFormat.class);
 	}
 
 	public void setupInput(JobConf conf, Class<?> ignore) {   
-		conf.setInputFormat(AvroInputFormat.class);
     }
 
 	public String fileExtension() {
