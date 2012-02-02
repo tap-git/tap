@@ -32,7 +32,9 @@ public abstract class FileFormat {
 	 * @return true if a match
 	 */
 	public boolean matches(Pipe pipe) {
-	    return (null != pipe.getPrototype()) && instanceOfCheck(pipe.getPrototype()) || matches(pipe.getUncompressedPath());
+	    return (null != pipe.getPrototype()) && 
+	    		instanceOfCheck(pipe.getPrototype()) || 
+	    		matches(pipe.getUncompressedPath());
 	}
 
 	/**

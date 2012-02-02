@@ -60,6 +60,72 @@ public class PipeTests {
         Assert.assertNotNull(pipe);
         Assert.assertNotNull(pipe.getPrototype());
         System.out.println("pipe prototype " + pipe.getPrototype());
+        Assert.assertEquals(pipe.getPrototype().toString(), CountRec.class, pipe.getPrototype());
+    }
+    
+    @Test
+    public void prototypeStringTest() {
+    	Object o = new String("");
+    	Assert.assertTrue("String ", o instanceof String);
+    	Object o2 = new MyPipeTestRecord();
+    	Assert.assertTrue("My PipeTestRecord", o2 instanceof MyPipeTestRecord);
+    }
+    
+    class MyPipeTestRecord {
+    	int id;
+    	String name;
+    }
+    
+    @Test
+    public void prototypeSetString() {
+    	Pipe pipe = new Pipe("share/decameron.txt");
+    	pipe.setPrototype(new String());
+    	Assert.assertNotNull(pipe.getPrototype());
+    	Assert.assertEquals("Pipe Prototype for set new String() " + 
+    			pipe.getPrototype().toString(),
+    			java.lang.String.class, 
+    			pipe.getPrototype().getClass());
+    }
+    
+    @Test
+    public void prototypeSetStringClass() {
+    	Pipe pipe = new Pipe("share/decameron.txt");
+    	pipe.setPrototype(new String());
+    	Assert.assertNotNull(pipe.getPrototype());
+    	Assert.assertEquals(pipe.getPrototype().toString(),
+    			java.lang.String.class,
+    			pipe.getPrototype().getClass());
+    }
+    
+    @Test
+    public void prototypeSetMyPipeTestRecordClass() {
+    	Pipe pipe = new Pipe("share/decameron.txt");
+    	pipe.setPrototype(new MyPipeTestRecord());
+    	Assert.assertNotNull(pipe.getPrototype());
+    	Assert.assertEquals(pipe.getPrototype().toString(),
+    			MyPipeTestRecord.class,
+    			pipe.getPrototype().getClass());
+    }
+    
+    @Test
+    public void prototypeSetMyPipeTestRecord() {
+    	Pipe pipe = new Pipe("share/decameron.txt");
+    	pipe.setPrototype(new MyPipeTestRecord());
+    	Assert.assertNotNull(pipe.getPrototype());
+    	Assert.assertNotSame(pipe.getPrototype().toString(),
+    			MyPipeTestRecord.class,
+    			pipe.getPrototype());
+    }
+    
+    @Test
+    public void prototypeString() {
+        Pipe pipe = new Pipe("share/decameron.txt");
+        Assert.assertNotNull(pipe);
+        Assert.assertNotNull(pipe.getFormat());
+        System.out.println("pipe format " + pipe.getFormat().toString());
+        Assert.assertNotSame(pipe.getFormat().toString(), Formats.JSON_FORMAT, pipe.getFormat());
+        Assert.assertNull(pipe.getPrototype());
+        System.out.println("pipe prototype " + pipe.getPrototype());
     }
 
     @Test

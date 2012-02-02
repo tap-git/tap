@@ -29,5 +29,10 @@ public class JsonFormat extends TextFormat {
 		}
 		return false;
 	}
+	
+	@Override
+	public boolean instanceOfCheck(Object o) {
+		return false;
+	}
 
 }

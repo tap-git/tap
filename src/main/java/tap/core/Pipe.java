@@ -65,8 +65,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 
     @Deprecated
 	public Pipe(T prototype) {
-        this.prototype = prototype;
-        init();
+        this.setPrototype(prototype);
     }
 
     Pipe(String path) {
@@ -208,8 +207,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 
     @SuppressWarnings("unchecked")
     public Pipe<T> stringFormat() {
-        this.setFormat(Formats.STRING_FORMAT);
-        this.prototype = (T) new String();
+        setPrototype((T) new String());
         return this;
     }
 
@@ -240,7 +238,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 
     void setupOutput(JobConf conf) {
         getFormat().getFileFormat().setupOutput(conf,
-                prototype == null ? null : prototype.getClass());
+                getPrototype() == null ? null : getPrototype().getClass());
         if (this.isCompressed == true) {
             getCompression().getCompression().setupOutput(conf);
         }
@@ -249,7 +247,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 
     public void setupInput(JobConf conf) {
         getFormat().getFileFormat().setupInput(conf,
-                prototype == null ? null : prototype.getClass());
+                getPrototype() == null ? null : getPrototype().getClass());
         if (this.isCompressed == true) {
             getCompression().getCompression().setupInput(conf);
         }
@@ -409,8 +407,11 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     }
 
     public void setPrototype(T prototype) {
-        this.prototype = prototype;
-        determineFormat();
+    	if (null == prototype) {
+    		return;
+    	}
+    	this.prototype = prototype;
+        init();
     }
     
     public Formats getFormat() {
@@ -431,8 +432,6 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 
     protected void setPath(String path) {
         this.path = path;
-
-        init();
     }
 
     protected void determineFormat() {

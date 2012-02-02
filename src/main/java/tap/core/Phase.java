@@ -110,7 +110,10 @@ public class Phase {
     private Class<Pipe> reduceOutPipeType;
     private HashMap<String, Serializable> mapperParameters = null;
     
-    /**
+    private static int globalPhaseID = 0;
+	private int phaseID = -1;
+
+	/**
      * default constructor hidden to encourage use of the Tap.createPhase.
      */
     Phase() {
@@ -161,8 +164,6 @@ public class Phase {
     	return "/tmp/tap/phase-out"+ this.getID();
     }
     
-    private static int globalPhaseID = 0;
-    private int phaseID = -1;
     private synchronized int getID() {
     	if (-1 == phaseID) {
     		phaseID = ++globalPhaseID;
@@ -388,7 +389,6 @@ public class Phase {
     }
 
     private String toJson(Object value) {
-        // TODO
         throw new UnsupportedOperationException("toJson not yet working");
     }
 
@@ -416,15 +416,17 @@ public class Phase {
         conf = new JobConf(tap.getConf());
  
         addParameters(errors);
-        
+        System.out.println("pre mapperPlan " + this.reads.get(0).getFormat().toString());        
         mapperPlan(errors);
+        System.out.println("post mapperPlan " + this.reads.get(0).getFormat().toString());
         combinersPlan(errors);
         reducerPlan(errors);
         formatPlan(errors);
 
         Schema mapValueSchema = mapOutPlan(errors);
-
+        System.out.println(this.reads.get(0).getFormat().toString());
         configurationSetup(errors, mapValueSchema);
+        System.out.println(this.reads.get(0).getFormat().toString());
         return errors;
     }
 
@@ -592,14 +594,15 @@ public class Phase {
 			String methodName) {
 		Class<?> foundIn = null;
 		for (Method m : reducerClass.getMethods()) {
+			foundIn = m.getDeclaringClass();
 			if (methodName.equals(m.getName())
-					&& !m.getDeclaringClass().equals(Object.class)
-					&& !m.getDeclaringClass().equals(TapReducer.class)) {
+					&& !foundIn.equals(Object.class)
+					&& !foundIn.equals(TapReducer.class)) {
 				Class<?>[] paramTypes = m.getParameterTypes();
 				if (paramTypes.length == 2) {
 					if (paramTypes[1].equals(Pipe.class)) {
 						// found the correct map function
-						foundIn = m.getDeclaringClass();
+						
 						ReflectUtils
 								.getParameterClass(foundIn,
 										REDUCER2_IN_PARAMETER_POSITION);
@@ -649,43 +652,42 @@ public class Phase {
 			mapInClass = null;
 			Class<?> foundIn = null;
 			for (Method m : mapperClass.getMethods()) {
-				// ignore base classes Object and BaseMapper
+				foundIn = m.getDeclaringClass();
 
-				if (!m.getDeclaringClass().equals(Object.class)
-						&& !m.getDeclaringClass().equals(TapMapper.class)
+				// ignore base classes Object and BaseMapper
+				if (!foundIn.equals(Object.class)
+						&& !foundIn.equals(TapMapper.class)
 						&& methodName.equals(m.getName())) {
 					Class<?>[] paramTypes = m.getParameterTypes();
 
 					/**
 					 * map(IN, Pipe<OUT>)
 					 */
-					if (paramTypes.length == 2) {
-						if (paramTypes[1].equals(Pipe.class)) {
-							// found the correct map function
-							foundIn = m.getDeclaringClass();
-							this.mapInClass = ReflectUtils.getParameterClass(
-									foundIn, MAPPER2_IN_PARAMETER_POSITION);
-							this.mapOutPipeType = Pipe.class;
-							this.mapOutClass = ReflectUtils.getParameterClass(
-									foundIn, MAPPER2_OUT_PARAMETER_POSITION);
+					if (paramTypes.length == 2
+							&& paramTypes[1].equals(Pipe.class)) {
 
-							Pipe inpipe = mainReads.get(0);
-							Object readProto = inpipe.getPrototype();
-							if (readProto == null) {
-								readProto = ObjectFactory
-										.newInstance(mapInClass);
-								inpipe.setPrototype(readProto);
-							}
+						// found the correct map function
+						this.mapInClass = ReflectUtils.getParameterClass(
+								foundIn, MAPPER2_IN_PARAMETER_POSITION);
+						this.mapOutPipeType = Pipe.class;
+						this.mapOutClass = ReflectUtils.getParameterClass(
+								foundIn, MAPPER2_OUT_PARAMETER_POSITION);
 
-							this.mapinSchema = getSchema(readProto);
-							break;
+						Pipe inpipe = mainReads.get(0);
+						Object readProto = inpipe.getPrototype();
+						if (readProto == null || readProto == "") {
+							readProto = ObjectFactory.newInstance(mapInClass);
+							inpipe.setPrototype(readProto);
 						}
+						
+						this.mapinSchema = getSchema(readProto);
+						break;
 					}
 				}
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			errors.add(new PhaseError(e.getMessage()));
 		}
 	}
 

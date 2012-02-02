@@ -76,7 +76,10 @@ public class AvroFormat extends FileFormat {
     @Override
     public boolean instanceOfCheck(Object o) {
         // TODO Find better way than listing all of the other types
-        return !(o instanceof String || o instanceof Text || o instanceof GeneratedMessage);
+    	boolean isString = o instanceof String;
+    	boolean isText = o instanceof Text;
+    	boolean isMessage = o instanceof GeneratedMessage;
+        return !(isString || isText || isMessage);
     }
 
 }

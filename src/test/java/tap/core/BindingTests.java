@@ -28,13 +28,22 @@ public class BindingTests {
 				.combine(WordCountReducer.class)
 				.reduce(WordCountReducer.class)
 				.writes(o.output);
+		
+		Assert.assertEquals(phase1.getInputs().get(0).getFormat().toString(), "STRING_FORMAT", phase1.getInputs().get(0).getFormat().toString());
+		
 		tap.produces(phase1.output());
-		Assert.assertEquals(0, phase1.plan(tap).size());
+		Assert.assertEquals(phase1.getInputs().get(0).getFormat().toString(), "STRING_FORMAT", phase1.getInputs().get(0).getFormat().toString());
+		
+		Assert.assertEquals("Planning errors ", 0, phase1.plan(tap).size());
 		phase1.plan(tap);
 	    
 		System.out.println(tap.getConf().get("mapred.output.format.class"));
 		System.out.println(phase1.getOutputs().get(0).getFormat().toString());
 		Assert.assertNotSame("UNKNOWN_FORMAT", phase1.getOutputs().get(0).getFormat().toString());
+		
+		Assert.assertEquals(phase1.getInputs().get(0).getFormat().toString(), 
+				"STRING_FORMAT", 
+				phase1.getInputs().get(0).getFormat().toString());
 		Assert.assertEquals("AVRO_FORMAT", phase1.getOutputs().get(0).getFormat().toString());
 		//tap.named(o.program).make();
 	}
