@@ -159,9 +159,35 @@ public class Phase {
         return this;
     }
     
-    // TODO: Needs to be stronger
+    /**
+     * Generate a temporary filename
+     * @return The filename
+     */
     String getTmpOutputName() {
-    	return "/tmp/tap/phase-out"+ this.getID();
+    	return "/tmp/tap/"+this.getConf().getUser() 
+    			+ "/" + (new Date().toString()) 
+    			+ "-phase-output " + getName();
+    }
+    
+    /**
+     * Accessor for Phase name
+     * @return The name
+     */
+    public String getName() {
+    	if (null == name) {
+    		setName("phase-"+getID());
+    	}
+    	return name;
+    }
+    
+    /**
+     * Set the Phase name
+     * @param name The name
+     * @return This Phase
+     */
+    public Phase setName(String name) {
+    	this.name = name;
+    	return this;
     }
     
     private synchronized int getID() {
@@ -407,7 +433,10 @@ public class Phase {
      * -- Format
      * - Compute Input Format
      * - Setup Input Format
-     * 
+     * Rules
+     * -- Mapper OUT == Reducer IN
+     * -- Combiner IN == Reducer IN
+     * -- Combiner OUT == Reducer OUT
      * @param tap
      * @return List of Phase errors
      */
@@ -416,17 +445,13 @@ public class Phase {
         conf = new JobConf(tap.getConf());
  
         addParameters(errors);
-        System.out.println("pre mapperPlan " + this.reads.get(0).getFormat().toString());        
         mapperPlan(errors);
-        System.out.println("post mapperPlan " + this.reads.get(0).getFormat().toString());
         combinersPlan(errors);
         reducerPlan(errors);
         formatPlan(errors);
 
         Schema mapValueSchema = mapOutPlan(errors);
-        System.out.println(this.reads.get(0).getFormat().toString());
         configurationSetup(errors, mapValueSchema);
-        System.out.println(this.reads.get(0).getFormat().toString());
         return errors;
     }
 
@@ -695,40 +720,44 @@ public class Phase {
      * @param errors
      * @return
      */
-    private Schema mapOutPlan(List<PhaseError> errors) {
-        Schema mapValueSchema = null;
-        try {
-            // TODO: handle cases beyond Object where input isn't defined
-            if (mapOutClass == null || mapOutClass == Object.class) {
-                assert mapperClass == null;
-                if (inputPipeProto != null) {
-                    mapOutClass = inputPipeProto.getClass();
-                    mapValueSchema = getSchema(inputPipeProto);
-                } else {
-                    // not available - try to get it from the reducer
-                    if (reducerClass == null) {
-                        mapOutClass = reduceOutClass;
-                        mapValueSchema = getSchema(ObjectFactory.newInstance(reduceOutClass));
-                    } else {
-                        // can't get it from reducer input - that's just
-                        // Iteratable
-                        String fname = "no input file specified";
-                        if (mainReads != null && mainReads.size() > 0)
-                            fname = mainReads.get(0).getPath();
-                        errors.add(new PhaseError(
-                                "No input format specified for identity mapper - specify it on input file "
-                                        + fname));
-                    }
-                }
-            } else {
-                mapValueSchema = getSchema(ObjectFactory.newInstance(mapOutClass));
-            }
-        } catch (Exception e) {
-            errors.add(new PhaseError(e,
-                    "Can't create instance of map output class: " + mapOutClass));
-        }
-        return mapValueSchema;
-    }
+	private Schema mapOutPlan(List<PhaseError> errors) {
+		Schema mapValueSchema = null;
+		try {
+			// TODO: handle cases beyond Object where input isn't defined
+			if (!(mapOutClass == null || mapOutClass == Object.class)) {
+				mapValueSchema = getSchema(ObjectFactory
+						.newInstance(mapOutClass));
+			} else {
+				if (inputPipeProto != null) {
+					mapOutClass = inputPipeProto.getClass();
+					mapValueSchema = getSchema(inputPipeProto);
+				} else {
+					// not available - try to get it from the reducer
+					if (reducerClass == null) {
+						mapOutClass = reduceOutClass;
+						mapValueSchema = getSchema(ObjectFactory
+								.newInstance(reduceOutClass));
+					} else {
+						// can't get it from reducer input - that's just
+						// an Iterator
+						String fname = "no input file specified";
+						if (mainReads != null && mainReads.size() > 0) {
+							fname = mainReads.get(0).getPath();
+							// TODO: need to find mapValueSchema from file as last resort.
+						} else {
+							errors.add(new PhaseError(
+									"No input format specified for identity mapper - specify it on input file "
+											+ fname));
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			errors.add(new PhaseError(
+					"Can't create instance of map output class: " + mapOutClass));
+		}
+		return mapValueSchema;
+	}
 
     /**
      * Update Job Configuration with findings to be used by Mapper and Reducer

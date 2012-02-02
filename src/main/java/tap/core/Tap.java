@@ -345,6 +345,7 @@ public class Tap implements TapInterface {
 		for(Phase phase:phases) {
 			errorCollection.add(phase.plan(this));
 		}
+		
 		int errorCount = emitErrors(errorCollection);
 		
 		if (0 != errorCount) {
