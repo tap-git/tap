@@ -32,17 +32,16 @@
 						<phase>generate-sources</phase>
 						<configuration>
 							<tasks>
-								<mkdir dir="${generated.sourceDirectory}" />
 								<path id="proto.path">
-									<fileset dir="src/main/proto">
+									<fileset dir="src/main/java/tap/sample">
 										<include name="**/*.proto" />
 									</fileset>
 								</path>
 								<pathconvert pathsep=" " property="proto.files"
 									refid="proto.path" />
 								<exec executable="protoc" failonerror="false" failifexecutionfails="false">
-									<arg value="--java_out=${generated.sourceDirectory}" />
-									<arg value="-I${project.basedir}/src/main/proto" />
+									<arg value="--java_out=src/main/java" />
+									<arg value="-I${project.basedir}/src/main/java" />
 									<arg line="${proto.files}" />
 								</exec>
 							</tasks>

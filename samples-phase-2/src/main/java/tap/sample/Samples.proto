@@ -2,7 +2,7 @@
 
 package tap.sample;
  
-import "Tapfile.proto";
+import "tap/sample/Tapfile.proto";
 
 message CountRec {
     required string word = 1;
