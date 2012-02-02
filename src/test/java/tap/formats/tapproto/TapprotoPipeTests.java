@@ -19,11 +19,21 @@
  */
 package tap.formats.tapproto;
 
+import java.util.StringTokenizer;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
 
+import tap.core.CommandOptions;
+import tap.core.CountRec;
+import tap.core.Phase;
 import tap.core.Pipe;
+import tap.core.Tap;
+import tap.core.TapMapper;
+import tap.core.TapReducer;
+import tap.core.WordCountMapper;
+import tap.core.WordCountReducer;
 import tap.formats.Formats;
 import tap.formats.tapproto.Testmsg;
 import tap.formats.tapproto.Testmsg.TestMsg;
@@ -40,5 +50,37 @@ public class TapprotoPipeTests {
         Assert.assertTrue("pipe type", pipe.getPrototype() instanceof com.google.protobuf.Message);
         Assert.assertEquals(Formats.TAPPROTO_FORMAT, pipe.getFormat());
     }
+    
+    @Test
+    public void willSetProtoOutputType() {
+		String args[] = { "BindingTests.mapOutTest", "-i", "/tmp/TapTests/maugham.txt", "-o",
+				"/tmp/TapTestsOutput", "--force" };
 
+		CommandOptions o = new CommandOptions(args);
+		Tap tap = new Tap(o);
+
+		Phase phase1 = tap.createPhase()
+				.reads(o.input)
+				.map(Mapper.class)
+				.groupBy("data")
+				.reduce(Reducer.class)
+				.writes(o.output);
+		tap.produces(phase1.output());
+		Assert.assertEquals(0, phase1.plan(tap).size());
+		phase1.plan(tap);
+	    
+		Assert.assertEquals("TAPPROTO_FORMAT", phase1.getOutputs().get(0).getFormat().toString());    	
+    }
+    
+    public static class Mapper extends TapMapper<String, TestMsg> {
+    	public void map(String line, Pipe<TestMsg> out) {
+    	}
+    }
+    
+    public static class Reducer extends TapReducer<TestMsg, TestMsg> {
+    	CountRec outrec = new CountRec();
+
+    	public void reduce(Pipe<TestMsg> in, Pipe<TestMsg> out) {
+    	}
+    }
 }
