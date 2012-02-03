@@ -91,6 +91,34 @@ public class BytesTests {
 	}
 	
 	@Test
+	public void compareStringAsc() throws IOException {
+		byte[] b1 = Bytes.getBytes("abc", SortOrder.ASCENDING);
+		
+		byte[] b2 = Bytes.getBytes("abc", SortOrder.ASCENDING);
+		Assert.assertEquals(0, Bytes.compare(b1, b2));
+		
+		b2 = Bytes.getBytes("ab", SortOrder.ASCENDING);
+		Assert.assertTrue(Bytes.compare(b1, b2) > 0);
+		
+		b2 = Bytes.getBytes("abd", SortOrder.ASCENDING);
+		Assert.assertTrue(Bytes.compare(b1, b2) < 0);
+	}
+	
+	@Test
+	public void compareStringDesc() throws IOException {
+		byte[] b1 = Bytes.getBytes("abc", SortOrder.DESCENDING);
+		
+		byte[] b2 = Bytes.getBytes("abc", SortOrder.DESCENDING);
+		Assert.assertEquals(0, Bytes.compare(b1, b2));
+		
+		b2 = Bytes.getBytes("ab", SortOrder.DESCENDING);
+		Assert.assertTrue(Bytes.compare(b1, b2) < 0);
+		
+		b2 = Bytes.getBytes("abd", SortOrder.DESCENDING);
+		Assert.assertTrue(Bytes.compare(b1, b2) > 0);
+	}
+	
+	@Test
 	public void compareSame() {
 		byte[] b1 = "abc".getBytes();
 		byte[] b2 = "abc".getBytes();

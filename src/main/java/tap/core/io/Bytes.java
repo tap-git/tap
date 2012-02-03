@@ -1,5 +1,6 @@
 package tap.core.io;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -96,6 +97,12 @@ public class Bytes {
 		newLength += 1;
 		
 		return newLength;
+	}
+	
+	public static byte[] getBytes(String val, SortOrder order) throws IOException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream(val.length());
+		writeString(val, out, order);
+		return out.toByteArray();
 	}
 	
 	public static int compare(byte[] b1, int s1, int l1,
