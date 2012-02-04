@@ -119,6 +119,100 @@ public class BytesTests {
 	}
 	
 	@Test
+	public void intAscNotSameAsDesc() {
+		byte[] b1 = Bytes.getBytes(0, SortOrder.ASCENDING);
+		byte[] b2 = Bytes.getBytes(0, SortOrder.DESCENDING);
+		
+		Assert.assertEquals(4, b1.length);
+		Assert.assertEquals(4, b2.length);
+		
+		Assert.assertFalse(Bytes.compare(b1, b2) == 0);
+	}
+	
+	@Test
+	public void writeIntAsc() {
+		byte[] bytes = Bytes.getBytes(0, SortOrder.ASCENDING);
+		Assert.assertEquals(0, Bytes.toInt(bytes, 0, SortOrder.ASCENDING));
+		
+		bytes = Bytes.getBytes(1, SortOrder.ASCENDING);
+		Assert.assertEquals(1, Bytes.toInt(bytes, 0, SortOrder.ASCENDING));
+		
+		bytes = Bytes.getBytes(-1, SortOrder.ASCENDING);
+		Assert.assertEquals(-1, Bytes.toInt(bytes, 0, SortOrder.ASCENDING));
+		
+		bytes = Bytes.getBytes(Integer.MIN_VALUE, SortOrder.ASCENDING);
+		Assert.assertEquals(Integer.MIN_VALUE, Bytes.toInt(bytes, 0, SortOrder.ASCENDING));
+		
+		bytes = Bytes.getBytes(Integer.MAX_VALUE, SortOrder.ASCENDING);
+		Assert.assertEquals(Integer.MAX_VALUE, Bytes.toInt(bytes, 0, SortOrder.ASCENDING));
+	}
+
+	@Test
+	public void writeIntDesc() {
+		byte[] bytes = Bytes.getBytes(0, SortOrder.DESCENDING);
+		Assert.assertEquals(0, Bytes.toInt(bytes, 0, SortOrder.DESCENDING));
+		
+		bytes = Bytes.getBytes(1, SortOrder.DESCENDING);
+		Assert.assertEquals(1, Bytes.toInt(bytes, 0, SortOrder.DESCENDING));
+		
+		bytes = Bytes.getBytes(-1, SortOrder.DESCENDING);
+		Assert.assertEquals(-1, Bytes.toInt(bytes, 0, SortOrder.DESCENDING));
+		
+		bytes = Bytes.getBytes(Integer.MIN_VALUE, SortOrder.DESCENDING);
+		Assert.assertEquals(Integer.MIN_VALUE, Bytes.toInt(bytes, 0, SortOrder.DESCENDING));
+		
+		bytes = Bytes.getBytes(Integer.MAX_VALUE, SortOrder.DESCENDING);
+		Assert.assertEquals(Integer.MAX_VALUE, Bytes.toInt(bytes, 0, SortOrder.DESCENDING));
+	}
+	
+	@Test
+	public void longAscNotSameAsDesc() {
+		byte[] b1 = Bytes.getBytes(0L, SortOrder.ASCENDING);
+		byte[] b2 = Bytes.getBytes(0L, SortOrder.DESCENDING);
+		
+		Assert.assertEquals(8, b1.length);
+		Assert.assertEquals(8, b2.length);
+		
+		Assert.assertFalse(Bytes.compare(b1, b2) == 0);
+	}
+	
+	@Test
+	public void writeLongAsc() {
+		byte[] bytes = Bytes.getBytes(0L, SortOrder.ASCENDING);
+		Assert.assertEquals(0L, Bytes.toLong(bytes, 0, SortOrder.ASCENDING));
+		
+		bytes = Bytes.getBytes(1L, SortOrder.ASCENDING);
+		Assert.assertEquals(1L, Bytes.toLong(bytes, 0, SortOrder.ASCENDING));
+		
+		bytes = Bytes.getBytes(-1L, SortOrder.ASCENDING);
+		Assert.assertEquals(-1L, Bytes.toLong(bytes, 0, SortOrder.ASCENDING));
+		
+		bytes = Bytes.getBytes(Long.MIN_VALUE, SortOrder.ASCENDING);
+		Assert.assertEquals(Long.MIN_VALUE, Bytes.toLong(bytes, 0, SortOrder.ASCENDING));
+		
+		bytes = Bytes.getBytes(Long.MAX_VALUE, SortOrder.ASCENDING);
+		Assert.assertEquals(Long.MAX_VALUE, Bytes.toLong(bytes, 0, SortOrder.ASCENDING));
+	}
+
+	@Test
+	public void writeLongDesc() {
+		byte[] bytes = Bytes.getBytes(0L, SortOrder.DESCENDING);
+		Assert.assertEquals(0L, Bytes.toLong(bytes, 0, SortOrder.DESCENDING));
+		
+		bytes = Bytes.getBytes(1L, SortOrder.DESCENDING);
+		Assert.assertEquals(1L, Bytes.toLong(bytes, 0, SortOrder.DESCENDING));
+		
+		bytes = Bytes.getBytes(-1L, SortOrder.DESCENDING);
+		Assert.assertEquals(-1L, Bytes.toLong(bytes, 0, SortOrder.DESCENDING));
+		
+		bytes = Bytes.getBytes(Long.MIN_VALUE, SortOrder.DESCENDING);
+		Assert.assertEquals(Long.MIN_VALUE, Bytes.toLong(bytes, 0, SortOrder.DESCENDING));
+		
+		bytes = Bytes.getBytes(Long.MAX_VALUE, SortOrder.DESCENDING);
+		Assert.assertEquals(Long.MAX_VALUE, Bytes.toLong(bytes, 0, SortOrder.DESCENDING));
+	}
+	
+	@Test
 	public void compareSame() {
 		byte[] b1 = "abc".getBytes();
 		byte[] b2 = "abc".getBytes();

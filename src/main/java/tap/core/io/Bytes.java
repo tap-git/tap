@@ -31,7 +31,16 @@ public class Bytes {
 		bytes[offset] = (byte) val;
 		return offset + SIZEOF_INT;
 	}
-	
+
+	private static int toInt(byte[] bytes, int offset) {
+		int n = 0;
+		for(int i = offset; i < (offset + SIZEOF_INT); i++) {
+			n <<= 8;
+			n ^= bytes[i] & 0xFF;
+		}
+		return n;
+	}
+	  
 	private static int putLong(byte[] bytes, int offset, long val) {
 		if (bytes.length - offset < SIZEOF_LONG) {
 			throw new IllegalArgumentException("Not enough room to put a long at"
@@ -44,6 +53,15 @@ public class Bytes {
 		bytes[offset] = (byte) val;
 		return offset + SIZEOF_LONG;
 	}
+
+	private static long toLong(byte[] bytes, int offset) {
+		long n = 0;
+		for(int i = offset; i < (offset + SIZEOF_LONG); i++) {
+			n <<= 8;
+			n ^= bytes[i] & 0xFF;
+		}
+		return n;
+	}
 	
 	public static int putInt(byte[] bytes, int offset, int val, SortOrder order) {
 		if(order == SortOrder.ASCENDING) {
@@ -54,6 +72,14 @@ public class Bytes {
 		return putInt(bytes, offset, val); 
 	}
 	
+	public static int toInt(byte[] bytes, int offset, SortOrder order) {
+		if(order == SortOrder.ASCENDING) {
+			return toInt(bytes, offset) + Integer.MIN_VALUE;
+		} else {
+			return Integer.MAX_VALUE - toInt(bytes, offset);
+		}
+	}
+	
 	public static int putLong(byte[] bytes, int offset, long val, SortOrder order) {
 		if(order == SortOrder.ASCENDING) {
 			val = val - Long.MIN_VALUE;
@@ -61,6 +87,14 @@ public class Bytes {
 			val = Long.MAX_VALUE - val;
 		}
 		return putLong(bytes, offset, val);
+	}
+	
+	public static long toLong(byte[] bytes, int offset, SortOrder order) {
+		if(order == SortOrder.ASCENDING) {
+			return toLong(bytes, offset) + Long.MIN_VALUE;
+		} else {
+			return Long.MAX_VALUE - toLong(bytes, offset);
+		}
 	}
 	
 	public static int putBoolean(byte[] bytes, int offset, boolean val, SortOrder order) {
@@ -103,6 +137,24 @@ public class Bytes {
 		ByteArrayOutputStream out = new ByteArrayOutputStream(val.length());
 		writeString(val, out, order);
 		return out.toByteArray();
+	}
+	
+	public static byte[] getBytes(int val, SortOrder order) {
+		byte[] bytes = new byte[4];
+		putInt(bytes, 0, val, order);
+		return bytes;
+	}
+
+	public static byte[] getBytes(long val, SortOrder order) {
+		byte[] bytes = new byte[8];
+		putLong(bytes, 0, val, order);
+		return bytes;
+	}
+	
+	public static byte[] getBytes(boolean val, SortOrder order) {
+		byte[] bytes = new byte[1];
+		putBoolean(bytes, 0, val, order);
+		return bytes;
 	}
 	
 	public static int compare(byte[] b1, int s1, int l1,
