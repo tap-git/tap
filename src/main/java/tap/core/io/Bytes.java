@@ -98,7 +98,16 @@ public class Bytes {
 	}
 	
 	public static int putBoolean(byte[] bytes, int offset, boolean val, SortOrder order) {
-		return putByte(bytes, offset, (byte) (order == SortOrder.ASCENDING ? 1 : 0)); 
+		int b;
+		if(order == SortOrder.ASCENDING)
+			b = val ? 1 : 0;
+		else
+			b = val ? 0 : 1; 
+		return putByte(bytes, offset, (byte) b); 
+	}
+	
+	public static boolean toBoolean(byte[] bytes, int offset, SortOrder order) {
+		return bytes[offset] == (order == SortOrder.ASCENDING ? 1 : 0);
 	}
 	
 	public static int writeString(String val, OutputStream out, SortOrder order) throws IOException {

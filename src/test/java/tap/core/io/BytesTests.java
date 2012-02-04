@@ -119,6 +119,46 @@ public class BytesTests {
 	}
 	
 	@Test
+	public void booleanAscNotSameAsDesc() {
+		byte[] b1 = Bytes.getBytes(true, SortOrder.ASCENDING);
+		byte[] b2 = Bytes.getBytes(true, SortOrder.DESCENDING);
+		
+		Assert.assertEquals(1, b1.length);
+		Assert.assertEquals(1, b2.length);
+		
+		Assert.assertFalse(Bytes.compare(b1, b2) == 0);
+	}
+	
+	@Test
+	public void writeBoolean() {
+		byte[] b1 = Bytes.getBytes(true, SortOrder.ASCENDING);
+		byte[] b2 = Bytes.getBytes(false, SortOrder.ASCENDING);
+		
+		Assert.assertTrue(Bytes.toBoolean(b1, 0, SortOrder.ASCENDING));
+		Assert.assertFalse(Bytes.toBoolean(b2, 0, SortOrder.ASCENDING));
+		
+		b1 = Bytes.getBytes(true, SortOrder.DESCENDING);
+		b2 = Bytes.getBytes(false, SortOrder.DESCENDING);
+		
+		Assert.assertTrue(Bytes.toBoolean(b1, 0, SortOrder.DESCENDING));
+		Assert.assertFalse(Bytes.toBoolean(b2, 0, SortOrder.DESCENDING));
+	}
+	
+	@Test
+	public void compareBoolean() {
+		byte[] b1 = Bytes.getBytes(false, SortOrder.ASCENDING);
+		byte[] b2 = Bytes.getBytes(true, SortOrder.ASCENDING);
+		
+		Assert.assertTrue(Bytes.compare(b1, b2) < 0);
+		
+		b1 = Bytes.getBytes(false, SortOrder.DESCENDING);
+		b2 = Bytes.getBytes(true, SortOrder.DESCENDING);
+		
+		Assert.assertTrue(Bytes.compare(b1, b2) > 0);
+	}
+
+	
+	@Test
 	public void intAscNotSameAsDesc() {
 		byte[] b1 = Bytes.getBytes(0, SortOrder.ASCENDING);
 		byte[] b2 = Bytes.getBytes(0, SortOrder.DESCENDING);
@@ -166,6 +206,45 @@ public class BytesTests {
 	}
 	
 	@Test
+	public void compareIntAsc() {
+		byte[] b1 = Bytes.getBytes(Integer.MIN_VALUE, SortOrder.ASCENDING);
+		
+		byte[] b2 = Bytes.getBytes(-1, SortOrder.ASCENDING);
+		Assert.assertTrue(Bytes.compare(b1, b2) < 0);
+		
+		byte[] b3 = Bytes.getBytes(0, SortOrder.ASCENDING);
+		Assert.assertTrue(Bytes.compare(b2, b3) < 0);
+		
+		byte[] b4 = Bytes.getBytes(1, SortOrder.ASCENDING);
+		Assert.assertTrue(Bytes.compare(b3, b4) < 0);
+		
+		byte[] b5 = Bytes.getBytes(Integer.MAX_VALUE, SortOrder.ASCENDING);
+		Assert.assertTrue(Bytes.compare(b4, b5) < 0);
+		
+		Assert.assertTrue(Bytes.compare(b1, b5) < 0);
+	}
+	
+	@Test
+	public void compareIntDesc() {
+		byte[] b1 = Bytes.getBytes(Integer.MIN_VALUE, SortOrder.DESCENDING);
+		
+		byte[] b2 = Bytes.getBytes(-1, SortOrder.DESCENDING);
+		Assert.assertTrue(Bytes.compare(b1, b2) > 0);
+		
+		byte[] b3 = Bytes.getBytes(0, SortOrder.DESCENDING);
+		Assert.assertTrue(Bytes.compare(b2, b3) > 0);
+		
+		byte[] b4 = Bytes.getBytes(1, SortOrder.DESCENDING);
+		Assert.assertTrue(Bytes.compare(b3, b4) > 0);
+		
+		byte[] b5 = Bytes.getBytes(Integer.MAX_VALUE, SortOrder.DESCENDING);
+		Assert.assertTrue(Bytes.compare(b4, b5) > 0);
+		
+		Assert.assertTrue(Bytes.compare(b1, b5) > 0);
+	}
+	
+	
+	@Test
 	public void longAscNotSameAsDesc() {
 		byte[] b1 = Bytes.getBytes(0L, SortOrder.ASCENDING);
 		byte[] b2 = Bytes.getBytes(0L, SortOrder.DESCENDING);
@@ -211,6 +290,46 @@ public class BytesTests {
 		bytes = Bytes.getBytes(Long.MAX_VALUE, SortOrder.DESCENDING);
 		Assert.assertEquals(Long.MAX_VALUE, Bytes.toLong(bytes, 0, SortOrder.DESCENDING));
 	}
+
+	@Test
+	public void compareLongAsc() {
+		byte[] b1 = Bytes.getBytes(Long.MIN_VALUE, SortOrder.ASCENDING);
+		
+		byte[] b2 = Bytes.getBytes(-1L, SortOrder.ASCENDING);
+		Assert.assertTrue(Bytes.compare(b1, b2) < 0);
+		
+		byte[] b3 = Bytes.getBytes(0L, SortOrder.ASCENDING);
+		Assert.assertTrue(Bytes.compare(b2, b3) < 0);
+		
+		byte[] b4 = Bytes.getBytes(1L, SortOrder.ASCENDING);
+		Assert.assertTrue(Bytes.compare(b3, b4) < 0);
+		
+		byte[] b5 = Bytes.getBytes(Long.MAX_VALUE, SortOrder.ASCENDING);
+		Assert.assertTrue(Bytes.compare(b4, b5) < 0);
+		
+		Assert.assertTrue(Bytes.compare(b1, b5) < 0);
+	}
+	
+	
+	@Test
+	public void compareLongDesc() {
+		byte[] b1 = Bytes.getBytes(Long.MIN_VALUE, SortOrder.DESCENDING);
+		
+		byte[] b2 = Bytes.getBytes(-1L, SortOrder.DESCENDING);
+		Assert.assertTrue(Bytes.compare(b1, b2) > 0);
+		
+		byte[] b3 = Bytes.getBytes(0L, SortOrder.DESCENDING);
+		Assert.assertTrue(Bytes.compare(b2, b3) > 0);
+		
+		byte[] b4 = Bytes.getBytes(1L, SortOrder.DESCENDING);
+		Assert.assertTrue(Bytes.compare(b3, b4) > 0);
+		
+		byte[] b5 = Bytes.getBytes(Long.MAX_VALUE, SortOrder.DESCENDING);
+		Assert.assertTrue(Bytes.compare(b4, b5) > 0);
+		
+		Assert.assertTrue(Bytes.compare(b1, b5) > 0);
+	}
+
 	
 	@Test
 	public void compareSame() {
