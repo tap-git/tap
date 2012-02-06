@@ -107,19 +107,4 @@ public class TapTests {
 		}
 		
 	}
-	
-	@Test
-	public void tapMapOnly() {
-		String args[] = { "TapTests.tap", "-i", "share/decameron.txt", "-o",
-				"/Users/ajai/temp/output", "--force" };
-		CommandOptions o = new CommandOptions(args);
-		Tap pipeline = new Tap(o);
-
-		pipeline.createPhase().reads(o.input)
-				.map(WordCountMapper.class)
-				// .reduce(WordCountReducer.class)
-				.writes(o.output);
-		
-		pipeline.named(o.program).make();
-	}
 }
