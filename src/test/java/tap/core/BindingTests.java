@@ -52,7 +52,7 @@ public class BindingTests {
 		tap2.make();
 	}
 
-	//@Test
+	@Test
 	public void mapOutTest() {
 		String args[] = { "BindingTests.mapOutTest", "-i", "share/decameron.txt", "-o",
 				"/tmp/TapTestsOutput", "--force" };
@@ -94,7 +94,7 @@ public class BindingTests {
 		//tap.named(o.program).make();
 	}
 	
-	//@Test
+	@Test
 	public void avroInputBindingTest() {
 		
 		{
@@ -141,7 +141,7 @@ public class BindingTests {
 		}
 	}
 
-	//@Test
+	@Test
 	public void outputStringBindingTest() {
 		String args2[] = { "BindingTests.mapOutTest", "-i", "/tmp/TapTestsOutput", "-o",
 				"/tmp/TapTestsOutput3", "--force" };

@@ -21,38 +21,33 @@ package tap.core;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-
 import junit.framework.Assert;
 
 import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.Path;
 import org.junit.Test;
 
 public class TapTests {
+
+	@Test
+	public void testOptions() {
+		String args[] = { "TapTests.tap", "-i", "shared/decameron.txt", "-o",
+				"/tmp/testOptions", "--force" };
+		CommandOptions o = new CommandOptions(args);
+		Tap tap = new Tap(o);
+		tap.alerter(new TapUnitTestAlerter());
 	
-	//@Test
+		Assert.assertEquals("shared/decameron.txt", o.input);
+		Assert.assertEquals("/tmp/testOptions", o.output);
+		Assert.assertEquals(true, o.forceRebuild);	
+	}
+	
+	@Test
 	public void tapDirectoryInput() {
 		String args[] = { "tapDirectoryInput", "-i", "share/multi", "-o",
 				"/tmp/TapTestsOutput.tapDirectoryInput",
 				"--force"};
 	
 		buildPipeline1(args);
-	}
-
-	//@Test
-	public void testOptions() {
-		String args[] = { "TapTests.tap", "-i", "/tmp/TapTests/maugham.txt", "-o",
-				"/tmp/testOptions", "--force" };
-		CommandOptions o = new CommandOptions(args);
-		Tap tap = new Tap(o);
-		tap.alerter(new TapUnitTestAlerter());
-	
-		Assert.assertEquals("/tmp/TapTests/maugham.txt", o.input);
-		Assert.assertEquals("/tmp/testOptions", o.output);
-		Assert.assertEquals(true, o.forceRebuild);	
 	}
 
 	/**
@@ -71,7 +66,7 @@ public class TapTests {
 		tap.make();
 	}
 
-	//@Test
+	@Test
 	public void tap() {
 		String args[] = { "TapTests.tap", "-i", "share/decameron.txt", "-o",
 				"/tmp/TapTestsOutput", "--force" };
@@ -82,7 +77,7 @@ public class TapTests {
 		Assert.assertTrue("File length", 200000 < f.length());
 	}
 
-	//@Test
+	@Test
 	public void tapNoForce() {
 		String args[] = { "TapTests.tapNoForce", "-i", "share/decameron.txt", "-o",
 				"/tmp/TapTestsOutput.tapNoForce",

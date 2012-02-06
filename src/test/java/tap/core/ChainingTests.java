@@ -57,7 +57,7 @@ public class ChainingTests {
 	    Assert.assertTrue("Was not created recently " + timediff, timediff > 5000);
 	}
 
-	//@Test
+	@Test
 	public void chainTest() {
 		String[] args = {"Phase.chainTest", "-i", "share/decameron.txt", "-o", "/tmp/out", "--force"};
     	CommandOptions o = new CommandOptions(args);
@@ -92,7 +92,7 @@ public class ChainingTests {
         Assert.assertTrue(timediff < 20000);
 	}
 	
-	//@Test
+	@Test
 	public void chainTestNoForceTouchInitial() {
 		
 		{
