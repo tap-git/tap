@@ -19,6 +19,7 @@
  */
 package tap.formats.tapproto;
 
+import java.util.List;
 import java.util.StringTokenizer;
 
 import junit.framework.Assert;
@@ -28,6 +29,7 @@ import org.junit.Test;
 import tap.core.CommandOptions;
 import tap.core.CountRec;
 import tap.core.Phase;
+import tap.core.PhaseError;
 import tap.core.Pipe;
 import tap.core.Tap;
 import tap.core.TapMapper;
@@ -53,7 +55,7 @@ public class TapprotoPipeTests {
     
     @Test
     public void willSetProtoOutputType() {
-		String args[] = { "BindingTests.mapOutTest", "-i", "/tmp/TapTests/maugham.txt", "-o",
+		String args[] = { "BindingTests.mapOutTest", "-i", "share/decameron.txt", "-o",
 				"/tmp/TapTestsOutput", "--force" };
 
 		CommandOptions o = new CommandOptions(args);
@@ -66,9 +68,11 @@ public class TapprotoPipeTests {
 				.reduce(Reducer.class)
 				.writes(o.output);
 		tap.produces(phase1.output());
-		Assert.assertEquals(0, phase1.plan(tap).size());
-		phase1.plan(tap);
-	    
+		List<PhaseError> phaseErrors = phase1.plan(tap);
+		for(PhaseError e: phaseErrors) {
+			System.out.println(e.getMessage());
+		}
+		Assert.assertEquals(0, phaseErrors.size());
 		Assert.assertEquals("TAPPROTO_FORMAT", phase1.getOutputs().get(0).getFormat().toString());    	
     }
     

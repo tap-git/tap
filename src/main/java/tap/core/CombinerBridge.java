@@ -29,6 +29,8 @@ import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.util.ReflectionUtils;
 
+import tap.util.ReflectUtils;
+
 /**
  * Bridge between a {@link org.apache.hadoop.mapred.Reducer} and an {@link AvroReducer} used when combining. When combining, map
  * output pairs must be split before they're collected.
@@ -48,7 +50,7 @@ class CombinerBridge<K, V> extends BaseAvroReducer<K, V, V, AvroKey<K>, AvroValu
     @Override
     public void configure(JobConf conf) {
         super.configure(conf);
-        this.schema = Phase.getSchema(this.out);
+        this.schema = ReflectUtils.getSchema(out);
         this.groupBy = conf.get(Phase.GROUP_BY);
         this.sortBy = conf.get(Phase.SORT_BY);
     }

@@ -5,6 +5,8 @@ package tap.core;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,12 +16,50 @@ import org.junit.Test;
 public class BindingTests {
 	
 	@Test
+	public void minimalistTest() {
+		String args[] = { "BindingTests.mapOutTest", "-i",
+				"share/decameron.txt", "-o", "/tmp/TapTestsOutput3", "--force" };
+
+		Tap tap = new Tap(new CommandOptions(args));
+		tap.createPhase().map(WordCountMapper.class).groupBy("word")
+				.reduce(WordCountReducer.class);
+
+		// to automatically trap Hadoop exceptions
+		tap.alerter(new TapUnitTestAlerter());
+
+		tap.make();
+	}
+	
+	@Test
+	public void fileBindingTest1() {
+		String args2[] = { "BindingTests.mapOutTest", "-i", "/tmp/gaggle/", "-o",
+				"/tmp/TapTestsOutput3", "--force" };
+		CommandOptions o2 = new CommandOptions(args2);
+		Tap tap2 = new Tap(o2);
+		tap2.alerter(new TapUnitTestAlerter());
+		
+		Phase phase2 = tap2
+				.createPhase().reads(o2.input)
+				.map(SummationMapper.class).groupBy("word")
+				.combine(SummationPipeReducer.class)
+				.reduce(SummationPipeReducer.class).writes(o2.output);
+		tap2.produces(phase2.getOutputs());
+		phase2.plan(tap2);
+		assertNotNull(phase2.input().getPath());
+		System.out.println("timestamp " + phase2.input().getTimestamp());
+		assertTrue(!phase2.input().exists());
+		assertTrue(0 == phase2.input().getTimestamp());
+		tap2.make();
+	}
+
+	//@Test
 	public void mapOutTest() {
-		String args[] = { "BindingTests.mapOutTest", "-i", "/tmp/TapTests/maugham.txt", "-o",
+		String args[] = { "BindingTests.mapOutTest", "-i", "share/decameron.txt", "-o",
 				"/tmp/TapTestsOutput", "--force" };
 
 		CommandOptions o = new CommandOptions(args);
 		Tap tap = new Tap(o);
+		tap.alerter(new TapUnitTestAlerter());
 
 		Phase phase1 = tap.createPhase()
 				.reads(o.input)
@@ -34,7 +74,14 @@ public class BindingTests {
 		tap.produces(phase1.output());
 		Assert.assertEquals(phase1.getInputs().get(0).getFormat().toString(), "STRING_FORMAT", phase1.getInputs().get(0).getFormat().toString());
 		
-		Assert.assertEquals("Planning errors ", 0, phase1.plan(tap).size());
+		List<PhaseError> phaseErrors = phase1.plan(tap);
+		Assert.assertNotNull(phaseErrors);
+		Assert.assertEquals("Planning errors ", 0, phaseErrors.size());
+		if (phaseErrors.size() > 0) {
+			for(PhaseError e: phaseErrors) {
+				System.out.println("mapOutTest: " + e.getMessage());
+			}
+		}
 	    
 		System.out.println(tap.getConf().get("mapred.output.format.class"));
 		System.out.println(phase1.getOutputs().get(0).getFormat().toString());
@@ -47,15 +94,16 @@ public class BindingTests {
 		//tap.named(o.program).make();
 	}
 	
-	@Test
+	//@Test
 	public void avroInputBindingTest() {
 		
 		{
 			String args[] = { "BindingTests.mapOutTest", "-i",
-					"/tmp/TapTests/maugham.txt", "-o", "/tmp/TapTestsOutput",
+					"share/decameron.txt", "-o", "/tmp/TapTestsOutput",
 					"--force" };
 			CommandOptions o1 = new CommandOptions(args);
 			Tap tap1 = new Tap(o1);
+			tap1.alerter(new TapUnitTestAlerter());
 
 			Phase phase1 = tap1.createPhase().reads(o1.input)
 					.map(WordCountMapper.class).groupBy("word")
@@ -65,10 +113,12 @@ public class BindingTests {
 			tap1.named(o1.program).make();
 		}
 		{
-		String args2[] = { "BindingTests.mapOutTest", "-i", "/tmp/TapTestsOutput", "-o",
+		String args2[] = { "BindingTests.mapOutTest", "-i", "share/decameron.txt", "-o",
 				"/tmp/TapTestsOutput2", "--force" };
 		CommandOptions o2 = new CommandOptions(args2);
 		Tap tap2 = new Tap(o2);
+		tap2.alerter(new TapUnitTestAlerter());
+		
 		Phase phase2 = tap2
 				.createPhase().reads(o2.input)
 				.map(SummationMapper.class).groupBy("word")
@@ -91,12 +141,14 @@ public class BindingTests {
 		}
 	}
 
-	@Test
+	//@Test
 	public void outputStringBindingTest() {
 		String args2[] = { "BindingTests.mapOutTest", "-i", "/tmp/TapTestsOutput", "-o",
 				"/tmp/TapTestsOutput3", "--force" };
 		CommandOptions o2 = new CommandOptions(args2);
 		Tap tap2 = new Tap(o2);
+		tap2.alerter(new TapUnitTestAlerter());
+		
 		Phase phase2 = tap2
 				.createPhase().reads(o2.input)
 				.map(SummationMapper.class).groupBy("word")

@@ -41,6 +41,7 @@ import tap.core.mapreduce.io.ProtobufWritable;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 import tap.formats.avro.JsonToGenericRecord;
+import tap.util.ReflectUtils;
 
 @SuppressWarnings("deprecation")
 public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
@@ -49,7 +50,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     private static final int SNIFF_HEADER_SIZE = 1000;
     private TapMapper<IN, OUT> mapper;
     private boolean isMapOnly;
-    private OUT out;
+    //private OUT out;
     private TapContext<OUT> context;
     private Schema schema;
     private String groupBy;
@@ -65,8 +66,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     // TODO: make this configurable
     private int maxAllowedErrors = 1000;
     private Pipe<OUT> outPipe = null;
-    private boolean isPipeOutput = false;
-
+    
     @SuppressWarnings("unchecked")
     @Override
     public void configure(JobConf conf) {
@@ -132,7 +132,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
                 isTextInput = true;
             } else {
                 isJsonInput = true;
-                inSchema = Phase.getSchema((IN) ReflectionUtils.newInstance(
+                inSchema = ReflectUtils.getSchema((IN) ReflectionUtils.newInstance(
                         inClass, conf));
             }
         }
@@ -143,14 +143,11 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
      * @param conf
      */
     private void determineOutputFormat(JobConf conf) {
-        this.out = (OUT) ReflectionUtils.newInstance(
+        OUT out = (OUT) ReflectionUtils.newInstance(
                 conf.getClass(Phase.MAP_OUT_CLASS, Object.class, Object.class),
                 conf);
-        if (null != conf.get(Phase.MAP_OUT_PIPE_CLASS)) {
-            this.outPipe = new Pipe<OUT>(this.out);
-            this.isPipeOutput = true;
-        }
-        this.schema = Phase.getSchema(this.out);
+        outPipe = new Pipe<OUT>(out);
+        schema = ReflectUtils.getSchema(out);
     }
 
     @SuppressWarnings("unchecked")
@@ -240,9 +237,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     }
     
     private void map(IN value) {
-        if (this.isPipeOutput) {
             mapper.map(value, outPipe);
-        }
     }
 
     /**
@@ -257,10 +252,10 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
             if (this.context == null) {
                 KeyExtractor<GenericData.Record, OUT> extractor = new ReflectionKeyExtractor<OUT>(
                         schema, groupBy, sortBy);
-                this.outPipe.setContext(new TapContext<OUT>(new Collector(
+                outPipe.setContext(new TapContext<OUT>(new Collector(
                         collector, extractor), reporter));
             } else {
-                this.outPipe.setContext(this.context);
+                outPipe.setContext(this.context);
             }
         }
     }

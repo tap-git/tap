@@ -1,0 +1,189 @@
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/zh_TW.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:58 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:58 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/_CodeSignature:
+Hello  Fri Feb 3 16:23:58 EST 2012 CodeResources
+Hello  Fri Feb 3 16:23:58 EST 2012 /System/Library/Automator:
+Hello  Fri Feb 3 16:23:58 EST 2012 Activate Fonts.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Add Attachments to Front Message.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Add Color Profile.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Add Files to Playlist.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Add Grid to PDF Documents.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Add Movie to iDVD Menu.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Add Photos to Album.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Add Songs to Playlist.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Add Songs to iPod.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Add Spotlight Comments to Finder Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Add Thumbnail Icon to Image Files.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Add to Font Library.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Address Book.definition
+Hello  Fri Feb 3 16:23:58 EST 2012 Apply ColorSync Profile to Images.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Apply Quartz Composition Filter to Image Files.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Apply Quartz Filter to PDF Documents.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Apply SQL.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Ask For Servers.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Ask for Confirmation.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Ask for Finder Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Ask for Movies.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Ask for Photos.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Ask for Songs.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Ask for Text.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Automator.definition
+Hello  Fri Feb 3 16:23:58 EST 2012 Browse Movies.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Build Xcode Project.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Burn A Disc.action
+Hello  Fri Feb 3 16:23:58 EST 2012 CVS Add.action
+Hello  Fri Feb 3 16:23:58 EST 2012 CVS Checkout.action
+Hello  Fri Feb 3 16:23:58 EST 2012 CVS Commit.action
+Hello  Fri Feb 3 16:23:58 EST 2012 CVS Update.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Change Case of Song Names.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Change Type of Images.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Choose from List.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Combine Mail Messages.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Combine PDF Pages.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Combine Text Files.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Compress Images in PDF Documents.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Connect to Servers.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Account object to Mailbox object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Album object to Photo object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Alias object to Finder object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Alias object to iPhoto photo object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert CSV to SQL.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Calendar object to Event object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Calendar object to To Do object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Cocoa Data To Cocoa String.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Cocoa String To Cocoa Data.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Cocoa URL to RSS Feed.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Cocoa URL to iTunes Track Object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Feeds to Articles.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Finder object to Alias object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Group object to Person object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Mailbox object to Message object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Photo object to Alias object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Playlist object to Song object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Quartz Compositions to QuickTime Movies.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert Source object to Playlist object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert iPhoto Album to Alias object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert iTunes Playlist to Alias object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Convert iTunes object to Alias object.caction
+Hello  Fri Feb 3 16:23:58 EST 2012 Copy Finder Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Copy to Clipboard.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Create Archive.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Create Package.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Create Thumbnail Images.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Crop Images.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Deactivate Fonts.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Delete All iPod Notes.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Delete iCal Events.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Display Mail Messages.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Display Webpages 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Display Webpages.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Download Pictures.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Download URLs.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Duplicate Finder Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Eject Disk.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Eject iPod.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Enable or Disable Tracks.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Encrypt PDF Documents.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Event Summary.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Execute SQL.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Export Font Files.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Export Movies for iPod.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Export vCards.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Extract Odd & Even Pages.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Extract PDF Annotations.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Extract PDF Text.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Filter Address Book Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Filter Articles.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Filter Finder Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Filter Finder Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Filter Fonts by Font Type.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Filter Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Filter Mail Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Filter Paragraphs.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Filter URLs 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Filter URLs.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Filter iCal Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Filter iPhoto Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Filter iTunes Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Find Address Book Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Find Finder Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Find Finder Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Find Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Find Mail Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Find People with Birthdays.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Find iCal Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Find iPhoto Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Find iTunes Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Finder.definition
+Hello  Fri Feb 3 16:23:58 EST 2012 Flip Images.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Font Book.definition
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Attachments from Mail Messages.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Contact Information.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Contents of Clipboard.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Contents of TextEdit Document.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Current Webpage from Safari.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Definition of Word.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Enclosure URLs from Articles.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Feeds from Mail.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Feeds from Safari.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Feeds from URLs.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Files for Fonts.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Folder Contents.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Font Info.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Fonts from Font Files.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Fonts of TextEdit Document.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Image URLs from Articles.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Image URLs from Webpage.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Link URLs from Articles.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Link URLs from Webpages.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get New Mail.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get PDF Metadata.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Permalinks of Articles.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get PostScript name of Font.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Selected Address Book Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Selected Finder Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Selected Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Selected Mail Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Selected iPhoto Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Selected iTunes Items 2.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Specified Address Book Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Specified Finder Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Specified Mail Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Specified Movies.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Specified Servers.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Specified Text.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Specified URLs.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Specified iCal Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Specified iPhoto Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Specified iTunes Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Text from Articles.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Text from Webpage.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get Value of Variable.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get iDVD Slideshow Images.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Get the Current Song.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Group Mailer.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Hide All Applications.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Hint Movies.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Import Audio File.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Import Photos into iPhoto.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Initiate Remote Broadcast.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Label Finder Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Launch Application.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Loop.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Mail.definition
+Hello  Fri Feb 3 16:23:58 EST 2012 Mark Articles.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Mount Disk Image.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Move Finder Items to Trash.action
+Hello  Fri Feb 3 16:23:58 EST 2012 Move Finder Items.action
+Hello  Fri Feb 3 16:23:58 EST 2012 New Aliases.action
+Hello  Fri Feb 3 16:23:58 EST 2012 New Audio Capture.action
+Hello  Fri Feb 3 16:23:58 EST 2012 New Calendar.action
+Hello  Fri Feb 3 16:23:58 EST 2012 New Disk Image.action
+Hello  Fri Feb 3 16:23:58 EST 2012 New Folder.action
+Hello  Fri Feb 3 16:23:58 EST 2012 New Mail Message.action
+Hello  Fri Feb 3 16:23:58 EST 2012 New PDF Contact Sheet.action
+Hello  Fri Feb 3 16:23:58 EST 2012 New PDF from Images.action
+Hello  Fri Feb 3 16:23:58 EST 2012 New QuickTime Slideshow.action
+Hello  Fri Feb 3 16:23:58 EST 2012 New Screen Capture.action
+Hello  Fri Feb 3 16:23:58 EST 2012 New Text File.action
+Hello  Fri Feb 3 16:23:58 EST 2012 New TextEdit Document.action

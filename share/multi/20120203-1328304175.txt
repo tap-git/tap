@@ -1,0 +1,191 @@
+Hello  Fri Feb 3 16:22:55 EST 2012 da.lproj
+Hello  Fri Feb 3 16:22:55 EST 2012 fi.lproj
+Hello  Fri Feb 3 16:22:55 EST 2012 ko.lproj
+Hello  Fri Feb 3 16:22:55 EST 2012 no.lproj
+Hello  Fri Feb 3 16:22:55 EST 2012 pl.lproj
+Hello  Fri Feb 3 16:22:55 EST 2012 pt.lproj
+Hello  Fri Feb 3 16:22:55 EST 2012 pt_PT.lproj
+Hello  Fri Feb 3 16:22:55 EST 2012 ru.lproj
+Hello  Fri Feb 3 16:22:55 EST 2012 sv.lproj
+Hello  Fri Feb 3 16:22:55 EST 2012 zh_CN.lproj
+Hello  Fri Feb 3 16:22:55 EST 2012 zh_TW.lproj
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/Dutch.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/Dutch.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/Dutch.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/English.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/English.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/English.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/French.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/French.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/French.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/German.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/German.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/German.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/Italian.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/Italian.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/Italian.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/Japanese.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/Japanese.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/Japanese.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/Spanish.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/Spanish.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/Spanish.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/da.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/da.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/da.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/fi.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/fi.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/fi.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/ko.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/ko.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/ko.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/no.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/no.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/no.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pl.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pl.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pl.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pt.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pt.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pt.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pt_PT.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pt_PT.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pt_PT.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/ru.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/ru.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/ru.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/sv.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/sv.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/sv.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/zh_CN.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/zh_CN.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/zh_CN.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/zh_TW.lproj:
+Hello  Fri Feb 3 16:22:55 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:55 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/zh_TW.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/zh_TW.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:22:55 EST 2012 keyedobjects.nib

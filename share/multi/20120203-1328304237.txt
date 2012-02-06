@@ -1,0 +1,190 @@
+Hello  Fri Feb 3 16:23:57 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pl.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pl.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pt.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pt.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pt.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pt_PT.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pt_PT.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/pt_PT.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/ru.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/ru.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/ru.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/sv.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/sv.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/sv.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/zh_CN.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/zh_CN.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/zh_CN.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/zh_TW.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABSharingPickerPanel.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 GoogleContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 PHXLocalSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 YahooContactSyncEULA.rtf
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/zh_TW.lproj/ABSharingPickerPanel.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/Resources/zh_TW.lproj/PHXLocalSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/_CodeSignature:
+Hello  Fri Feb 3 16:23:57 EST 2012 CodeResources
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle:
+Hello  Fri Feb 3 16:23:57 EST 2012 Contents
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents:
+Hello  Fri Feb 3 16:23:57 EST 2012 CodeResources
+Hello  Fri Feb 3 16:23:57 EST 2012 Info.plist
+Hello  Fri Feb 3 16:23:57 EST 2012 MacOS
+Hello  Fri Feb 3 16:23:57 EST 2012 Resources
+Hello  Fri Feb 3 16:23:57 EST 2012 _CodeSignature
+Hello  Fri Feb 3 16:23:57 EST 2012 version.plist
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/MacOS:
+Hello  Fri Feb 3 16:23:57 EST 2012 MobileMeSharing
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABSharedAll16.png
+Hello  Fri Feb 3 16:23:57 EST 2012 Dutch.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 English.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 French.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 German.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 Italian.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 Japanese.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 Spanish.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 da.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 fi.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 ko.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 no.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 pl.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 pt.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 pt_PT.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 ru.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 sv.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 zh_CN.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 zh_TW.lproj
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Dutch.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Dutch.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/English.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/English.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/French.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/French.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/German.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/German.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Italian.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Italian.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Japanese.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Japanese.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Spanish.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Spanish.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/da.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/da.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/fi.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/fi.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/ko.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/ko.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/no.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/no.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/pl.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/pl.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/pt.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/pt.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/pt_PT.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/pt_PT.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/ru.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/ru.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/sv.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/sv.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/zh_CN.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/zh_CN.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:23:57 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/zh_TW.lproj:
+Hello  Fri Feb 3 16:23:57 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:23:57 EST 2012 InfoPlist.strings

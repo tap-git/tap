@@ -1,0 +1,190 @@
+Hello  Fri Feb 3 16:23:55 EST 2012 pt_PT.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 ru.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 sv.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 zh_CN.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 zh_TW.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/Dutch.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/Dutch.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/English.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/English.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/French.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/French.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/German.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/German.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/Italian.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/Italian.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/Japanese.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/Japanese.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/Spanish.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/Spanish.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/da.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/da.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/fi.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/fi.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/ko.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/ko.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/no.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/no.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/pl.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/pl.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/pt.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/pt.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/pt_PT.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/pt_PT.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/ru.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/ru.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/sv.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/sv.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/zh_CN.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/zh_CN.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/zh_TW.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABExchangeSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/Resources/zh_TW.lproj/ABExchangeSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/Exchange.sourcebundle/Contents/_CodeSignature:
+Hello  Fri Feb 3 16:23:55 EST 2012 CodeResources
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle:
+Hello  Fri Feb 3 16:23:55 EST 2012 Contents
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents:
+Hello  Fri Feb 3 16:23:55 EST 2012 CodeResources
+Hello  Fri Feb 3 16:23:55 EST 2012 Info.plist
+Hello  Fri Feb 3 16:23:55 EST 2012 MacOS
+Hello  Fri Feb 3 16:23:55 EST 2012 Resources
+Hello  Fri Feb 3 16:23:55 EST 2012 _CodeSignature
+Hello  Fri Feb 3 16:23:55 EST 2012 version.plist
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/MacOS:
+Hello  Fri Feb 3 16:23:55 EST 2012 LDAP
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABLDAPSource.png
+Hello  Fri Feb 3 16:23:55 EST 2012 Dutch.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 English.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 French.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 German.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 Italian.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 Japanese.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 Spanish.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 da.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 fi.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 ko.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 no.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 pl.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 pt.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 pt_PT.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 ru.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 sv.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 zh_CN.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 zh_TW.lproj
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/Dutch.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABLDAPSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/Dutch.lproj/ABLDAPSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/English.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABLDAPSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/English.lproj/ABLDAPSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/French.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABLDAPSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/French.lproj/ABLDAPSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/German.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABLDAPSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/German.lproj/ABLDAPSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/Italian.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABLDAPSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/Italian.lproj/ABLDAPSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/Japanese.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABLDAPSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/Japanese.lproj/ABLDAPSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/Spanish.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABLDAPSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/Spanish.lproj/ABLDAPSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/da.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABLDAPSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/da.lproj/ABLDAPSource.nib:
+Hello  Fri Feb 3 16:23:55 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/fi.lproj:
+Hello  Fri Feb 3 16:23:55 EST 2012 ABLDAPSource.nib
+Hello  Fri Feb 3 16:23:55 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:23:55 EST 2012 /System/Library/Address Book Plug-Ins/LDAP.sourcebundle/Contents/Resources/fi.lproj/ABLDAPSource.nib:

@@ -39,7 +39,10 @@ public class Tap implements TapInterface {
     private String name = "";
     private CommandOptions options;
 
-    private Tap() {
+    List<Phase> phases = new LinkedList<Phase>();
+    int globalPhaseID = 0;
+
+	private Tap() {
     	Class<?> jarClass = this.getClass();
 		baseConf.setJarByClass(jarClass);
 		init();
@@ -49,6 +52,7 @@ public class Tap implements TapInterface {
     	options = o;
     	init();
     	options.parse(this);
+    	this.named(o.program); // by default set the Tap name.
     }
     
     //TODO: Integrate into framework or remove
@@ -76,6 +80,27 @@ public class Tap implements TapInterface {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+	}
+	
+	@Override
+	public Phase createPhase() {
+		Phase phase = new Phase(this);
+		phases.add(phase);
+		return phase;
+	}
+
+	/**
+	 * Setup the result / error alerter for the jobs
+	 * @param alerter The alerter to use
+	 * @return The Tap
+	 */
+	public Tap alerter(Alerter alerter) {
+		this.alerter = alerter;
+		return this;
+	}
+	
+	Alerter getAlerter() {
+		return alerter;
 	}
 
     public Tap produces(List<Pipe> outputs) {
@@ -273,13 +298,12 @@ public class Tap implements TapInterface {
 
     /**
      * Determine if we should build this file or not
-     * @param file
-     * @param exists - return true if underlying Pipe file exists
-     * @return
+     * @param file The (target) file to consider
+     * @return True if we should build.
      */
-    private boolean build(Pipe file) {
+    private boolean build(Pipe<?> file) {
     	if (null == file.getConf()) {
-    		file.setConf(this.getConf());
+    		file.setConf(getConf());
     	}
 
     	if (options.forceRebuild) {
@@ -290,12 +314,11 @@ public class Tap implements TapInterface {
     		return false;
     	}
     	
-    	if (file.isObsolete()) {
-    		return true;
+    	if (file.getProducer() == null) {
+    		return false;
     	}
-        		
-//              && (!forceRebuild || file.getProducer() == null)) {
-		return false;
+    	
+        return file.isObsolete();
 	}
 
 	public String getName() {
@@ -320,20 +343,21 @@ public class Tap implements TapInterface {
         }
     }
 
-    List<Phase> phases = new LinkedList<Phase>();
-
-	@Override
-	public Phase createPhase() {
-		Phase phase = new Phase();
-		phases.add(phase);
-		return phase;
-	}
-
-	/**
+    /**
 	 * Build and run the job
 	 */
 	@Override
 	public int make() {
+		
+		// Setup implicit input based on command line parameters
+		if (null == phases.get(0).getInputs()) {
+			phases.get(0).reads(options.input);
+		}
+
+		// Setup implicit output based on command line parameters
+		if (null == phases.get(phases.size() - 1).getOutputs()) {
+			phases.get(phases.size() - 1).writes(options.output);
+		}
 		
 		// Produces
 		for(Phase phase: phases) {

@@ -1,0 +1,188 @@
+Hello  Fri Feb 3 16:22:51 EST 2012 Input Methods
+Hello  Fri Feb 3 16:22:52 EST 2012 Java
+Hello  Fri Feb 3 16:22:52 EST 2012 KerberosPlugins
+Hello  Fri Feb 3 16:22:52 EST 2012 Keyboard Layouts
+Hello  Fri Feb 3 16:22:52 EST 2012 Keychains
+Hello  Fri Feb 3 16:22:52 EST 2012 LaunchAgents
+Hello  Fri Feb 3 16:22:52 EST 2012 LaunchDaemons
+Hello  Fri Feb 3 16:22:52 EST 2012 LoginPlugins
+Hello  Fri Feb 3 16:22:52 EST 2012 Modem Scripts
+Hello  Fri Feb 3 16:22:52 EST 2012 MonitorPanels
+Hello  Fri Feb 3 16:22:52 EST 2012 OpenSSL
+Hello  Fri Feb 3 16:22:52 EST 2012 Perl
+Hello  Fri Feb 3 16:22:52 EST 2012 PodcastProducer
+Hello  Fri Feb 3 16:22:52 EST 2012 PreferencePanes
+Hello  Fri Feb 3 16:22:52 EST 2012 Printers
+Hello  Fri Feb 3 16:22:52 EST 2012 PrivateFrameworks
+Hello  Fri Feb 3 16:22:52 EST 2012 QuickLook
+Hello  Fri Feb 3 16:22:52 EST 2012 QuickTime
+Hello  Fri Feb 3 16:22:52 EST 2012 QuickTimeJava
+Hello  Fri Feb 3 16:22:52 EST 2012 Sandbox
+Hello  Fri Feb 3 16:22:52 EST 2012 Screen Savers
+Hello  Fri Feb 3 16:22:52 EST 2012 ScreenReader
+Hello  Fri Feb 3 16:22:52 EST 2012 ScriptingAdditions
+Hello  Fri Feb 3 16:22:52 EST 2012 ScriptingDefinitions
+Hello  Fri Feb 3 16:22:52 EST 2012 Security
+Hello  Fri Feb 3 16:22:52 EST 2012 Services
+Hello  Fri Feb 3 16:22:52 EST 2012 Sounds
+Hello  Fri Feb 3 16:22:52 EST 2012 Speech
+Hello  Fri Feb 3 16:22:52 EST 2012 Spelling
+Hello  Fri Feb 3 16:22:52 EST 2012 Spotlight
+Hello  Fri Feb 3 16:22:52 EST 2012 StartupItems
+Hello  Fri Feb 3 16:22:52 EST 2012 SyncServices
+Hello  Fri Feb 3 16:22:52 EST 2012 SystemConfiguration
+Hello  Fri Feb 3 16:22:52 EST 2012 SystemProfiler
+Hello  Fri Feb 3 16:22:52 EST 2012 Tcl
+Hello  Fri Feb 3 16:22:52 EST 2012 TextEncodings
+Hello  Fri Feb 3 16:22:52 EST 2012 User Template
+Hello  Fri Feb 3 16:22:52 EST 2012 UserEventPlugins
+Hello  Fri Feb 3 16:22:52 EST 2012 WidgetResources
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins:
+Hello  Fri Feb 3 16:22:52 EST 2012 CardDAVPlugin.sourcebundle
+Hello  Fri Feb 3 16:22:52 EST 2012 DirectoryServices.sourcebundle
+Hello  Fri Feb 3 16:22:52 EST 2012 Exchange.sourcebundle
+Hello  Fri Feb 3 16:22:52 EST 2012 LDAP.sourcebundle
+Hello  Fri Feb 3 16:22:52 EST 2012 LocalSource.sourcebundle
+Hello  Fri Feb 3 16:22:52 EST 2012 MobileMeSharing.sourcebundle
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle:
+Hello  Fri Feb 3 16:22:52 EST 2012 Contents
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents:
+Hello  Fri Feb 3 16:22:52 EST 2012 CodeResources
+Hello  Fri Feb 3 16:22:52 EST 2012 Info.plist
+Hello  Fri Feb 3 16:22:52 EST 2012 MacOS
+Hello  Fri Feb 3 16:22:52 EST 2012 Resources
+Hello  Fri Feb 3 16:22:52 EST 2012 _CodeSignature
+Hello  Fri Feb 3 16:22:52 EST 2012 version.plist
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/MacOS:
+Hello  Fri Feb 3 16:22:52 EST 2012 CardDAVPlugin
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources:
+Hello  Fri Feb 3 16:22:52 EST 2012 Dutch.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 English.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 French.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 German.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 Italian.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 Japanese.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.png
+Hello  Fri Feb 3 16:22:52 EST 2012 Spanish.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 da.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 fi.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 ko.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 no.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 pl.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 pt.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 pt_PT.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 ru.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 sv.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 zh_CN.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 zh_TW.lproj
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/Dutch.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/Dutch.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/English.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/English.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/French.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/French.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/German.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/German.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/Italian.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/Italian.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/Japanese.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/Japanese.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/Spanish.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/Spanish.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/da.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/da.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/fi.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/fi.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/ko.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/ko.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/no.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/no.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/pl.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/pl.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/pt.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/pt.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/pt_PT.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/pt_PT.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/ru.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/ru.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/sv.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/sv.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/zh_CN.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/zh_CN.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/zh_TW.lproj:
+Hello  Fri Feb 3 16:22:52 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 Localizable.strings
+Hello  Fri Feb 3 16:22:52 EST 2012 PHXCardDAVSource.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/Resources/zh_TW.lproj/PHXCardDAVSource.nib:
+Hello  Fri Feb 3 16:22:52 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/CardDAVPlugin.sourcebundle/Contents/_CodeSignature:
+Hello  Fri Feb 3 16:22:52 EST 2012 CodeResources
+Hello  Fri Feb 3 16:22:52 EST 2012 /System/Library/Address Book Plug-Ins/DirectoryServices.sourcebundle:

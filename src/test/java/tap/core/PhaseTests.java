@@ -14,6 +14,7 @@ import org.apache.avro.Schema.Type;
 import org.junit.Test;
 
 import tap.formats.Formats;
+import tap.util.ReflectUtils;
 
 public class PhaseTests {
 
@@ -33,7 +34,7 @@ public class PhaseTests {
         Phase phase = new Phase("my phase");
         phase.reads(input);
         phase.writes(output);
-        Schema schema = Phase.getSchema(this);
+        Schema schema = ReflectUtils.getSchema(this);
         Assert.assertNotNull(schema);
         Assert.assertEquals("tap.core.PhaseTests", schema.getFullName());
         Assert.assertEquals(Type.RECORD, schema.getType());
@@ -42,86 +43,52 @@ public class PhaseTests {
         Assert.assertEquals(Formats.STRING_FORMAT, phase.getInputs().get(0)
                 .getFormat());
     }
-
+    
     @Test
-    public void setTest() {
+    public void setNameTest() {
     	String[] args = {"Phase.setTest", "-i", "share/decameron.txt", "-o", "/tmp/out", "--force"};
     	CommandOptions o = new CommandOptions(args);
         /* Set up a basic pipeline of map reduce */
         Tap tap = new Tap(o);
-        HashMap<String, String> hash = new HashMap<String,String>();
-        hash.put("bob", "One");
-        hash.put("fruit", "apple");
-        hash.put("fruit", "Orange");
-        hash.put("animal", "dog");
-        
-        tap
+        Phase phase = tap.createPhase();
+        Assert.assertNotNull(phase.getName());
+        phase.setName("my phase");
+        Assert.assertNotNull(phase.getName());
+    }
+    
+    @Test
+    public void temporaryFileTest() {
+    	String[] args = {"Phase.setTest", "-i", "share/decameron.txt", "-o", "/tmp/out", "--force"};
+    	CommandOptions o = new CommandOptions(args);
+        /* Set up a basic pipeline of map reduce */
+        Tap tap = new Tap(o);
+        Phase phase = tap
         .createPhase()
         .reads(o.input)
         .map(SetMapper.class)
         .reduce(SetReducer.class)
         //.combine(Test2Reducer.class)
         .groupBy("word")
-        .writes(o.output)
-        .set("mykey", hash);
-        int rc = tap.named(args[0]).make();
-        Assert.assertEquals(0, rc);
+        .writes(o.output);
+        Assert.assertNotNull(phase.getTmpOutputName());
+        System.out.println(phase.getTmpOutputName());
     }
     
-    public static class SetMapper extends TapMapper<String, CountRec> {
-    	private HashMap<String,String> myMapParam = null;
-    	
-    	@Override
-    	public void init(String Path) {
-    		Assert.assertNotNull(Path);
-    		Assert.assertEquals(true, Path.contains("decameron.txt"));
-    		if (null == myMapParam) {
-    			myMapParam = (HashMap<String, String>) this.getMapperParameter("mykey");
+    @Test
+    public void temporaryFileTest2() {
+    	String[] args = {"Phase.setTest", "-i", "share/decameron.txt", "-o", "/tmp/out", "--force"};
+    	CommandOptions o = new CommandOptions(args);
+        /* Set up a basic pipeline of map reduce */
+		String tempFile = null;
+    	for(int i=0; i< 2; i++) {
+    		Tap t = new Tap(o);
+    		Phase p = t.createPhase();
+    		if (i==0) {
+    			tempFile = p.getTmpOutputName();
+    		} else {
+    			Assert.assertEquals(tempFile, p.getTmpOutputName());
     		}
-    		Assert.assertNotNull(myMapParam);
-    		System.out.println("SetMapper.init called");
-    	}
-
-    	private HashMap<String,String> getMyMap() {
-			return myMapParam;
-    	}
-
-    	private CountRec outrec = new CountRec();
-    	@Override
-    	public void map(String in, Pipe<CountRec> out) {
-    		Assert.assertNotNull(getMyMap());
-    		Assert.assertEquals(3, getMyMap().size());
-    		Assert.assertEquals("dog", getMyMap().get("animal"));
-    		Assert.assertEquals("One", getMyMap().get("bob"));
-    		Assert.assertEquals("Orange", getMyMap().get("fruit"));
-    		outrec.word = in;
-    		outrec.count = 1;
-    		out.put(outrec);
-    	}
-    	
-    	@Override
-    	public void finish() {
-    		System.out.println("SetMapper.finish called");
-    	}
-    }
-    
-    public static class SetReducer extends TapReducer<CountRec, OutputLog> {
-        
-    	@Override
-    	public void init(String path) {
-    		System.out.println("SetReducer.init("+path+") called");
-    	}
-    	
-    	@Override
-        public void reduce(Pipe<CountRec> in, Pipe<OutputLog> out) {
-        	
-        }
-        
-        @Override
-        public void finish() {
-        	System.out.println("SetReducer.finish called");
-        }
-       
+		}
     }
 
     @Test
@@ -137,10 +104,12 @@ public class PhaseTests {
         Pipe<OutputLog> p2 = new Pipe<OutputLog>(o.output);
         p2.setPrototype(new OutputLog());
         tap.produces(p2);
+        
 
         Phase phase = new Phase();
         phase.reads(p1).writes(p2).map(Test2Mapper.class).groupBy("word")
                 .reduce(Test2Reducer.class);
+        phase.plan(tap);
 
         System.out.println(phase.getSummary());
 
@@ -212,8 +181,8 @@ public class PhaseTests {
 
         List<PhaseError> errors = phase.plan(assembly);
         for (PhaseError e : errors) {
-            System.out.printf("%s : %s \n", e.getMessage(), e.getException()
-                    .toString());
+            System.out.printf("%s : %s \n", e.getMessage(), (null == e.getException() ? "" : e.getException()
+                    .toString()));
         }
         Assert.assertEquals(0, errors.size());
 
@@ -232,7 +201,88 @@ public class PhaseTests {
         assembly.dryRun();
     }
 
-    public class Test3Mapper extends TapMapper<String, CountRec> {
+    @Test
+	public void setTest() {
+		String[] args = {"Phase.setTest", "-i", "share/decameron.txt", "-o", "/tmp/out", "--force"};
+		CommandOptions o = new CommandOptions(args);
+	    /* Set up a basic pipeline of map reduce */
+	    Tap tap = new Tap(o);
+	    HashMap<String, String> hash = new HashMap<String,String>();
+	    hash.put("bob", "One");
+	    hash.put("fruit", "apple");
+	    hash.put("fruit", "Orange");
+	    hash.put("animal", "dog");
+	    
+	    tap
+	    .createPhase()
+	    .reads(o.input)
+	    .map(SetMapper.class)
+	    .reduce(SetReducer.class)
+	    //.combine(Test2Reducer.class)
+	    .groupBy("word")
+	    .writes(o.output)
+	    .set("mykey", hash);
+	    int rc = tap.named(args[0]).make();
+	    Assert.assertEquals(0, rc);
+	}
+
+	public static class SetMapper extends TapMapper<String, CountRec> {
+		private HashMap<String,String> myMapParam = null;
+		
+		@Override
+		public void init(String Path) {
+			Assert.assertNotNull(Path);
+			Assert.assertEquals(true, Path.contains("decameron.txt"));
+			if (null == myMapParam) {
+				myMapParam = (HashMap<String, String>) this.getMapperParameter("mykey");
+			}
+			Assert.assertNotNull(myMapParam);
+			System.out.println("SetMapper.init called");
+		}
+	
+		private HashMap<String,String> getMyMap() {
+			return myMapParam;
+		}
+	
+		private CountRec outrec = new CountRec();
+		@Override
+		public void map(String in, Pipe<CountRec> out) {
+			Assert.assertNotNull(getMyMap());
+			Assert.assertEquals(3, getMyMap().size());
+			Assert.assertEquals("dog", getMyMap().get("animal"));
+			Assert.assertEquals("One", getMyMap().get("bob"));
+			Assert.assertEquals("Orange", getMyMap().get("fruit"));
+			outrec.word = in;
+			outrec.count = 1;
+			out.put(outrec);
+		}
+		
+		@Override
+		public void finish() {
+			System.out.println("SetMapper.finish called");
+		}
+	}
+
+	public static class SetReducer extends TapReducer<CountRec, OutputLog> {
+	    
+		@Override
+		public void init(String path) {
+			System.out.println("SetReducer.init("+path+") called");
+		}
+		
+		@Override
+	    public void reduce(Pipe<CountRec> in, Pipe<OutputLog> out) {
+	    	
+	    }
+	    
+	    @Override
+	    public void finish() {
+	    	System.out.println("SetReducer.finish called");
+	    }
+	
+	}
+
+	public class Test3Mapper extends TapMapper<String, CountRec> {
         @Override
         public void map(String in, Pipe<CountRec> out) {
             //TODO: Need a body here

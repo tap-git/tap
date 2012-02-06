@@ -20,23 +20,17 @@
 package tap.core;
 
 import tap.compression.Compressions;
-import tap.core.mapreduce.output.TapfileOutputFormat;
 import tap.formats.*;
-import tap.formats.avro.AvroFormat;
 import tap.util.ObjectFactory;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.avro.mapred.AvroValue;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 //import org.apache.hadoop.fs.*;
 import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.TextOutputFormat;
 
 @SuppressWarnings("deprecation")
 public class Pipe<T> implements Iterable<T>, Iterator<T> {
@@ -50,8 +44,12 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     String uncompressedPath;
     protected Compressions compression = null;
     protected boolean isCompressed = false;
+    boolean isTempfile = false;
+    private DFSStat stat;
+    // Pipe's reference to the job configuration
+    Configuration conf = null;
 
-    public static <T> Pipe<T> of(Class<? extends T> ofClass) {
+	public static <T> Pipe<T> of(Class<? extends T> ofClass) {
         try {
             return new Pipe<T>(ObjectFactory.newInstance(ofClass));
         } catch (Exception e) {
@@ -73,8 +71,14 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
         init();
     }
     
-    // Pipe's reference to the job configuration
-    Configuration conf = null;
+    /**
+     * Temporary inter-phase pipe
+     * @param isTemporary
+     */
+    Pipe(boolean isTemporary) {
+    	isTempfile = isTemporary;
+    }
+    
     /**
      * Setup job configuration (and cache it) on the Pipe
      * @param conf
@@ -94,51 +98,21 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     	return conf;
     }
 
-    private TapPipeStat stat;
-    TapPipeStat stat() {
+    /**
+     * Generate and return DFS file stat info
+     * @return The file status
+     */
+    DFSStat stat() {
     	if (null == stat) {
-    		this.stat = new TapPipeStat(path,getConf());
+    		this.stat = new DFSStat(path,getConf());
     	}
     	return stat;
     }
-    
-    private class TapPipeStat {
-    	Path dfsPath = null;
-    	FileSystem fs = null;
-    	boolean exists = false;
-    	boolean isObsolete = true;
-    	boolean isFile = false;
-    	long timestamp = 0;
-    	FileStatus[] statuses = null;
-    	
-    	String path;
-    	Configuration conf;
-    	TapPipeStat(String path, Configuration conf) {
-    		this.path = path;
-    		this.conf = conf;
-    		init();
-    	}
-
-		private void init() {
-			dfsPath = new Path(path);
-			try {
-				fs = dfsPath.getFileSystem(conf);
-				exists = fs.exists(dfsPath);
-				isFile = fs.isFile(dfsPath);
-				timestamp = fs.getFileStatus(dfsPath).getModificationTime();
-				statuses = fs.listStatus(dfsPath);
-			} catch (FileNotFoundException e) {
-				exists = false;
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
-    }
-    
+     
     /*
      * Probe HDFS to determine if this.path exists.
      */
-     boolean exists() {
+    boolean exists() {
     	 return stat().exists;
     }
 
@@ -153,8 +127,8 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 		// so we can verify that any existing antecedent is not newer and
 		// declare victory...
 		if (stat().exists) {
-			for (FileStatus status : stat().statuses) {
-				if (stat().isFile) {
+			for (FileStatus status : stat().getStatuses()) {
+				if (!status.isDir()) {
 					// TODO add other types?
 					if (getFormat() != Formats.AVRO_FORMAT
 							|| status.getPath().toString().endsWith(".avro")) {
@@ -175,13 +149,13 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 	}
 
     /**
-     * 
+     * Check outputs
      * @param conf
      */
-    protected void clearAndPrepareOutput() {
+    void clearAndPrepareOutput() {
         try {
             if (stat().exists) {
-                for (FileStatus status : stat().statuses) {
+                for (FileStatus status : stat().getStatuses()) {
                     if (status.isDir()) {
                         if (!status.getPath().toString().endsWith("/_logs")
                                 && !status.getPath().toString()
@@ -201,6 +175,17 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
         }
     }
 
+	/**
+	 * Make determination of this (input) pipe is valid. This test is only
+	 * useful during early binding.
+	 * 
+	 * @return
+	 */
+	boolean isValidInput() {
+		return isTempfile || path.contains("*") || path.contains("?")
+				|| stat().exists;
+	}
+	
     public void delete() {
         clearAndPrepareOutput();
     }
@@ -316,7 +301,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
         this.values = values;
     }
 
-    public boolean hasNext() {
+	public boolean hasNext() {
         return this.values.hasNext();
     }
 
