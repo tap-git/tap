@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.apache.avro.Schema;
 import org.junit.Test;
 
-import tap.core.Phase;
+import tap.Phase;
 
 
 

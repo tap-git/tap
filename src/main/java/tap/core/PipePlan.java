@@ -21,7 +21,10 @@ package tap.core;
 
 import java.util.*;
 
-class PipePlan {
+import tap.Phase;
+import tap.Pipe;
+
+public class PipePlan {
 
     private Map<Pipe, Phase> fileDeps = new LinkedHashMap<Pipe, Phase>();
     private Map<Phase, Set<Pipe>> processDeps = new LinkedHashMap<Phase, Set<Pipe>>();

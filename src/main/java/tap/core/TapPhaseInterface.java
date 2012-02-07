@@ -2,7 +2,8 @@
  * 
  */
 package tap.core;
-import tap.core.TapMapper;
+import tap.Phase;
+import tap.TapMapper;
 
 /**
  * @author Douglas Moore

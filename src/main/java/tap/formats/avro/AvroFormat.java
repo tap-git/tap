@@ -31,7 +31,7 @@ import org.apache.hadoop.mapred.JobConf;
 
 import com.google.protobuf.GeneratedMessage;
 
-import tap.core.Pipe;
+import tap.Pipe;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 

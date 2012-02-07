@@ -2,6 +2,10 @@ package tap.core;
 
 import java.util.StringTokenizer;
 
+import tap.CountRec;
+import tap.Pipe;
+import tap.TapMapper;
+
 public class WordCountMapper extends TapMapper<String, CountRec> {
 	private CountRec outrec = new CountRec();
 

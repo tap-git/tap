@@ -24,6 +24,8 @@ import java.util.*;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 
+import tap.Phase;
+
 import com.google.protobuf.Message;
 
 

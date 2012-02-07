@@ -7,6 +7,11 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import tap.CommandOptions;
+import tap.Pipe;
+import tap.Tap;
+import tap.TapMapper;
+import tap.TapReducer;
 import tap.core.*;
 
 public class WordCountProtobuf {

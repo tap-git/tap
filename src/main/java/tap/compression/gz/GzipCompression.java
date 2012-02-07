@@ -5,9 +5,9 @@ import org.apache.hadoop.io.compress.GzipCodec;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.TextOutputFormat;
 
+import tap.Pipe;
 import tap.compression.Compressions;
 import tap.compression.FileCompression;
-import tap.core.Pipe;
 
 
 public class GzipCompression extends FileCompression {

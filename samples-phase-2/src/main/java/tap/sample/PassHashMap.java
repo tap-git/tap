@@ -4,9 +4,8 @@ package tap.sample;
 
 import java.util.HashMap;
 import java.util.StringTokenizer;
-//import tap.sample.Samples.*; // this includes the protobuc classes generated from Samples.proto
-import tap.sample.Samples.CountRec;
-import tap.core.*;
+import tap.sample.Samples.CountRec; // this includes the protobuc classes generated from Samples.proto
+import tap.*;
 
 public class PassHashMap {
     
@@ -28,10 +27,10 @@ public class PassHashMap {
         tap.make();
     }
     
-    public static class ScoreMapper extends TapMapper<String,CountRec> {
+    public static class ScoreMapper extends TapMapper<String,Samples.CountRec> {
         HashMap<String, Integer> scoreParam;
         @Override
-        public void map(String in, Pipe<CountRec> out) {
+        public void map(String in, Pipe<Samples.CountRec> out) {
             StringTokenizer tokenizer = new StringTokenizer(in);
             while (tokenizer.hasMoreTokens()) {
                 String token = tokenizer.nextToken();
@@ -39,7 +38,7 @@ public class PassHashMap {
                 if (score == null) {
                 	score = 1;
                 }
-                out.put(CountRec.newBuilder().setWord(token).setCount(score).build());
+                out.put(Samples.CountRec.newBuilder().setWord(token).setCount(score).build());
             }
         }
     }
@@ -47,9 +46,9 @@ public class PassHashMap {
     /**
      *
      */
-    public static class ScoreReducer extends TapReducer<CountRec,CountRec> {
+    public static class ScoreReducer extends TapReducer<Samples.CountRec,Samples.CountRec> {
         @Override
-        public void reduce(Pipe<CountRec> in, Pipe<CountRec> out) {
+        public void reduce(Pipe<Samples.CountRec> in, Pipe<Samples.CountRec> out) {
             String word = null;
             int count = 0;
             for (CountRec rec : in) {

@@ -27,6 +27,8 @@ import org.apache.avro.Schema;
 import org.apache.avro.mapred.*;
 import org.apache.hadoop.mapred.*;
 
+import tap.Phase;
+import tap.Pipe;
 import tap.core.io.BinaryKey;
 import tap.core.io.avro.BinaryKeyDatumWriter;
 import tap.core.io.avro.BinaryKeyEncoder;

@@ -2,8 +2,8 @@ package tap.sample;
 
 import org.apache.hadoop.conf.Configuration;
 
-import tap.core.Pipe;
-import tap.core.TapMapper;
+import tap.Pipe;
+import tap.TapMapper;
 
 public class LogClean extends TapMapper<LogRec,LogRec> {
 

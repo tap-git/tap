@@ -2,6 +2,9 @@ package tap.sample;
 
 // TODO: this needs to be modified to work with the new java 7 date class
 
+import tap.CommandOptions;
+import tap.Pipe;
+import tap.Tap;
 import tap.core.*;
 import tap.sample.Samples.*;  // include protoc generated classes
 

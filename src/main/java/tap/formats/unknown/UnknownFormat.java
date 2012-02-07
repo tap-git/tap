@@ -5,7 +5,7 @@ import org.apache.avro.mapred.AvroOutputFormat;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
 
-import tap.core.Pipe;
+import tap.Pipe;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 

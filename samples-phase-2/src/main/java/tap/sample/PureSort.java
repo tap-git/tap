@@ -1,7 +1,8 @@
 package tap.sample;
 
+import tap.CommandOptions;
+import tap.Tap;
 import tap.core.*;
-import tap.core.Tap;
 
 public class PureSort {
     public static void main(String[] args) throws Exception {    

@@ -34,7 +34,7 @@ import org.apache.hadoop.io.serializer.*;
 
 import com.google.protobuf.Message;
 
-import tap.core.Phase;
+import tap.Phase;
 import tap.core.io.avro.BinaryKeyDatumReader;
 import tap.core.io.avro.BinaryKeyDatumWriter;
 import tap.core.io.avro.BinaryKeyEncoder;

@@ -1,5 +1,9 @@
 package tap.core;
 
+import tap.CountRec;
+import tap.Pipe;
+import tap.TapReducer;
+
 public class WordCountReducer extends TapReducer<CountRec, CountRec> {
 	CountRec outrec = new CountRec();
 

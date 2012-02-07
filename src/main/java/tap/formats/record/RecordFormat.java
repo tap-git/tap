@@ -24,7 +24,7 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.apache.hadoop.mapred.TextOutputFormat;
 
-import tap.core.Pipe;
+import tap.Pipe;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 

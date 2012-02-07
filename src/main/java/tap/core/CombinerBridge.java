@@ -29,6 +29,8 @@ import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.util.ReflectionUtils;
 
+import tap.Phase;
+import tap.TapReducer;
 import tap.core.io.BinaryKey;
 import tap.util.ReflectUtils;
 
@@ -36,7 +38,7 @@ import tap.util.ReflectUtils;
  * Bridge between a {@link org.apache.hadoop.mapred.Reducer} and an {@link AvroReducer} used when combining. When combining, map
  * output pairs must be split before they're collected.
  */
-class CombinerBridge<V> extends BaseAvroReducer<V, V, AvroKey<BinaryKey>, AvroValue<V>> {
+public class CombinerBridge<V> extends BaseAvroReducer<V, V, AvroKey<BinaryKey>, AvroValue<V>> {
 
     private Schema schema;
     private String groupBy;

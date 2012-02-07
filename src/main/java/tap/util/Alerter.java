@@ -21,7 +21,7 @@ package tap.util;
 
 import java.util.List;
 
-import tap.core.PhaseError;
+import tap.PhaseError;
 
 
 /**

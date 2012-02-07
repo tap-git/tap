@@ -36,6 +36,9 @@ import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.codehaus.jackson.JsonParseException;
 
+import tap.Phase;
+import tap.Pipe;
+import tap.TapMapper;
 import tap.core.mapreduce.input.TapfileInputFormat;
 import tap.core.mapreduce.io.ProtobufWritable;
 import tap.formats.FileFormat;

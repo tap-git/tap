@@ -28,6 +28,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.io.RawComparator;
 
+import tap.Phase;
 import tap.core.io.BinaryKey;
 import tap.core.io.Bytes;
 

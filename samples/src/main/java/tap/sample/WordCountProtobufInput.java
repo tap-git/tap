@@ -1,5 +1,10 @@
 package tap.sample;
 
+import tap.CommandOptions;
+import tap.Pipe;
+import tap.Tap;
+import tap.TapMapper;
+import tap.TapReducer;
 import tap.core.*;
 
 public class WordCountProtobufInput {

@@ -21,6 +21,8 @@ package tap.core;
 
 import org.apache.hadoop.conf.Configurable;
 
+import tap.Pipe;
+
 public interface TapReducerInterface <IN,OUT> extends Configurable {
     public void init(String path);
     public void reduce(Pipe<IN> in, Pipe<OUT> out);

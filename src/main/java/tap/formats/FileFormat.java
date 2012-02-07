@@ -3,7 +3,7 @@ package tap.formats;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
 
-import tap.core.Pipe;
+import tap.Pipe;
 
 public abstract class FileFormat {
 

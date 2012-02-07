@@ -2,6 +2,11 @@ package tap.sample;
 
 import java.util.StringTokenizer;
 
+import tap.CommandOptions;
+import tap.Pipe;
+import tap.Tap;
+import tap.TapMapper;
+import tap.TapReducer;
 import tap.core.*;
 import tap.sample.WordCountProtobufInput.CountRec;
 

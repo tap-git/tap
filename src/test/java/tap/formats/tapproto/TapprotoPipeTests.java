@@ -26,14 +26,14 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import tap.core.CommandOptions;
-import tap.core.CountRec;
-import tap.core.Phase;
-import tap.core.PhaseError;
-import tap.core.Pipe;
-import tap.core.Tap;
-import tap.core.TapMapper;
-import tap.core.TapReducer;
+import tap.CommandOptions;
+import tap.CountRec;
+import tap.Phase;
+import tap.PhaseError;
+import tap.Pipe;
+import tap.Tap;
+import tap.TapMapper;
+import tap.TapReducer;
 import tap.core.WordCountMapper;
 import tap.core.WordCountReducer;
 import tap.formats.Formats;
@@ -76,15 +76,15 @@ public class TapprotoPipeTests {
 		Assert.assertEquals("TAPPROTO_FORMAT", phase1.getOutputs().get(0).getFormat().toString());    	
     }
     
-    public static class Mapper extends TapMapper<String, TestMsg> {
-    	public void map(String line, Pipe<TestMsg> out) {
+    public static class Mapper extends TapMapper<String, Testmsg.TestMsg> {
+    	public void map(String line, Pipe<Testmsg.TestMsg> out) {
     	}
     }
     
-    public static class Reducer extends TapReducer<TestMsg, TestMsg> {
+    public static class Reducer extends TapReducer<Testmsg.TestMsg, Testmsg.TestMsg> {
     	CountRec outrec = new CountRec();
 
-    	public void reduce(Pipe<TestMsg> in, Pipe<TestMsg> out) {
+    	public void reduce(Pipe<Testmsg.TestMsg> in, Pipe<Testmsg.TestMsg> out) {
     	}
     }
 }

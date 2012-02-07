@@ -8,7 +8,7 @@ import org.apache.hadoop.mapred.OutputFormat;
 
 import com.google.protobuf.Message;
 
-import tap.core.Pipe;
+import tap.Pipe;
 import tap.core.mapreduce.input.TapfileInputFormat;
 import tap.core.mapreduce.output.TapfileOutputFormat;
 import tap.formats.FileFormat;

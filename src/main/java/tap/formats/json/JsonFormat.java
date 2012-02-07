@@ -1,6 +1,6 @@
 package tap.formats.json;
 
-import tap.core.Pipe;
+import tap.Pipe;
 import tap.formats.Formats;
 import tap.formats.text.TextFormat;
 

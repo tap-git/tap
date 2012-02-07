@@ -27,7 +27,7 @@ import org.apache.avro.mapred.AvroValue;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.Partitioner;
 
-import tap.core.Phase;
+import tap.Phase;
 import tap.core.ReflectionKeyExtractor;
 
 public class AvroGroupPartitioner<K,V> implements Partitioner<AvroKey<K>,AvroValue<V>> {

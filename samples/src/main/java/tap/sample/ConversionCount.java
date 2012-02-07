@@ -1,6 +1,6 @@
 package tap.sample;
 
-import tap.core.TapReducer;
+import tap.TapReducer;
 
 public class ConversionCount extends TapReducer {
 

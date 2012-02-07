@@ -19,6 +19,9 @@
  */
 package tap.core;
 
+import tap.Phase;
+import tap.Pipe;
+
 /**
  * @author Douglas Moore
  *

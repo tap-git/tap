@@ -11,6 +11,9 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
+import tap.CommandOptions;
+import tap.Phase;
+import tap.Tap;
 import tap.core.WordCountReducer;
 /**
  *

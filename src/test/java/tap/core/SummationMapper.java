@@ -1,5 +1,9 @@
 package tap.core;
 
+import tap.CountRec;
+import tap.Pipe;
+import tap.TapMapper;
+
 public class SummationMapper extends TapMapper<CountRec, CountRec> {
 	private CountRec outrec = new CountRec();;
     @Override

@@ -1,7 +1,7 @@
 package tap.sample;
 
-import tap.core.Pipe;
-import tap.core.TapReducer;
+import tap.Pipe;
+import tap.TapReducer;
 
 /**
  * Remove Bots from log file

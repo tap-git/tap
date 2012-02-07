@@ -28,8 +28,8 @@ import org.joda.time.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import tap.core.CommandOptions;
-import tap.core.Tap;
+import tap.CommandOptions;
+import tap.Tap;
 
 
 

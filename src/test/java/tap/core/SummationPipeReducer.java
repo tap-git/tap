@@ -1,5 +1,10 @@
 package tap.core;
 
+import tap.CountRec;
+import tap.OutputLog;
+import tap.Pipe;
+import tap.TapReducer;
+
 
 /*
  * Add up all of the word counts to produce a sum of all of the word counts

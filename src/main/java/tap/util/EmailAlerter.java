@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 
-import tap.core.PhaseError;
+import tap.PhaseError;
 
 
 public class EmailAlerter implements Alerter {

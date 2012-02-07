@@ -1,5 +1,8 @@
 package tap.sample;
 
+import tap.CommandOptions;
+import tap.Pipe;
+import tap.Tap;
 import tap.core.*;
 import tap.util.DefaultTimeShard;
 
