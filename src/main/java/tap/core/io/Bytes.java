@@ -3,8 +3,11 @@ package tap.core.io;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 import org.apache.avro.util.Utf8;
+import org.apache.hadoop.util.UTF8ByteArrayUtils;
+import org.jboss.netty.buffer.ByteBufferBackedChannelBuffer;
 
 public class Bytes {
 
@@ -13,6 +16,8 @@ public class Bytes {
 	public static final int UBYTE_MAX_VALUE = 255;
 	public static final byte ESC = 1;
 	public static final byte TERM = 0;
+	public static final int ESC_DESC = UBYTE_MAX_VALUE - ESC;
+	public static final int TERM_DESC = UBYTE_MAX_VALUE - TERM;
 	
 	private static int putByte(byte[] bytes, int offset, byte val) {
 		bytes[offset] = val;
@@ -128,7 +133,7 @@ public class Bytes {
 					out.write(bytes, pend, i - pend);
 					pend = i;
 				}
-				out.write(order == SortOrder.ASCENDING ? ESC : UBYTE_MAX_VALUE - ESC);
+				out.write(order == SortOrder.ASCENDING ? ESC : ESC_DESC);
 			}
 			
 			if(order == SortOrder.DESCENDING) {
@@ -140,10 +145,32 @@ public class Bytes {
 			out.write(bytes, pend, bytes.length - pend);
 		}
 		
-		out.write(order == SortOrder.ASCENDING ? TERM : UBYTE_MAX_VALUE - TERM);
+		out.write(order == SortOrder.ASCENDING ? TERM : TERM_DESC);
 		newLength += 1;
 		
 		return newLength;
+	}
+	
+	public static String toString(byte[] bytes, int offset, SortOrder order) {
+		byte[] out = new byte[bytes.length - offset];
+		int len = 0;
+		int term = order == SortOrder.ASCENDING ? TERM : TERM_DESC; 
+		int esc = order == SortOrder.ASCENDING ? ESC : ESC_DESC;
+		boolean lastWasEsc = false;
+		for(int i = offset; i < bytes.length; ++i) {
+			int val = bytes[i] & 0xff;
+			if(val == term && !lastWasEsc)
+				break;
+			if(val == esc && !lastWasEsc) {
+				lastWasEsc = true;
+				continue;
+			}
+			lastWasEsc = false;
+			val += (order == SortOrder.ASCENDING ? 0 : UBYTE_MAX_VALUE);
+			out[len] = (byte) val;
+			len += 1;
+		}
+		return new Utf8(out).setByteLength(len).toString();
 	}
 	
 	public static byte[] getBytes(String val, SortOrder order) throws IOException {

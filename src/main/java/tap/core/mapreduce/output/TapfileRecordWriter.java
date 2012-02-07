@@ -26,6 +26,7 @@ import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.util.Progressable;
 import org.mortbay.servlet.GzipFilter.GzipStream;
 
+import tap.core.io.BinaryKey;
 import tap.core.mapreduce.io.BinaryWritable;
 import tap.formats.tapproto.Tapfile;
 import tap.formats.tapproto.Tapfile.IndexEntry;
@@ -39,7 +40,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.Descriptor;
 
-public class TapfileRecordWriter<M extends Message> implements RecordWriter<NullWritable, BinaryWritable<M>> {
+public class TapfileRecordWriter<M extends Message> implements RecordWriter<BinaryKey, BinaryWritable<M>> {
     
     static final int DEFAULT_TARGET_BLOCK_SIZE  = 256 * 1024;
     static final String UTF8 = "UTF-8";
@@ -116,40 +117,12 @@ public class TapfileRecordWriter<M extends Message> implements RecordWriter<Null
         fsOutputStream.close();
     }
 
-    private Long findKey(Message msg) {
-	Long key = 0L;
-
-	com.google.protobuf.Descriptors.Descriptor descriptor = msg.getDescriptorForType();
-	List<com.google.protobuf.Descriptors.FieldDescriptor> field_list = descriptor.getFields();
-	Iterator<com.google.protobuf.Descriptors.FieldDescriptor> field_iterator = field_list.iterator();
-
-	while (field_iterator.hasNext()) {
-		com.google.protobuf.Descriptors.FieldDescriptor field_descriptor = field_iterator.next();
-		if (field_descriptor.getFullName().matches("(?i).*timestamp.*")) {
-			switch (field_descriptor.getJavaType()) {
-				case MESSAGE:
-					key = findKey((Message) msg.getField(field_descriptor));
-					break;
-				case LONG:
-					key = (Long) msg.getField(field_descriptor);
-					break;
-			}
-			break;
-		}
-	}
-
-	return key;
-    }
-
     @Override
-    public void write(NullWritable arg0, BinaryWritable<M> writable)
+    public void write(BinaryKey binaryKey, BinaryWritable<M> writable)
             throws IOException {
         
-	M msg = writable.get();
-	ByteBuffer buf = ByteBuffer.allocate(8);
-	Long lkey = findKey(msg);
-	buf.putLong(lkey);	// no need to swap endian, java is already big-endian
-	ByteString key = ByteString.copyFrom(buf.array());
+    	M msg = writable.get();
+    	ByteString key = ByteString.copyFrom(binaryKey.getBuffer(), 0, binaryKey.getLength()); 
 
         if(firstWrite) {
             firstWrite = false;
@@ -171,8 +144,8 @@ public class TapfileRecordWriter<M extends Message> implements RecordWriter<Null
            dataStream = CodedOutputStream.newInstance(dataCountStream);
         }
         
-        dataStream.writeRawVarint32(key.size());
-        dataStream.writeRawBytes(key.toByteArray());
+        dataStream.writeRawVarint32(binaryKey.getLength());
+        dataStream.writeRawBytes(binaryKey.getBuffer(), 0, binaryKey.getLength());
         dataStream.writeRawVarint32(msg.getSerializedSize());
         msg.writeTo(dataStream);
         

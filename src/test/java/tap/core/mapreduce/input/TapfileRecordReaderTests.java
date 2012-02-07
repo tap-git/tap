@@ -1,6 +1,7 @@
 package tap.core.mapreduce.input;
 
 import junit.framework.Assert;
+import tap.core.io.BinaryKey;
 import tap.core.mapreduce.io.BinaryWritable;
 import tap.formats.tapproto.Testmsg.TestMsg;
 import tap.util.TypeRef;
@@ -22,7 +23,7 @@ public class TapfileRecordReaderTests {
         
         TapfileRecordReader reader = new TapfileRecordReader<TestMsg>(job, path, typeRef);
         
-        LongWritable key = reader.createKey();
+        BinaryKey key = reader.createKey();
         BinaryWritable<TestMsg> value = reader.createValue();
         
         long numberOfMessages = 0;

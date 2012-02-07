@@ -17,6 +17,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapred.FileSplit;
 import org.apache.hadoop.mapred.RecordReader;
 
+import tap.core.io.BinaryKey;
 import tap.core.mapreduce.io.BinaryWritable;
 import tap.core.mapreduce.io.ProtobufConverter;
 import tap.core.mapreduce.io.ProtobufWritable;
@@ -26,14 +27,14 @@ import tap.util.TypeRef;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.Message;
 
-public class TapfileRecordReader<M extends Message> implements RecordReader<LongWritable, BinaryWritable<M>> {
+public class TapfileRecordReader<M extends Message> implements RecordReader<BinaryKey, BinaryWritable<M>> {
 
     private FSDataInputStream inputStream;
     private long totalSize;
     private Tapfile.Header trailer;
     private List<Tapfile.IndexEntry> indexEntries = new ArrayList<Tapfile.IndexEntry>();
     private ProtobufConverter<M> converter;
-    private LongWritable key;
+    private BinaryKey key;
     private ProtobufWritable<M> value;
     private int currentIndex = -1;
     private long messageCount;
@@ -54,7 +55,7 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Long
         this.inputStream = inputStream;
         this.totalSize = size;
         this.converter = ProtobufConverter.newInstance(typeRef);
-        this.key = new LongWritable();
+        this.key = new BinaryKey();
         this.value = new ProtobufWritable<M>(typeRef);
         readTrailer(size);
         readIndexEntries();
@@ -120,7 +121,7 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Long
     }
 
     @Override
-    public LongWritable createKey() {
+    public BinaryKey createKey() {
         return key;
     }
 
@@ -140,14 +141,14 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Long
     }
 
     @Override
-    public boolean next(LongWritable k, BinaryWritable<M> v) throws IOException {
+    public boolean next(BinaryKey k, BinaryWritable<M> v) throws IOException {
         if(messageCount <= 0 && !moveToNextDataBlock())
             return false;
         
         int keySize = dataStream.readRawVarint32();
         byte[] keyBytes = dataStream.readRawBytes(keySize);
         
-        key.set(getPos());
+        key.set(keyBytes, keySize);
         
         int messageSize = dataStream.readRawVarint32();
         byte[] messageBytes = dataStream.readRawBytes(messageSize); 

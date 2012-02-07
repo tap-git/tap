@@ -11,13 +11,14 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RecordReader;
 import org.apache.hadoop.mapred.Reporter;
 
+import tap.core.io.BinaryKey;
 import tap.core.mapreduce.io.BinaryWritable;
 import tap.util.Protobufs;
 import tap.util.TypeRef;
 
 import com.google.protobuf.Message;
 
-public class TapfileInputFormat<M extends Message> extends FileInputFormat<LongWritable, BinaryWritable<M>>{
+public class TapfileInputFormat<M extends Message> extends FileInputFormat<BinaryKey, BinaryWritable<M>>{
     private TypeRef<M> typeRef;
 
     @SuppressWarnings("rawtypes")
@@ -29,7 +30,7 @@ public class TapfileInputFormat<M extends Message> extends FileInputFormat<LongW
 
     @SuppressWarnings("deprecation")
     @Override
-    public RecordReader<LongWritable, BinaryWritable<M>> getRecordReader(
+    public RecordReader<BinaryKey, BinaryWritable<M>> getRecordReader(
             InputSplit genericSplit, JobConf job, Reporter reporter) throws IOException {
         if (typeRef == null) {
             typeRef = Protobufs.getTypeRef(job, TapfileInputFormat.class);

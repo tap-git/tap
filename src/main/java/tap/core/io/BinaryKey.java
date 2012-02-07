@@ -6,14 +6,9 @@ public class BinaryKey {
 
 	public BinaryKey() {}
 	
-	public BinaryKey(byte[] buf) {
+	public BinaryKey(byte[] buf, int length) {
 		this.buf = buf;
-		this.length = buf.length;
-	}
-	
-	public void set(byte[] buf) {
-		this.buf = buf;
-		this.length = buf.length;
+		this.length = length;
 	}
 	
 	public void set(byte[] buf, int length) {

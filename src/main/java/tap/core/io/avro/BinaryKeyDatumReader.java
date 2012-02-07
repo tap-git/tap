@@ -29,7 +29,7 @@ public class BinaryKeyDatumReader implements DatumReader<BinaryKey> {
 		in.readFixed(data);
 
 		BinaryKey result = reuse != null ? reuse : new BinaryKey();
-		result.set(data);
+		result.set(data, length);
 		return result; 
 	}
 }
