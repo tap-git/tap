@@ -111,7 +111,11 @@ public class Bytes {
 	}
 	
 	public static int writeString(String val, OutputStream out, SortOrder order) throws IOException {
-		byte[] bytes = new Utf8(val).getBytes();
+		return writeString(new Utf8(val), out, order);
+	}
+	
+	public static int writeString(Utf8 val, OutputStream out, SortOrder order) throws IOException {
+		byte[] bytes = val.getBytes();
 		int newLength = bytes.length;
 		
 		int pend = 0;

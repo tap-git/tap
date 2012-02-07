@@ -2,6 +2,7 @@ package tap.core.io.avro;
 
 import java.io.IOException;
 
+import tap.core.io.ReuseByteArrayOutputStream;
 import tap.core.io.SortOrder; 
 
 import org.apache.avro.Schema;
@@ -13,6 +14,9 @@ import org.apache.avro.io.Encoder;
 
 public class BinaryKeyDatumWriter<T> extends GenericDatumWriter<T>{
 	private final GenericData data;
+	
+	private ReuseByteArrayOutputStream buf = new ReuseByteArrayOutputStream(256);
+	private BinaryKeyEncoder encoder = new BinaryKeyEncoder(buf);
 	
 	public BinaryKeyDatumWriter(Schema root) {
 		this(root, GenericData.get());
@@ -26,21 +30,23 @@ public class BinaryKeyDatumWriter<T> extends GenericDatumWriter<T>{
 	@Override
 	protected void writeRecord(Schema schema, Object datum, Encoder out)
 			throws IOException {
+		
+		buf.reset();
+		
+		// write fields to buffer
 		for (Field f : schema.getFields()) {
 			Object value = data.getField(datum, f.name(), f.pos());
 			try {
-				// we want the encoder to write field and also it's order 
-				// the idea is that the binary representation of the record can simply be byte compared
-				// without even splitting the fields
-				if(out instanceof BinaryKeyEncoder) {
-					((BinaryKeyEncoder) out).setSortOrder(
-							f.order() == Order.DESCENDING ? SortOrder.DESCENDING : SortOrder.ASCENDING);
-				}
-				write(f.schema(), value, out);
+				encoder.setSortOrder(
+					f.order() == Order.DESCENDING ? SortOrder.DESCENDING : SortOrder.ASCENDING);
+				write(f.schema(), value, encoder);
 			} catch (NullPointerException e) {
 				throw npe(e, " in field "+f.name());
 			}
 		}
+		
+		// write buffer to out
+		out.writeBytes(buf.getBuffer(), 0, buf.getCount());
 	}
 	
 }

@@ -74,7 +74,6 @@ public class TapTests {
 		buildPipeline1(args);
 		File f = new File(args[4]+"/part-00000.avro");
 		Assert.assertTrue("File exists", f.exists());
-		Assert.assertTrue("File length", 200000 < f.length());
 	}
 
 	@Test

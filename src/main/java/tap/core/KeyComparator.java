@@ -28,6 +28,9 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.io.RawComparator;
 
+import tap.core.io.BinaryKey;
+import tap.core.io.Bytes;
+
 /** The {@link RawComparator} used by jobs configured with {@link AvroJob}. */
 public class KeyComparator<T> extends Configured implements RawComparator<AvroWrapper<T>> {
 
@@ -46,11 +49,26 @@ public class KeyComparator<T> extends Configured implements RawComparator<AvroWr
     }
 
     public int compare(byte[] b1, int s1, int l1, byte[] b2, int s2, int l2) {
-        return BinaryData.compare(b1, s1, b2, s2, schema);
+        return compareBinary(b1, s1, l1, b2, s2, l2);
     }
-
+    
     public int compare(AvroWrapper<T> x, AvroWrapper<T> y) {
-        return SpecificData.get().compare(x.datum(), y.datum(), schema);
+    	if(x.datum() instanceof BinaryKey) {
+    		return Bytes.compare(
+    				((BinaryKey)x.datum()).getBuffer(),
+    				((BinaryKey) y.datum()).getBuffer());
+    	} else {
+    		return SpecificData.get().compare(x.datum(), y.datum(), schema);
+    	}
     }
-
+    
+    private int compareBinary(byte[] b1, int s1, int l1, byte[] b2, int s2, int l2) {
+    	// skip past length prefix
+    	s1 += Bytes.SIZEOF_INT;
+    	s2 += Bytes.SIZEOF_INT;
+    	l1 -= Bytes.SIZEOF_INT;
+    	l2 -= Bytes.SIZEOF_INT;
+    	
+        return Bytes.compare(b1, s1, l1, b2, s2, l2);
+    }
 }

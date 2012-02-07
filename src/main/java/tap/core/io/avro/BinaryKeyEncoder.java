@@ -8,18 +8,19 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.util.Utf8;
 
+import tap.core.io.Bytes;
 import tap.core.io.SortOrder;
+import tap.core.io.Types;
 
 public class BinaryKeyEncoder extends Encoder {
 	
 	private SortOrder order = SortOrder.ASCENDING;
 	private OutputStream out;
 	
-	private Encoder encoder;
+	private byte[] bytes = new byte[8];
 			
 	public BinaryKeyEncoder(OutputStream out) {
 		this.out = out;
-		encoder = EncoderFactory.get().directBinaryEncoder(out, null);
 	}
 	
 	public void setSortOrder(SortOrder order) {
@@ -28,98 +29,108 @@ public class BinaryKeyEncoder extends Encoder {
 
 	@Override
 	public void flush() throws IOException {
-		encoder.flush();
 		out.flush();
 	}
 
 	@Override
-	public void writeNull() throws IOException {
-		encoder.writeNull();
-	}
-
-	@Override
 	public void writeBoolean(boolean b) throws IOException {
-		encoder.writeBoolean(b);
+		out.write(Types.BOOL.value(order));
+		Bytes.putBoolean(bytes, 0, b, order);
+		out.write(bytes, 0, 1);
 	}
 
 	@Override
 	public void writeInt(int n) throws IOException {
-		encoder.writeInt(n);
+		out.write(Types.INT.value(order));
+		Bytes.putInt(bytes, 0, n, order);
+		out.write(bytes, 0, Bytes.SIZEOF_INT);
 	}
 
 	@Override
 	public void writeLong(long n) throws IOException {
-		encoder.writeLong(n);
+		out.write(Types.LONG.value(order));
+		Bytes.putLong(bytes, 0, n, order);
+		out.write(bytes, 0, Bytes.SIZEOF_LONG);
+	}
+	
+	@Override
+	public void writeString(Utf8 utf8) throws IOException {
+		out.write(Types.STRING.value(order));
+		Bytes.writeString(utf8, out, order);
+	}
+	
+	@Override
+	public void writeBytes(byte[] bytes, int start, int len) throws IOException {
+		Bytes.putInt(bytes, 0, len, SortOrder.ASCENDING);
+		out.write(bytes, 0, Bytes.SIZEOF_INT);
+		out.write(bytes, start, len);
+	}
+	
+	@Override
+	public void writeNull() throws IOException {
+		throw new UnsupportedOperationException("writeNull not yet implemented");
 	}
 
 	@Override
 	public void writeFloat(float f) throws IOException {
-		encoder.writeFloat(f);
+		throw new UnsupportedOperationException("writeFloat not yet implemented");
 	}
 
 	@Override
 	public void writeDouble(double d) throws IOException {
-		encoder.writeDouble(d);
+		throw new UnsupportedOperationException("writeDouble not yet implemented");
 	}
 
-	@Override
-	public void writeString(Utf8 utf8) throws IOException {
-		encoder.writeString(utf8);
-	}
 
 	@Override
 	public void writeBytes(ByteBuffer bytes) throws IOException {
-		encoder.writeBytes(bytes);
+		throw new UnsupportedOperationException("writeBytes(ByteBuffer) not yet implemented");
 	}
 
-	@Override
-	public void writeBytes(byte[] bytes, int start, int len) throws IOException {
-		encoder.writeBytes(bytes, start, len);
-	}
 
 	@Override
 	public void writeFixed(byte[] bytes, int start, int len) throws IOException {
-		encoder.writeFixed(bytes, start, len);
+		throw new UnsupportedOperationException("writeFixed not yet implemented");
 	}
 
 	@Override
 	public void writeEnum(int e) throws IOException {
-		encoder.writeEnum(e);
+		throw new UnsupportedOperationException("writeEnum not yet implemented");
 	}
 
 	@Override
 	public void writeArrayStart() throws IOException {
-		encoder.writeArrayStart();
+		throw new UnsupportedOperationException("writeArrayStart not yet implemented");
 	}
 
 	@Override
 	public void setItemCount(long itemCount) throws IOException {
-		encoder.setItemCount(itemCount);
+		throw new UnsupportedOperationException("setItemCount not yet implemented");
 	}
 
 	@Override
 	public void startItem() throws IOException {
-		encoder.startItem();
+		throw new UnsupportedOperationException("startItem not yet implemented");
 	}
 
 	@Override
 	public void writeArrayEnd() throws IOException {
-		encoder.writeArrayEnd();
+		throw new UnsupportedOperationException("writeArrayEnd not yet implemented");
 	}
 
 	@Override
 	public void writeMapStart() throws IOException {
-		encoder.writeMapStart();
+		throw new UnsupportedOperationException("writeMapStart not yet implemented");
 	}
 
 	@Override
 	public void writeMapEnd() throws IOException {
-		encoder.writeMapEnd();
+		throw new UnsupportedOperationException("writeMapEnd not yet implemented");
 	}
 
 	@Override
 	public void writeIndex(int unionIndex) throws IOException {
-		encoder.writeIndex(unionIndex);
+		throw new UnsupportedOperationException("writeIndex not yet implemented");
 	}
 
 }

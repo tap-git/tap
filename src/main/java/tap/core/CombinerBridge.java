@@ -29,13 +29,14 @@ import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.util.ReflectionUtils;
 
+import tap.core.io.BinaryKey;
 import tap.util.ReflectUtils;
 
 /**
  * Bridge between a {@link org.apache.hadoop.mapred.Reducer} and an {@link AvroReducer} used when combining. When combining, map
  * output pairs must be split before they're collected.
  */
-class CombinerBridge<K, V> extends BaseAvroReducer<K, V, V, AvroKey<K>, AvroValue<V>> {
+class CombinerBridge<V> extends BaseAvroReducer<V, V, AvroKey<BinaryKey>, AvroValue<V>> {
 
     private Schema schema;
     private String groupBy;
@@ -57,13 +58,13 @@ class CombinerBridge<K, V> extends BaseAvroReducer<K, V, V, AvroKey<K>, AvroValu
     
     private class Collector<VC> extends AvroMultiCollector<VC> {
         //private final AvroWrapper<V> wrapper = new AvroWrapper<V>(null);
-        private final AvroKey<K> keyWrapper = new AvroKey<K>(null);
+        private final AvroKey<GenericData.Record> keyWrapper = new AvroKey<GenericData.Record>(null);
         private final AvroValue<VC> valueWrapper = new AvroValue<VC>(null);
-        private final KeyExtractor<K,VC> extractor;
-        private final K key;
-        private OutputCollector<AvroKey<K>, AvroValue<VC>> collector;
+        private final KeyExtractor<GenericData.Record,VC> extractor;
+        private final GenericData.Record key;
+        private OutputCollector<AvroKey<GenericData.Record>, AvroValue<VC>> collector;
 
-        public Collector(OutputCollector<AvroKey<K>, AvroValue<VC>> collector, KeyExtractor<K,VC> extractor) {
+        public Collector(OutputCollector<AvroKey<GenericData.Record>, AvroValue<VC>> collector, KeyExtractor<GenericData.Record,VC> extractor) {
             this.collector = collector;
             this.extractor = extractor;
             key = extractor.getProtypeKey();
@@ -78,7 +79,7 @@ class CombinerBridge<K, V> extends BaseAvroReducer<K, V, V, AvroKey<K>, AvroValu
     }
 
     @Override
-    protected AvroMultiCollector<V> getCollector(OutputCollector<AvroKey<K>, AvroValue<V>> collector, Reporter reporter) {
+    protected AvroMultiCollector<V> getCollector(OutputCollector<AvroKey<BinaryKey>, AvroValue<V>> collector, Reporter reporter) {
         KeyExtractor<GenericData.Record, V> extractor = new ReflectionKeyExtractor<V>(schema, groupBy, sortBy);
         //XXX fix this typing: the collector returns GenericData.Record, not K! should be Collector<V>
         return new Collector(collector, extractor);

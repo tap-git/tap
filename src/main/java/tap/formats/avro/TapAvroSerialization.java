@@ -37,7 +37,6 @@ import com.google.protobuf.Message;
 import tap.core.Phase;
 import tap.core.io.avro.BinaryKeyDatumReader;
 import tap.core.io.avro.BinaryKeyDatumWriter;
-import tap.core.io.avro.BinaryKeyDecoder;
 import tap.core.io.avro.BinaryKeyEncoder;
 
 /**
@@ -54,7 +53,8 @@ public class TapAvroSerialization<T> extends Configured implements Serialization
      * Returns the specified map output deserializer. Defaults to the final output deserializer if no map output schema was
      * specified.
      */
-    public Deserializer<AvroWrapper<T>> getDeserializer(Class<AvroWrapper<T>> c) {
+    @SuppressWarnings("rawtypes")
+	public Deserializer<AvroWrapper<T>> getDeserializer(Class<AvroWrapper<T>> c) {
         // We need not rely on mapred.task.is.map here to determine whether map
         // output or final output is desired, since the mapreduce framework never
         // creates a deserializer for final output, only for map output.
@@ -64,11 +64,11 @@ public class TapAvroSerialization<T> extends Configured implements Serialization
         
         boolean isProtobuf = !isKey && Message.class.isAssignableFrom(getMapOutClass(getConf()));
         
-        DatumReader<T> reader = null;
+        DatumReader reader = null;
         if(isProtobuf)
         	reader = new ProtobufDatumReader<T>(schema);
         else if(isKey)
-        	reader = new BinaryKeyDatumReader<T>(schema);
+        	reader = new BinaryKeyDatumReader();
         else
         	reader = new ReflectDatumReader<T>(schema);
         
@@ -102,10 +102,7 @@ public class TapAvroSerialization<T> extends Configured implements Serialization
 
         public void open(InputStream in) {
         	this.in = in;
-        	if(isKey)
-        		this.decoder = new BinaryKeyDecoder(in);
-        	else
-        		this.decoder = FACTORY.directBinaryDecoder(in, null);
+        	this.decoder = FACTORY.directBinaryDecoder(in, null);
         }
 
         public AvroWrapper<T> deserialize(AvroWrapper<T> wrapper) throws IOException {

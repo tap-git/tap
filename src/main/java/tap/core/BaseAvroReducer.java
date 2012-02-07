@@ -34,7 +34,7 @@ import tap.util.ObjectFactory;
 
 /** Base class for a combiner or a reducer */
 @SuppressWarnings("deprecation")
-abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implements Reducer<AvroKey<K>, AvroValue<V>, KO, VO> {
+abstract class BaseAvroReducer<V, OUT, KO, VO> extends MapReduceBase implements Reducer<AvroKey<BinaryKey>, AvroValue<V>, KO, VO> {
 
     private TapReducerInterface<V, OUT> reducer;
     private AvroMultiCollector<OUT> collector;
@@ -44,12 +44,6 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
     protected OUT out;
     protected Pipe<OUT> outpipe = null;
     
-    // binary key support
-    private BinaryKeyDatumWriter<K> keyWriter;
-    private ReuseableByteArrayOutputStream keyStream;
-    private BinaryKeyEncoder keyEncoder;
-    private BinaryKey binaryKey = new BinaryKey();
-
     protected abstract TapReducerInterface<V, OUT> getReducer(JobConf conf);
 
     protected abstract AvroMultiCollector<OUT> getCollector(OutputCollector<KO, VO> c, Reporter reporter);
@@ -61,10 +55,6 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
 
         try {
             this.out = (OUT) ObjectFactory.newInstance(Class.forName(conf.get(Phase.REDUCE_OUT_CLASS)));
-            
-            this.keyStream = new ReuseableByteArrayOutputStream();
-            this.keyWriter = new BinaryKeyDatumWriter<K>(Schema.parse(conf.get(Phase.MAP_OUT_KEY_SCHEMA)));
-            this.keyEncoder = new BinaryKeyEncoder(keyStream);
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -111,7 +101,7 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
 
     @SuppressWarnings("unchecked")
 	@Override
-    public final void reduce(AvroKey<K> key, Iterator<AvroValue<V>> values,
+    public final void reduce(AvroKey<BinaryKey> key, Iterator<AvroValue<V>> values,
             OutputCollector<KO, VO> collector, Reporter reporter)
             throws IOException {
         if (this.collector == null) {
@@ -126,10 +116,7 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
             }
             
             if(this.collector instanceof BinaryKeyAwareCollector) {
-            	keyStream.reset();
-            	keyWriter.write(key.datum(), keyEncoder);
-            	binaryKey.reset(keyStream.getBuffer(), keyStream.getCount());
-            	((BinaryKeyAwareCollector) this.collector).setCurrentKey(binaryKey);
+            	((BinaryKeyAwareCollector) this.collector).setCurrentKey(key.datum());
             }
             reducer.reduce(inPipe, outpipe);
         }
