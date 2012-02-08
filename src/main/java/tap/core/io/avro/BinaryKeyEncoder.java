@@ -60,10 +60,10 @@ public class BinaryKeyEncoder extends Encoder {
 	}
 	
 	@Override
-	public void writeBytes(byte[] bytes, int start, int len) throws IOException {
-		Bytes.putInt(bytes, 0, len, SortOrder.ASCENDING);
-		out.write(bytes, 0, Bytes.SIZEOF_INT);
-		out.write(bytes, start, len);
+	public void writeBytes(byte[] data, int start, int len) throws IOException {
+		Bytes.putInt(this.bytes, 0, len, SortOrder.ASCENDING);
+		out.write(this.bytes, 0, Bytes.SIZEOF_INT);
+		out.write(data, start, len);
 	}
 	
 	@Override
