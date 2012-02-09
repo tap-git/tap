@@ -34,6 +34,17 @@ import tap.core.WordCountMapper;
 import tap.core.WordCountReducer;
 
 public class TapTests {
+	private TapUnitTestAlerter testAlerter = new TapUnitTestAlerter();
+
+	@Test
+	public void tapRecursiveDirectoryInput() {
+		String args[] = { "tapDirectoryInput", "-i", "share/multi", "-o",
+				"/tmp/TapTestsOutput.tapDirectoryInput",
+				"--force"};
+	
+		int rc = buildPipeline1(args);
+		Assert.assertNotSame("Checking success of tap.make()", 0, rc);
+	}
 
 	@Test
 	public void testOptions() {
@@ -41,8 +52,8 @@ public class TapTests {
 				"/tmp/testOptions", "--force" };
 		CommandOptions o = new CommandOptions(args);
 		Tap tap = new Tap(o);
-		tap.alerter(new TapUnitTestAlerter());
-	
+		tap.alerter(testAlerter);
+
 		Assert.assertEquals("shared/decameron.txt", o.input);
 		Assert.assertEquals("/tmp/testOptions", o.output);
 		Assert.assertEquals(true, o.forceRebuild);	
@@ -50,27 +61,26 @@ public class TapTests {
 	
 	@Test
 	public void tapDirectoryInput() {
-		String args[] = { "tapDirectoryInput", "-i", "share/multi", "-o",
+		String args[] = { "tapDirectoryInput", "-i", "share/multi/01", "-o",
 				"/tmp/TapTestsOutput.tapDirectoryInput",
 				"--force"};
 	
 		buildPipeline1(args);
 	}
-
+	
 	/**
 	 * @param args
 	 */
-	private void buildPipeline1(String[] args) {
+	private int buildPipeline1(String[] args) {
 		CommandOptions o = new CommandOptions(args);
 		Tap tap = new Tap(o);
-		tap.alerter(new TapUnitTestAlerter());
-		
+
 		tap.createPhase()
 				.map(WordCountMapper.class)
 				.combine(WordCountReducer.class)
 				.reduce(WordCountReducer.class).sortBy("word");
 		tap.getConf().setInt("io.sort.mb", 10); //override default of 100mb
-		tap.make();
+		return tap.make();
 	}
 
 	@Test

@@ -3,7 +3,8 @@
 //
 //  Standard metadata fields in Tap messages
 
-package tap.sample;
+package tap;
+option java_outer_classname = "Builtins";
 
 // Timestamp is signed 100 nanosecond ticks since 1 Jan, 1970
 // Timestamp is always stored on disk as GMT

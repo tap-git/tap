@@ -30,7 +30,7 @@ import org.apache.commons.mail.SimpleEmail;
 import tap.PhaseError;
 
 
-public class EmailAlerter implements Alerter {
+public class EmailAlerter implements TapAlerterInterface {
 
     private String[] targetAddresses;
     private String from = System.getProperty("tap.util.email.alerts.from");
@@ -140,5 +140,11 @@ public class EmailAlerter implements Alerter {
         list.add(err);
         alert(list);
     }
+
+	@Override
+	public boolean checkSuccess() {
+		// TODO Auto-generated method stub
+		return false;
+	}
     
 }

@@ -28,9 +28,9 @@ import org.apache.hadoop.mapred.JobConf;
 
 import tap.core.InfeasiblePlanException;
 import tap.core.PipePlan;
+import tap.core.TapAlerter;
 import tap.core.TapInterface;
-import tap.util.Alerter;
-import tap.util.EmailAlerter;
+import tap.util.TapAlerterInterface;
 
 public class Tap implements TapInterface {
     private List<Pipe> writes;
@@ -38,7 +38,7 @@ public class Tap implements TapInterface {
                                     // concurrency (also speeds up local
                                     // running)
     private JobConf baseConf = new JobConf();
-    private Alerter alerter = new EmailAlerter();
+    private TapAlerterInterface alerter = new TapAlerter();
     private String name = "";
     private CommandOptions options;
 
@@ -97,12 +97,12 @@ public class Tap implements TapInterface {
 	 * @param alerter The alerter to use
 	 * @return The Tap
 	 */
-	public Tap alerter(Alerter alerter) {
+	public Tap alerter(TapAlerterInterface alerter) {
 		this.alerter = alerter;
 		return this;
 	}
 	
-	Alerter getAlerter() {
+	TapAlerterInterface getAlerter() {
 		return alerter;
 	}
 
@@ -387,7 +387,15 @@ public class Tap implements TapInterface {
 
 		execute();
 	
-		return 0;
+		return checkSuccess();
+	}
+
+	/**
+	 * Return 0 if successful make(), 1 otherwise.
+	 * @return Success value
+	 */
+	public int checkSuccess() {
+		return (alerter.checkSuccess() ? 0:1);
 	}
 
 	/**

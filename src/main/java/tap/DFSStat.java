@@ -12,7 +12,6 @@ public class DFSStat  {
 	Path dfsPath = null;
 	FileSystem fs = null;
 	boolean exists = false;
-	boolean isObsolete = true;
 	boolean isFile = false;
 	long timestamp = 0;
 	private FileStatus[] statuses = null;

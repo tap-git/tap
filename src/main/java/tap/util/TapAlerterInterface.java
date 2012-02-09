@@ -30,7 +30,7 @@ import tap.PhaseError;
  * @author rbodkin
  *
  */
-public interface Alerter {
+public interface TapAlerterInterface {
 
     public void alert(Exception exception, String summary);
 
@@ -39,5 +39,7 @@ public interface Alerter {
     public void alert(String problem);
     
     public void pipeCompletion(String pipeName, String summary);
+    
+    public boolean checkSuccess();
 
 }

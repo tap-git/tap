@@ -185,9 +185,10 @@ public class Phase {
      * @return The filename
      */
     String getTmpOutputName() {
-    	return "/tmp/tap"
-    			+ (this.getConf() == null ? "" : "/"+ getConf().getUser())
+    	return "/tmp/tap/"
+    			+ (this.getConf() == null ? System.getProperty("user.name") : getConf().getUser())
     			//+ "/" + (new Date().getTime()) 
+    			+ "/tap-" + tap.getName()
     			+ "-phase-output-" 
     			+ getName();
     }
@@ -539,6 +540,11 @@ public class Phase {
 	     	file.setConf(conf);
 	     	if (file.isTempfile && file.getPath() == null) {
 	     		file.setPath(this.getTmpOutputName());
+	     		break;
+	     	}
+	     	if (file.exists() && file.stat().isFile) {
+	     		errors.add(new PhaseError(file.getPath() 
+	     				+ " output is invalid, should be a directory and not a file"));
 	     	}
 	     }
 	}

@@ -22,7 +22,45 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+					<generatedSourcesDirectory>src/generated/java</generatedSourcesDirectory>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>		<!-- this is used for inheritance merges -->
+						<!-- <phase>package</phase> --><!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>compile-generated</id>
+						<phase>compile-generated</phase>
+						<configuration>
+							<sources>
+								<source>src/generated/java</source>
+							</sources>
+						</configuration>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -33,15 +71,16 @@
 						<configuration>
 							<tasks>
 								<path id="proto.path">
-									<fileset dir="src/main/java/tap/sample">
+									<fileset dir="share/schemas">
 										<include name="**/*.proto" />
 									</fileset>
 								</path>
 								<pathconvert pathsep=" " property="proto.files"
 									refid="proto.path" />
-								<exec executable="protoc" failonerror="false" failifexecutionfails="false">
-									<arg value="--java_out=src/main/java" />
-									<arg value="-I${project.basedir}/src/main/java" />
+								<exec executable="protoc" failonerror="false"
+									failifexecutionfails="false">
+									<arg value="--java_out=src/generated/java" />
+									<arg value="-I${project.basedir}/share/schemas" />
 									<arg line="${proto.files}" />
 								</exec>
 							</tasks>
@@ -55,7 +94,8 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
