@@ -22,8 +22,21 @@ public class ColPhaseTests {
 
     @Test
     public void groupSchemas() {        
-        Schema groupSchema = Phase.group(schema, "one desc, two", "three,four,five");
+        Schema groupSchema = Phase.group(schema, "one , two", "three,four,five");
         assertTrue(groupSchema.toString().contains(fields.replaceAll(" ", "")));      		
+    }
+    
+    @Test
+    public void groupSchemaWithSortOrdering() {
+        Schema groupSchema = Phase.group(schema, "one , two desc");
+        assertEquals(2, groupSchema.getFields().size());
+        Schema.Field one = groupSchema.getField("one");
+        Schema.Field two = groupSchema.getField("two");
+        
+        assertNotNull(one);
+        assertNotNull(two);
+        assertEquals(Schema.Field.Order.ASCENDING, one.order());
+        assertEquals(Schema.Field.Order.DESCENDING, two.order());
     }
 
     @Test
