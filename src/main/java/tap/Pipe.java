@@ -30,7 +30,6 @@ import java.util.Iterator;
 import org.apache.avro.mapred.AvroValue;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
-//import org.apache.hadoop.fs.*;
 import org.apache.hadoop.mapred.JobConf;
 
 @SuppressWarnings("deprecation")
@@ -183,9 +182,32 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 	 * @return
 	 */
 	boolean isValidInput() {
-		return isTempfile || path.contains("*") || path.contains("?")
-				|| stat().exists;
+		return isTempfile 
+				|| hasWildcard()
+				|| isFile()
+				|| isSingleDir()
+				;
 	}
+	
+	boolean isFile() {
+		return stat().exists && stat().isFile;
+	}
+	
+	boolean isSingleDir() {
+		return stat().exists && !stat().isFile && !hasSubdirs();
+	}
+
+	boolean hasSubdirs() {
+		return false; //TODO: Implement logic here if performance is acceptable
+	}
+
+	boolean hasWildcard() {
+		return path.contains("*") 
+				|| path.contains("?")
+				|| path.contains("[");
+	}
+	
+
 	
     public void delete() {
         clearAndPrepareOutput();

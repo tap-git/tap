@@ -5,8 +5,12 @@ package tap;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,23 +29,8 @@ import tap.core.WordCountReducer;
 public class BindingTests {
 	
 	@Test
-	public void minimalistTest() {
-		String args[] = { "BindingTests.mapOutTest", "-i",
-				"share/decameron.txt", "-o", "/tmp/TapTestsOutput3", "--force" };
-
-		Tap tap = new Tap(new CommandOptions(args));
-		tap.createPhase().map(WordCountMapper.class).groupBy("word")
-				.reduce(WordCountReducer.class);
-
-		// to automatically trap Hadoop exceptions
-		tap.alerter(new TapUnitTestAlerter());
-
-		tap.make();
-	}
-	
-	@Test
 	public void fileBindingTest1() {
-		String args2[] = { "BindingTests.mapOutTest", "-i", "/tmp/gaggle/", "-o",
+		String args2[] = { "BindingTests.fileBindingTest1", "-i", "/tmp/gaggle/", "-o",
 				"/tmp/TapTestsOutput3", "--force" };
 		CommandOptions o2 = new CommandOptions(args2);
 		Tap tap2 = new Tap(o2);
@@ -59,6 +48,46 @@ public class BindingTests {
 		assertTrue(!phase2.input().exists());
 		assertTrue(0 == phase2.input().getTimestamp());
 		tap2.make();
+	}
+	
+	@Test
+	public void fileBindingTest2() throws IOException {
+		String args2[] = { "BindingTests.fileBindingTest1", 
+				"-i", "share/decameron.txt", 
+				"-o", "/tmp/outfile.txt", "--force" };
+		
+		CommandOptions o = new CommandOptions(args2);
+		Tap tap = new Tap(o);
+		tap.alerter(new TapUnitTestAlerter());
+		File f = new File(o.output);
+		// touch the file
+		if (f.exists())
+		{
+			// The file already exists, so just update its last modified time
+			if (!f.setLastModified(System.currentTimeMillis()))
+			{
+				throw new IOException("Could not touch file");
+			}
+		}
+		else
+		{
+			// The file doesn't exist, so create it
+			f.createNewFile();
+		}
+
+		Phase phase2 = tap
+				.createPhase()
+				.map(WordCountMapper.class)
+				.groupBy("word")
+				.combine(WordCountReducer.class)
+				.reduce(WordCountReducer.class)
+				.reads(o.input)
+				.writes(o.output);
+		
+		tap.produces(phase2.getOutputs());
+		List<PhaseError> errors = phase2.plan(tap);
+		Assert.assertEquals("Expecting output error", 1, errors.size());
+		Assert.assertTrue(errors.get(0).getMessage().contains("should be a directory"));
 	}
 
 	@Test
@@ -103,6 +132,21 @@ public class BindingTests {
 		//tap.named(o.program).make();
 	}
 	
+	@Test
+	public void minimalistTest() {
+		String args[] = { "BindingTests.mapOutTest", "-i",
+				"share/decameron.txt", "-o", "/tmp/TapTestsOutput3", "--force" };
+	
+		Tap tap = new Tap(new CommandOptions(args));
+		tap.createPhase().map(WordCountMapper.class).groupBy("word")
+				.reduce(WordCountReducer.class);
+	
+		// to automatically trap Hadoop exceptions
+		tap.alerter(new TapUnitTestAlerter());
+	
+		tap.make();
+	}
+
 	@Test
 	public void avroInputBindingTest() {
 		

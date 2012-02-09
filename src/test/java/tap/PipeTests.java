@@ -27,6 +27,7 @@ import java.lang.reflect.ParameterizedType;
 import junit.framework.Assert;
 
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.JobConf;
 import org.junit.Test;
 
 import tap.Pipe;
@@ -45,8 +46,53 @@ public class PipeTests {
     }
 
     @Test
+    public void testInputDirectory() {
+        Pipe<Text> input = new Pipe<Text>("share/multi/01");
+        input.setConf(new JobConf());
+        Assert.assertTrue(input.isValidInput());
+    }
+    
+    @Test
+    public void testInputDirectory2() {
+        Pipe<Text> input = new Pipe<Text>("share/multi/01/");
+        input.setConf(new JobConf());
+        Assert.assertTrue(input.isValidInput());
+    }
+    
+    // Not implementing this requirement now
+    //@Test
+    public void testInputDirectoryRecursive() {
+        Pipe<Text> input = new Pipe<Text>("share/multi");
+        input.setConf(new JobConf());
+        Assert.assertTrue(!input.isValidInput());
+    }
+    
+    @Test
+    public void testInputWildcard() {
+        Pipe<Text> input = new Pipe<Text>("share/multi/01/*.txt");
+        input.setConf(new JobConf());
+        Assert.assertTrue(input.isValidInput());
+    }
+    
+    @Test
+    public void testInputSingle() {
+        Pipe<OutputLog> input = new Pipe<OutputLog>("share/decameron.txt");
+        input.setConf(new JobConf());
+        Assert.assertTrue(input.isValidInput());
+    }
+    
+    @Test
+    public void testInputNonExistent() {
+        Pipe<OutputLog> input = new Pipe<OutputLog>("share/missing.txt");
+        input.setConf(new JobConf());
+        Assert.assertFalse(input.isValidInput());
+    }
+    
+    
+    @Test
     public void testPipeAvroDefault() {
-        Pipe<OutputLog> input = new Pipe<OutputLog>("/tmp/out");
+        Pipe<OutputLog> input = new Pipe<OutputLog>("share/");
+        input.setConf(new JobConf());
         Assert.assertEquals(Formats.UNKNOWN_FORMAT, input.getFormat());
     }
 

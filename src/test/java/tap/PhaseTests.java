@@ -57,7 +57,7 @@ public class PhaseTests {
     }
     
     @Test
-    public void temporaryFileTest() {
+    public void temporaryFileTest1() {
     	String[] args = {"Phase.setTest", "-i", "share/decameron.txt", "-o", "/tmp/out", "--force"};
     	CommandOptions o = new CommandOptions(args);
         /* Set up a basic pipeline of map reduce */

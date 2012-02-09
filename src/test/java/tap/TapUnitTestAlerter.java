@@ -2,37 +2,27 @@ package tap;
 
 import java.util.List;
 
-import tap.util.Alerter;
+import tap.core.TapAlerter;
 
 import junit.framework.Assert;
 
-public class TapUnitTestAlerter implements Alerter{
+public class TapUnitTestAlerter extends TapAlerter{
 	
 	@Override
 	public void alert(Exception exception, String summary) {
+		super.alert(exception, summary);
 		Assert.fail(summary);
-		
 	}
 
 	@Override
 	public void alert(List<PhaseError> result) {
-		if (!result.isEmpty()) {
-			for(PhaseError e: result) {
-				System.out.println(e.getMessage());
-			}
-			Assert.fail(result.size() + " errors");
-		}
+		super.alert(result);
+		Assert.fail(result.get(0).getMessage());
 	}
 
 	@Override
 	public void alert(String problem) {
+		super.alert(problem);
 		Assert.fail(problem);
 	}
-
-	@Override
-	public void pipeCompletion(String pipeName, String summary) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
