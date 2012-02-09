@@ -43,7 +43,7 @@ public class ReflectionKeyExtractor<OUT> implements KeyExtractor<GenericData.Rec
         addFieldnames(fieldNames, groupFields);
         addFieldnames(fieldNames, sortFields);
         
-        keySchema = Phase.group(schema, fieldNames);
+        keySchema = Phase.group(schema, groupBy, sortBy); // pass fields name *and* sort order
     }
 
     public static void addFieldnames(List<String> fieldNames, String[] groupFields) {

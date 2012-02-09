@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import org.apache.avro.Schema;
+import org.apache.avro.Schema.Field;
 import org.apache.avro.mapred.*;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobClient;
@@ -1039,6 +1040,7 @@ public class Phase {
      */
     public static Schema group(Schema schema, String... fields) {
         List<String> fieldList = new ArrayList<String>(fields.length);
+        List<String> orderList = new ArrayList<String>(fields.length);
         for (String list : fields) {
             if (list == null)
                 continue;
@@ -1046,24 +1048,32 @@ public class Phase {
                 field = field.trim();
                 String[] parts = field.split("\\s");
                 if (parts.length > 0) {
-                    fieldList.add(parts[0]);
+                    fieldList.add(parts[0].trim());
+                }
+                if(parts.length > 1) {
+                	orderList.add(parts[1].trim().toUpperCase());
+                } else {
+                	orderList.add("ASC");
                 }
             }
         }
 
-        return group(schema, fieldList);
+        return group(schema, fieldList, orderList);
     }
 
-    public static Schema group(Schema schema, List<String> fields) {
+    private static Schema group(Schema schema, List<String> fields, List<String> ordering) {
         ArrayList<Schema.Field> fieldList = new ArrayList<Schema.Field>(
                 fields.size());
         StringBuilder builder = new StringBuilder();
         String missing = null;
         Set<String> held = new TreeSet<String>();
-        for (String fieldname : fields) {
+        for(int i = 0; i < fields.size(); ++i) {
+        	String fieldname = fields.get(i);
             if (held.contains(fieldname))
                 continue;
             held.add(fieldname);
+        	Field.Order order = ordering.get(i).equals("DESC") ?
+        			Field.Order.DESCENDING : Field.Order.ASCENDING;
             Schema.Field field = schema.getField(fieldname.trim());
             if (field == null) {
                 if (missing == null) {
@@ -1075,7 +1085,7 @@ public class Phase {
                 continue;
             }
             Schema.Field copy = new Schema.Field(fieldname, field.schema(),
-                    field.doc(), field.defaultValue(), field.order());
+                    field.doc(), field.defaultValue(), order);
             fieldList.add(copy);
             builder.append('_');
             builder.append(fieldname);

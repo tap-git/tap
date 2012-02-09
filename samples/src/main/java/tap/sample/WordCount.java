@@ -30,8 +30,13 @@ public class WordCount {
             return;
         }
 
+        /*
         wordcount.createPhase().reads(o.input).writes(o.output).map(Mapper.class).
             groupBy("word").reduce(Reducer.class);
+        */
+        // just to manually test sort ordering
+        wordcount.createPhase().reads(o.input).writes(o.output).map(WordMapper.class).
+            sortBy("word desc").reduce(WordReducer.class);
         
         wordcount.make();
     }
@@ -70,4 +75,26 @@ public class WordCount {
         }
         
     }
+    
+    public static class WordMapper extends TapMapper<String, CountRec> {
+    	private CountRec outrec = new CountRec();
+        @Override
+        public void map(String line, Pipe<CountRec> out) {
+            StringTokenizer tokenizer = new StringTokenizer(line);
+            while (tokenizer.hasMoreTokens()) {
+            	outrec.word = tokenizer.nextToken();
+            	out.put(outrec);
+            }
+        } 
+    }
+    
+    public static class WordReducer extends TapReducer<CountRec, String> {
+        @Override
+        public void reduce(Pipe<CountRec> in, Pipe<String> out) {
+        	for(CountRec rec : in) {
+        		out.put(rec.word);
+        	}
+        }        
+    }
+
 }
