@@ -58,12 +58,15 @@ public class BinaryKeyEncoder extends Encoder {
 		out.write(Types.STRING.value(order));
 		Bytes.writeString(utf8, out, order);
 	}
+
+	@Override
+	public void writeFixed(byte[] bytes, int start, int len) throws IOException {
+		out.write(bytes, start, len);
+	}
 	
 	@Override
 	public void writeBytes(byte[] data, int start, int len) throws IOException {
-		Bytes.putInt(this.bytes, 0, len, SortOrder.ASCENDING);
-		out.write(this.bytes, 0, Bytes.SIZEOF_INT);
-		out.write(data, start, len);
+		throw new UnsupportedOperationException("writeBytes not supported, use writeFixed instead");
 	}
 	
 	@Override
@@ -87,11 +90,6 @@ public class BinaryKeyEncoder extends Encoder {
 		throw new UnsupportedOperationException("writeBytes(ByteBuffer) not yet implemented");
 	}
 
-
-	@Override
-	public void writeFixed(byte[] bytes, int start, int len) throws IOException {
-		throw new UnsupportedOperationException("writeFixed not yet implemented");
-	}
 
 	@Override
 	public void writeEnum(int e) throws IOException {
