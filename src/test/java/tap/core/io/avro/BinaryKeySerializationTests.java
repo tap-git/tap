@@ -18,7 +18,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 
-import tap.core.KeyComparator;
+import tap.core.BinaryKeyComparator;
 import tap.core.io.BinaryKey;
 import tap.core.io.Bytes;
 import tap.core.io.SortOrder;
@@ -46,15 +46,15 @@ public class BinaryKeySerializationTests {
 	}
 	
 	private byte[] encode(String name, int age, Schema schema) throws IOException {
-		GenericData.Record datum = new GenericData.Record(schema);
-		datum.put("name", name);
-		datum.put("age", age);
+		BinaryKey key = new BinaryKey();
+		
+		key.setSchema(schema);
+		key.setField("name", name);
+		key.setField("age", age);
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		BinaryKeyEncoder encoder = new BinaryKeyEncoder(out);
-		BinaryKeyDatumWriter writer = new BinaryKeyDatumWriter(schema);
-		writer.write(datum, encoder);
-	
+		out.write(key.getBuffer(), 0, key.getLength());
+		
 		return out.toByteArray();
 	}
 	
@@ -123,7 +123,7 @@ public class BinaryKeySerializationTests {
 	
 	@Test
 	public void compareAsc() throws IOException {
-		KeyComparator comparator = new KeyComparator();
+		BinaryKeyComparator comparator = new BinaryKeyComparator();
 		
 		byte[] b1 = encode("john", 30, schema_asc);
 		byte[] b2 = encode("john", 31, schema_asc);
@@ -143,7 +143,7 @@ public class BinaryKeySerializationTests {
 	
 	@Test
 	public void compareDesc() throws IOException {
-		KeyComparator comparator = new KeyComparator();
+		BinaryKeyComparator comparator = new BinaryKeyComparator();
 		
 		byte[] b1 = encode("john", 30, schema_desc);
 		byte[] b2 = encode("john", 31, schema_desc);

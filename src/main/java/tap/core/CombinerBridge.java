@@ -60,13 +60,13 @@ public class CombinerBridge<V> extends BaseAvroReducer<V, V, AvroKey<BinaryKey>,
     
     private class Collector<VC> extends AvroMultiCollector<VC> {
         //private final AvroWrapper<V> wrapper = new AvroWrapper<V>(null);
-        private final AvroKey<GenericData.Record> keyWrapper = new AvroKey<GenericData.Record>(null);
+        private final AvroKey<BinaryKey> keyWrapper = new AvroKey<BinaryKey>(null);
         private final AvroValue<VC> valueWrapper = new AvroValue<VC>(null);
-        private final KeyExtractor<GenericData.Record,VC> extractor;
-        private final GenericData.Record key;
-        private OutputCollector<AvroKey<GenericData.Record>, AvroValue<VC>> collector;
+        private final KeyExtractor<BinaryKey,VC> extractor;
+        private final BinaryKey key;
+        private OutputCollector<AvroKey<BinaryKey>, AvroValue<VC>> collector;
 
-        public Collector(OutputCollector<AvroKey<GenericData.Record>, AvroValue<VC>> collector, KeyExtractor<GenericData.Record,VC> extractor) {
+        public Collector(OutputCollector<AvroKey<BinaryKey>, AvroValue<VC>> collector, KeyExtractor<BinaryKey,VC> extractor) {
             this.collector = collector;
             this.extractor = extractor;
             key = extractor.getProtypeKey();
@@ -82,7 +82,7 @@ public class CombinerBridge<V> extends BaseAvroReducer<V, V, AvroKey<BinaryKey>,
 
     @Override
     protected AvroMultiCollector<V> getCollector(OutputCollector<AvroKey<BinaryKey>, AvroValue<V>> collector, Reporter reporter) {
-        KeyExtractor<GenericData.Record, V> extractor = new ReflectionKeyExtractor<V>(schema, groupBy, sortBy);
+        KeyExtractor<BinaryKey, V> extractor = new ReflectionKeyExtractor<V>(schema, groupBy, sortBy);
         //XXX fix this typing: the collector returns GenericData.Record, not K! should be Collector<V>
         return new Collector(collector, extractor);
     }

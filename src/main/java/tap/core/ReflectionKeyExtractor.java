@@ -25,16 +25,17 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 
 import tap.Phase;
+import tap.core.io.BinaryKey;
 
 import com.google.protobuf.Message;
 
 
-public class ReflectionKeyExtractor<OUT> implements KeyExtractor<GenericData.Record, OUT> {
+public class ReflectionKeyExtractor<OUT> implements KeyExtractor<BinaryKey, OUT> {
     final Map<String,java.lang.reflect.Field> inFields = new HashMap<String,java.lang.reflect.Field>();
     final Map<String,java.lang.reflect.Method> inGetters = new HashMap<String,java.lang.reflect.Method>();
     private final List<String> fieldNames;
     private final Schema keySchema;
-
+    
     public ReflectionKeyExtractor(Schema schema, String groupBy, String sortBy) {               
         String[] groupFields = groupBy==null ? new String[0] : groupBy.split(",");
         String[] sortFields = sortBy==null ? new String[0] : sortBy.split(",");
@@ -55,12 +56,14 @@ public class ReflectionKeyExtractor<OUT> implements KeyExtractor<GenericData.Rec
     }
     
     @Override
-    public GenericData.Record getProtypeKey() {
-        return new GenericData.Record(keySchema);
+    public BinaryKey getProtypeKey() {
+        BinaryKey key = new BinaryKey();
+        key.setSchema(keySchema);
+        return key;
     }
 
     @Override
-    public void setKey(OUT value, GenericData.Record key) {
+    public void setKey(OUT value, BinaryKey key) {
         if (inFields.isEmpty() && inGetters.isEmpty()) {
             Class<?> inClass = value.getClass();
 
@@ -83,11 +86,11 @@ public class ReflectionKeyExtractor<OUT> implements KeyExtractor<GenericData.Rec
         try {
             for (Map.Entry<String, java.lang.reflect.Field> entry : inFields.entrySet()) {
                 String fieldName = entry.getKey();
-                key.put(fieldName, entry.getValue().get(value));
+                key.setField(fieldName, entry.getValue().get(value));
             }
             for (Map.Entry<String, java.lang.reflect.Method> entry : inGetters.entrySet()) {
                 String fieldName = entry.getKey();
-                key.put(fieldName, entry.getValue().invoke(value));
+                key.setField(fieldName, entry.getValue().invoke(value));
             }
         }
         catch (Exception e) {

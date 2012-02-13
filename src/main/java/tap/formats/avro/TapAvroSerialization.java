@@ -35,6 +35,7 @@ import org.apache.hadoop.io.serializer.*;
 import com.google.protobuf.Message;
 
 import tap.Phase;
+import tap.core.io.BinaryKey;
 import tap.core.io.avro.BinaryKeyDatumReader;
 import tap.core.io.avro.BinaryKeyDatumWriter;
 import tap.core.io.avro.BinaryKeyEncoder;
@@ -126,6 +127,9 @@ public class TapAvroSerialization<T> extends Configured implements Serialization
 
     /** Returns the specified output serializer. */
     public Serializer<AvroWrapper<T>> getSerializer(Class<AvroWrapper<T>> c) {
+        if(AvroKey.class.isAssignableFrom(c))
+        	return new BinaryKeySerializer();
+    	
         Configuration conf = getConf();
         // Here we must rely on mapred.task.is.map to tell whether the map output
         // or final output is needed.
@@ -134,46 +138,54 @@ public class TapAvroSerialization<T> extends Configured implements Serialization
         Schema schema = null;
         if(!isMap)
             schema = AvroJob.getOutputSchema(conf);
-        
-        boolean isProtobuf = false;
-        boolean isKey = false;
-        if(AvroKey.class.isAssignableFrom(c)) {
-            schema = Schema.parse(conf.get(Phase.MAP_OUT_KEY_SCHEMA));
-            isKey = true;
-        } else {
+        else
             schema = Schema.parse(conf.get(Phase.MAP_OUT_VALUE_SCHEMA));
-            isProtobuf = Message.class.isAssignableFrom(getMapOutClass(getConf()));
-        }
+        
+        boolean isProtobuf = Message.class.isAssignableFrom(getMapOutClass(getConf()));
         
         DatumWriter<T> writer;
         if(isProtobuf)
         	writer = new ProtobufDatumWriter<T>(schema);
-        else if(isKey)
-        	writer = new BinaryKeyDatumWriter<T>(schema);
         else
         	writer = new ReflectDatumWriter<T>(schema);
         
-        return new AvroWrapperSerializer(writer, isKey);
+        return new AvroValueSerializer(writer);
+    }
+    
+    private class BinaryKeySerializer implements Serializer<AvroWrapper<T>> {
+
+    	OutputStream out;
+    	
+		@Override
+		public void open(OutputStream out) throws IOException {
+			this.out = out;
+		}
+
+		@Override
+		public void serialize(AvroWrapper<T> t) throws IOException {
+			BinaryKey key = (BinaryKey) t.datum();
+			out.write(key.getBuffer(), 0, key.getLength());
+		}
+
+		@Override
+		public void close() throws IOException {
+			out.close();
+		}
     }
 
-    private class AvroWrapperSerializer implements Serializer<AvroWrapper<T>> {
+    private class AvroValueSerializer implements Serializer<AvroWrapper<T>> {
 
         private DatumWriter<T> writer;
         private OutputStream out;
         private Encoder encoder;
-        private boolean isKey;
 
-        public AvroWrapperSerializer(DatumWriter<T> writer, boolean isKey) {
+        public AvroValueSerializer(DatumWriter<T> writer) {
             this.writer = writer;
-            this.isKey = isKey;
         }
 
         public void open(OutputStream out) {
             this.out = out;
-            if(isKey)
-            	this.encoder = new BinaryKeyEncoder(out);
-            else
-            	this.encoder = new EncoderFactory().directBinaryEncoder(out, null);
+            this.encoder = new EncoderFactory().directBinaryEncoder(out, null);
         }
 
         public void serialize(AvroWrapper<T> wrapper) throws IOException {

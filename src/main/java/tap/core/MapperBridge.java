@@ -39,6 +39,7 @@ import org.codehaus.jackson.JsonParseException;
 import tap.Phase;
 import tap.Pipe;
 import tap.TapMapper;
+import tap.core.io.BinaryKey;
 import tap.core.mapreduce.input.TapfileInputFormat;
 import tap.core.mapreduce.io.ProtobufWritable;
 import tap.formats.FileFormat;
@@ -98,7 +99,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
             OutputCollector<KO, VO> collector, Reporter reporter)
             throws IOException {
         if (this.context == null) {
-            KeyExtractor<GenericData.Record, OUT> extractor = new ReflectionKeyExtractor<OUT>(
+            KeyExtractor<BinaryKey, OUT> extractor = new ReflectionKeyExtractor<OUT>(
                     schema, groupBy, sortBy);
             this.context = new TapContext<OUT>(new Collector(collector,
                     extractor), reporter);
@@ -253,7 +254,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
             Reporter reporter) {
         if (this.outPipe != null && this.outPipe.getContext() == null) {
             if (this.context == null) {
-                KeyExtractor<GenericData.Record, OUT> extractor = new ReflectionKeyExtractor<OUT>(
+                KeyExtractor<BinaryKey, OUT> extractor = new ReflectionKeyExtractor<OUT>(
                         schema, groupBy, sortBy);
                 outPipe.setContext(new TapContext<OUT>(new Collector(
                         collector, extractor), reporter));

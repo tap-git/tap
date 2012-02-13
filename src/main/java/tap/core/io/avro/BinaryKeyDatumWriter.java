@@ -80,7 +80,8 @@ public class BinaryKeyDatumWriter<T> extends GenericDatumWriter<T>{
 		
 		EncodingStream stream = threadLocalStream.get();
 		stream.reset();
-		
+		doWriteRecord(stream, record.getSchema(), record);
+
 		// write length to out
 		Bytes.putInt(intbuf, 0, stream.count(), SortOrder.ASCENDING);
 		out.write(intbuf);

@@ -32,13 +32,14 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 
+import tap.core.BinaryKeyComparator;
 import tap.core.CombinerBridge;
-import tap.core.KeyComparator;
 import tap.core.MapperBridge;
 import tap.core.ReducerBridge;
 import tap.core.TapMapperInterface;
 import tap.core.TapReducerInterface;
 import tap.formats.avro.AvroGroupPartitioner;
+import tap.formats.avro.BinaryKeyPartitioner;
 import tap.formats.avro.TapAvroSerialization;
 import tap.util.CacheUtils;
 import tap.util.ReflectUtils;
@@ -940,14 +941,14 @@ public class Phase {
             AvroJob.setOutputMeta(conf, GROUP_BY, groupBy);
         }
         if (sortBy != null) {
-            conf.setPartitionerClass(AvroGroupPartitioner.class);
+            conf.setPartitionerClass(BinaryKeyPartitioner.class);
             conf.set(SORT_BY, sortBy);
             AvroJob.setOutputMeta(conf, SORT_BY, sortBy);
         }
 
         conf.setMapOutputKeyClass(AvroKey.class);
         conf.setMapOutputValueClass(AvroValue.class);
-        conf.setOutputKeyComparatorClass(KeyComparator.class);
+        conf.setOutputKeyComparatorClass(BinaryKeyComparator.class);
 
         conf.setMapperClass(MapperBridge.class);
         conf.setReducerClass(ReducerBridge.class);
