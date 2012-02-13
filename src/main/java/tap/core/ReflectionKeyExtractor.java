@@ -44,7 +44,7 @@ public class ReflectionKeyExtractor<OUT> implements KeyExtractor<BinaryKey, OUT>
         addFieldnames(fieldNames, groupFields);
         addFieldnames(fieldNames, sortFields);
         
-        keySchema = Phase.group(schema, groupBy, sortBy); // pass fields name *and* sort order
+        keySchema = Phase.groupAndSort(schema, groupBy, sortBy); // pass fields name *and* sort order
     }
 
     public static void addFieldnames(List<String> fieldNames, String[] groupFields) {

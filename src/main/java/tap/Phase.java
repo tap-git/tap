@@ -927,7 +927,7 @@ public class Phase {
         conf.set(AvroJob.INPUT_SCHEMA, ReflectUtils.getSchema(inputPipeProto).toString());
         conf.set(AvroJob.INPUT_SCHEMA, mapinSchema.toString());
         conf.set(MAP_OUT_VALUE_SCHEMA, mapValueSchema.toString());
-        conf.set(MAP_OUT_KEY_SCHEMA, group(mapValueSchema, groupBy, sortBy)
+        conf.set(MAP_OUT_KEY_SCHEMA, groupAndSort(mapValueSchema, groupBy, sortBy)
                 .toString());
         
 		
@@ -1041,62 +1041,96 @@ public class Phase {
     	}
         return Collections.unmodifiableList(writes);
     }
-
-    /**
-     * create a schema containing just the listed comma-separated fields
-     */
+    
     public static Schema group(Schema schema, String... fields) {
-        List<String> fieldList = new ArrayList<String>(fields.length);
-        List<String> orderList = new ArrayList<String>(fields.length);
-        for (String list : fields) {
-            if (list == null)
-                continue;
-            for (String field : list.split(",")) {
-                field = field.trim();
-                String[] parts = field.split("\\s");
-                if (parts.length > 0) {
-                    fieldList.add(parts[0].trim());
-                }
-                if(parts.length > 1) {
-                	orderList.add(parts[1].trim().toUpperCase());
-                } else {
-                	orderList.add("ASC");
-                }
-            }
-        }
-
-        return group(schema, fieldList, orderList);
+    	StringBuilder sb = new StringBuilder();
+    	for(String f : fields) {
+    		if(f != null) {
+    			sb.append(",");
+    			sb.append(f);
+    		}
+    	}
+    	return createSchema(schema, sb.toString(), "");
     }
-
-    private static Schema group(Schema schema, List<String> fields, List<String> ordering) {
-        ArrayList<Schema.Field> fieldList = new ArrayList<Schema.Field>(
-                fields.size());
-        StringBuilder builder = new StringBuilder();
+    
+    public static Schema groupAndSort(Schema schema, String groupFields, String sortFields) {
+    	return createSchema(schema, groupFields, sortFields);
+    }
+    
+    private static class FieldDesc {
+    	final String name;
+    	final boolean isSort;
+    	Schema.Field.Order order;
+    	
+    	FieldDesc(String name, boolean isSort) {
+    		this.name = name;
+    		this.isSort = isSort;
+    	}
+    }
+    
+    private static List<FieldDesc> parseFields(String groupFields, String sortFields) {
+    	groupFields = groupFields == null ? "" : groupFields.trim();
+    	sortFields = sortFields == null ? "" : sortFields.trim();
+    	
+    	Map<String, FieldDesc> lookup = new HashMap<String, FieldDesc>();
+    	List<FieldDesc> list = new ArrayList<FieldDesc>();
+    	
+    	boolean isSort = false;
+    	for(String fields : new String[] { groupFields, sortFields }) {
+    		for(String s : fields.split(",")) {
+    			s = s.trim();
+    			if(s.length() == 0)
+    				continue;
+    			
+                String[] parts = s.split("\\s");
+                String name = parts[0];
+                
+                FieldDesc field = lookup.get(name.toLowerCase());
+                if(field == null) {
+                	field = new FieldDesc(name, isSort);
+                	list.add(field);
+                	lookup.put(name.toLowerCase(), field); 
+                }
+                
+                // update order with latest for cases like groupBy("word") sortBy("word desc")
+                if(parts.length > 1 && parts[1].trim().toLowerCase().equals("desc")) {
+                	field.order = Field.Order.DESCENDING;
+                } else {
+                	field.order = Field.Order.ASCENDING;
+                }
+    		}
+    		isSort = true;
+    	}
+    	return list;
+    }
+    
+    private static Schema createSchema(Schema schema, String groupFields, String sortFields) { 
+        List<FieldDesc> parsed = parseFields(groupFields, sortFields);
+        
+        ArrayList<Schema.Field> fieldList = new ArrayList<Schema.Field>();
         String missing = null;
-        Set<String> held = new TreeSet<String>();
-        for(int i = 0; i < fields.size(); ++i) {
-        	String fieldname = fields.get(i);
-            if (held.contains(fieldname))
-                continue;
-            held.add(fieldname);
-        	Field.Order order = ordering.get(i).equals("DESC") ?
-        			Field.Order.DESCENDING : Field.Order.ASCENDING;
-            Schema.Field field = schema.getField(fieldname.trim());
+        StringBuilder builder = new StringBuilder();
+        for(FieldDesc fd : parsed) {
+            Schema.Field field = schema.getField(fd.name);
             if (field == null) {
                 if (missing == null) {
                     missing = "Invalid group by/sort by - fields not in map output record are: ";
                 } else {
                     missing += ", ";
                 }
-                missing += fieldname.trim();
+                missing += fd.name;
                 continue;
             }
-            Schema.Field copy = new Schema.Field(fieldname, field.schema(),
-                    field.doc(), field.defaultValue(), order);
+            Schema.Field copy = new Schema.Field(field.name(), field.schema(),
+                    field.doc(), field.defaultValue(), fd.order);
+            if(fd.isSort) {
+            	copy.addProp("x-sort", "true");
+            }
             fieldList.add(copy);
             builder.append('_');
-            builder.append(fieldname);
+            builder.append(fd.name);
         }
+        
         if (missing != null) {
             throw new IllegalArgumentException(missing);
         }

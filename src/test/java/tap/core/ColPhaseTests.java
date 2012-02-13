@@ -38,6 +38,35 @@ public class ColPhaseTests {
         assertEquals(Schema.Field.Order.ASCENDING, one.order());
         assertEquals(Schema.Field.Order.DESCENDING, two.order());
     }
+    
+    @Test
+    public void willTagSortByFields() {
+    	Schema generated = Phase.groupAndSort(schema, "one", "two desc");
+    	
+    	assertEquals(2, generated.getFields().size());
+        Schema.Field one = generated.getField("one");
+        Schema.Field two = generated.getField("two");
+        
+        assertNotNull(one);
+        assertNotNull(two);
+        assertEquals(Schema.Field.Order.ASCENDING, one.order());
+        assertEquals(Schema.Field.Order.DESCENDING, two.order());
+        
+        assertNull(one.getProp("x-sort"));
+        assertEquals("true", two.getProp("x-sort"));
+    }
+    
+    @Test
+    public void willHandleFieldSpecifiedInBothGroupAndSortBy() {
+    	Schema generated = Phase.groupAndSort(schema, "one", "one desc");
+    	assertEquals(1, generated.getFields().size());
+        Schema.Field one = generated.getField("one");
+        
+        assertNotNull(one);
+        assertEquals(Schema.Field.Order.DESCENDING, one.order());
+        
+        assertNull(one.getProp("x-sort"));
+    }
 
     @Test
     public void groupSchemaOneMultiList() {        
