@@ -38,10 +38,12 @@ public class BinaryKey {
 	}
 	
 	public int keyBytesLength() {
+		serializeIfNecessary();
 		return getLength() - KEY_BYTES_OFFSET;
 	}
 	
 	public int groupBytesLength() {
+		serializeIfNecessary();
 		return groupLength;
 	}
 	

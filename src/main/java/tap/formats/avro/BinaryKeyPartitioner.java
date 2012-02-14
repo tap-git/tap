@@ -47,15 +47,16 @@ public class BinaryKeyPartitioner<V> implements Partitioner<AvroKey<BinaryKey>,A
     }
 
     @Override
-    public int getPartition(AvroKey<BinaryKey> key, AvroValue<V> value, int numPartitions) {
-    	int hash = hashBytes(
-    			key.datum().getBuffer(),
-    			BinaryKey.KEY_BYTES_OFFSET, key.datum().keyBytesLength());
+    public int getPartition(AvroKey<BinaryKey> avroKey, AvroValue<V> value, int numPartitions) {
+    	BinaryKey key = avroKey.datum();
+    	
+    	int length = key.groupBytesLength() > 0 ? key.groupBytesLength() : key.keyBytesLength();
+    	int hash = hashBytes(key.getBuffer(), BinaryKey.KEY_BYTES_OFFSET, length);
     	
     	return Math.abs(hash % numPartitions);
     }
     
-    private static int hashBytes(byte[] bytes, int offset, int length) {
+    protected int hashBytes(byte[] bytes, int offset, int length) {
     	int end = offset + length;
     	int hash = 1;
     	for (int i = offset; i < end; i++)
