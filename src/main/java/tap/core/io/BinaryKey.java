@@ -11,17 +11,19 @@ import tap.core.io.avro.BinaryKeyDatumWriter;
 public class BinaryKey {
 	private byte[] buf;
 	private int length;
+	private int groupLength;
 	private ReuseByteArrayOutputStream stream;
 	private GenericData.Record record;
 	private boolean dirty;
 	
-	public static final int KEY_BYTES_OFFSET = Bytes.SIZEOF_INT;
+	public static final int KEY_BYTES_OFFSET = Bytes.SIZEOF_INT * 2; // length, group length
 	
 	public BinaryKey() {}
 	
 	public void set(byte[] buf, int length) {
 		this.buf = buf;
 		this.length = length;
+		this.groupLength = Bytes.toInt(this.buf, Bytes.SIZEOF_INT, SortOrder.ASCENDING); 
 		this.dirty = false;
 	}
 	
@@ -37,6 +39,10 @@ public class BinaryKey {
 	
 	public int keyBytesLength() {
 		return getLength() - KEY_BYTES_OFFSET;
+	}
+	
+	public int groupBytesLength() {
+		return groupLength;
 	}
 	
 	public void setSchema(Schema schema) {
@@ -65,7 +71,7 @@ public class BinaryKey {
 		
 		this.buf = stream.getBuffer();
 		this.length = stream.getCount();
-		
+		this.groupLength = Bytes.toInt(this.buf, Bytes.SIZEOF_INT, SortOrder.ASCENDING); 
 		dirty = false;
 	}
 }

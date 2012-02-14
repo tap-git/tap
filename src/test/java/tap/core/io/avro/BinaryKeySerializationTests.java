@@ -43,19 +43,20 @@ public class BinaryKeySerializationTests {
 		
 		schema_asc = Schema.createRecord(asc);
 		schema_desc = Schema.createRecord(desc);
+		
+		// set age as a sort field
+		schema_asc.getField("age").addProp("x-sort", "true");
+		schema_desc.getField("age").addProp("x-sort", "true");
 	}
 	
-	private byte[] encode(String name, int age, Schema schema) throws IOException {
+	private BinaryKey encode(String name, int age, Schema schema) throws IOException {
 		BinaryKey key = new BinaryKey();
 		
 		key.setSchema(schema);
 		key.setField("name", name);
 		key.setField("age", age);
 		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		out.write(key.getBuffer(), 0, key.getLength());
-		
-		return out.toByteArray();
+		return key;
 	}
 	
 	private BinaryKey decode(byte[] bytes) throws IOException {
@@ -67,41 +68,53 @@ public class BinaryKeySerializationTests {
 	
 	@Test
 	public void writeRecord() throws IOException {
-		byte[] bytes = encode("john", 30, schema_asc);
+		BinaryKey key = encode("john", 30, schema_asc);
 		
-		Assert.assertEquals(15, bytes.length);
+		Assert.assertEquals(19, key.getLength());
 		
-		// first 4 bytes is length of data written asc
+		byte[] bytes = key.getBuffer();
+		
+		// first 4 bytes is length of key written asc
 		int dataSize = Bytes.toInt(bytes, 0, SortOrder.ASCENDING);
 		Assert.assertEquals(11, dataSize);
+		
+		// next 4 bytes is group length (name)
+		int groupLength = Bytes.toInt(bytes, 4, SortOrder.ASCENDING);
+		Assert.assertEquals(6, groupLength);
 
 		// string tag
-		Assert.assertEquals(Types.STRING.asc(), bytes[4] & 0xff);
+		Assert.assertEquals(Types.STRING.asc(), bytes[8] & 0xff);
 		
 		// name
 		byte[] name = { 'j', 'o', 'h', 'n', Bytes.TERM };
-		Assert.assertTrue(Bytes.compare(name, 0, 5, bytes, 5, 5) == 0);
+		Assert.assertTrue(Bytes.compare(name, 0, 5, bytes, 9, 5) == 0);
 		
 		// int tag 
-		Assert.assertEquals(Types.INT.asc(), bytes[10] & 0xff);
+		Assert.assertEquals(Types.INT.asc(), bytes[14] & 0xff);
 		
 		// age
-		int age = Bytes.toInt(bytes, 11, SortOrder.ASCENDING);
+		int age = Bytes.toInt(bytes, 15, SortOrder.ASCENDING);
 		Assert.assertEquals(30, age);
 	}
 	
 	@Test
 	public void writeRecordDesc() throws IOException {
-		byte[] bytes = encode("john", 30, schema_desc);
+		BinaryKey key = encode("john", 30, schema_desc);
 		
-		Assert.assertEquals(15, bytes.length);
+		Assert.assertEquals(19, key.getLength());
 		
-		// first 4 bytes is length of data written asc
+		byte[] bytes = key.getBuffer();
+		
+		// first 4 bytes is length of key written asc
 		int dataSize = Bytes.toInt(bytes, 0, SortOrder.ASCENDING);
 		Assert.assertEquals(11, dataSize);
+		
+		// next 4 bytes is group length (name)
+		int groupLength = Bytes.toInt(bytes, 4, SortOrder.ASCENDING);
+		Assert.assertEquals(6, groupLength);
 
 		// string tag
-		Assert.assertEquals(Types.STRING.desc(), bytes[4] & 0xff);
+		Assert.assertEquals(Types.STRING.desc(), bytes[8] & 0xff);
 		
 		// name desc
 		byte[] name = {
@@ -111,13 +124,13 @@ public class BinaryKeySerializationTests {
 			(byte) Bytes.UBYTE_MAX_VALUE - 'n',
 			(byte) Bytes.UBYTE_MAX_VALUE - Bytes.TERM };
 		
-		Assert.assertTrue(Bytes.compare(name, 0, 5, bytes, 5, 5) == 0);
+		Assert.assertTrue(Bytes.compare(name, 0, 5, bytes, 9, 5) == 0);
 		
 		// int tag 
-		Assert.assertEquals(Types.INT.desc(), bytes[10] & 0xff);
+		Assert.assertEquals(Types.INT.desc(), bytes[14] & 0xff);
 		
 		// age
-		int age = Bytes.toInt(bytes, 11, SortOrder.DESCENDING);
+		int age = Bytes.toInt(bytes, 15, SortOrder.DESCENDING);
 		Assert.assertEquals(30, age);
 	}
 	
@@ -125,19 +138,24 @@ public class BinaryKeySerializationTests {
 	public void compareAsc() throws IOException {
 		BinaryKeyComparator comparator = new BinaryKeyComparator();
 		
-		byte[] b1 = encode("john", 30, schema_asc);
-		byte[] b2 = encode("john", 31, schema_asc);
+		BinaryKey k1 = encode("john", 30, schema_asc);
+		BinaryKey k2 = encode("john", 31, schema_asc);
+		
+		byte[] b1 = k1.getBuffer();
+		byte[] b2 = k2.getBuffer();
+		int b1_length = k1.getLength();
+		int b2_length = k2.getLength();
 		
 		// b1 == b1
-		int result = comparator.compare(b1, 0, b1.length, b1, 0, b1.length);
+		int result = comparator.compare(b1, 0, b1_length, b1, 0, b1_length);
 		Assert.assertEquals(0, result);
 		
 		// b1 < b2
-		result = comparator.compare(b1, 0, b1.length, b2, 0, b2.length);
+		result = comparator.compare(b1, 0, b1_length, b2, 0, b2_length);
 		Assert.assertTrue(result < 0);
 		
 		// b2 > b1
-		result = comparator.compare(b2, 0, b2.length, b1, 0, b1.length);
+		result = comparator.compare(b2, 0, b2_length, b1, 0, b1_length);
 		Assert.assertTrue(result > 0);
 	}
 	
@@ -145,28 +163,40 @@ public class BinaryKeySerializationTests {
 	public void compareDesc() throws IOException {
 		BinaryKeyComparator comparator = new BinaryKeyComparator();
 		
-		byte[] b1 = encode("john", 30, schema_desc);
-		byte[] b2 = encode("john", 31, schema_desc);
+		BinaryKey k1 = encode("john", 30, schema_desc);
+		BinaryKey k2 = encode("john", 31, schema_desc);
+		
+		byte[] b1 = k1.getBuffer();
+		byte[] b2 = k2.getBuffer();
+		int b1_length = k1.getLength();
+		int b2_length = k2.getLength();
 		
 		// b1 == b1
-		int result = comparator.compare(b1, 0, b1.length, b1, 0, b1.length);
+		int result = comparator.compare(b1, 0, b1_length, b1, 0, b1_length);
 		Assert.assertEquals(0, result);
 		
 		// b1 > b2
-		result = comparator.compare(b1, 0, b1.length, b2, 0, b2.length);
+		result = comparator.compare(b1, 0, b1_length, b2, 0, b2_length);
 		Assert.assertTrue(result > 0);
 		
 		// b2 < b1
-		result = comparator.compare(b2, 0, b2.length, b1, 0, b1.length);
+		result = comparator.compare(b2, 0, b2_length, b1, 0, b1_length);
 		Assert.assertTrue(result < 0);
 	}
 	
 	@Test
 	public void readBinaryKey() throws IOException {
-		byte[] bytes = encode("john", 30, schema_asc);
-		BinaryKey key = decode(bytes); 
-		Assert.assertEquals(11, key.getLength());
-		Assert.assertEquals(11, key.getBuffer().length);
-		Assert.assertEquals(0, Bytes.compare(bytes, 4, 11, key.getBuffer(), 0, 11));
+		BinaryKey original = encode("john", 30, schema_asc);
+		BinaryKey key = decode(original.getBuffer());
+		
+		Assert.assertEquals(19, key.getLength());
+		
+		Assert.assertNotSame(key.getBuffer(), original.getBuffer());
+		Assert.assertEquals(0, Bytes.compare(
+				key.getBuffer(), 0, key.getLength(),
+				original.getBuffer(), 0, original.getLength()));
+		
+		Assert.assertEquals(11, key.keyBytesLength());
+		Assert.assertEquals(6, key.groupBytesLength());
 	}
 }

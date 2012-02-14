@@ -4,6 +4,7 @@ import java.io.File;
 
 import junit.framework.Assert;
 
+import org.apache.avro.Schema;
 import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RawLocalFileSystem;
@@ -24,6 +25,9 @@ import tap.util.TypeRef;
 
 public class TapfileRecordWriterTests {
     TypeRef<TestMsg> typeRef = new TypeRef<TestMsg>(TestMsg.class) {};
+
+    String fields = "\"fields\" : [ {\"name\" : \"name\", \"type\":\"string\"} ]";
+    Schema schema = Schema.parse("{\"name\":\"test\", \"type\":\"record\", "+ fields +"}");
     
     @Test
     public void testCanWriteAndReadBack() throws Exception {
@@ -42,8 +46,9 @@ public class TapfileRecordWriterTests {
             
             while(reader.next(binaryKey, writable)) {
                 count += 1;
-                
-                String key = Bytes.toString(binaryKey.getBuffer(), 0, SortOrder.ASCENDING);
+               
+                int offset = BinaryKey.KEY_BYTES_OFFSET + 1; // length, group length, string tag
+                String key = Bytes.toString(binaryKey.getBuffer(), offset, SortOrder.ASCENDING);
                 TestMsg msg = writable.get(); 
                 
                 Assert.assertEquals(Integer.toString(count), key);
@@ -64,14 +69,12 @@ public class TapfileRecordWriterTests {
     private void writeOneToFiveThousand(Path path) throws Exception {
         TapfileRecordWriter<TestMsg> writer = new TapfileRecordWriter<TestMsg>(new JobConf(), path, typeRef);
         
-        ReuseByteArrayOutputStream out = new ReuseByteArrayOutputStream(256);
-        
         BinaryKey key = new BinaryKey();
+        key.setSchema(schema);
+        
         BinaryWritable<TestMsg> writable = new ProtobufWritable<TestMsg>(typeRef);
         for(int i = 1; i <= 5000; ++i) {
-        	out.reset();
-        	Bytes.writeString(Integer.toString(i), out, SortOrder.ASCENDING);
-        	key.set(out.getBuffer(), out.getCount());
+        	key.setField("name", Integer.toString(i));
         	
             TestMsg message = TestMsg.newBuilder()
                     .setSize(i)

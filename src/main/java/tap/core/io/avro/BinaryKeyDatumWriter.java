@@ -3,6 +3,7 @@ package tap.core.io.avro;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import tap.core.io.BinaryKey;
 import tap.core.io.Bytes;
 import tap.core.io.ReuseByteArrayOutputStream;
 import tap.core.io.SortOrder; 
@@ -80,10 +81,14 @@ public class BinaryKeyDatumWriter<T> extends GenericDatumWriter<T>{
 		
 		EncodingStream stream = threadLocalStream.get();
 		stream.reset();
-		doWriteRecord(stream, record.getSchema(), record);
+		int groupLength = doWriteRecord(stream, record.getSchema(), record);
 
-		// write length to out
+		// write key length to out
 		Bytes.putInt(intbuf, 0, stream.count(), SortOrder.ASCENDING);
+		out.write(intbuf);
+		
+		// write group length
+		Bytes.putInt(intbuf, 0, groupLength, SortOrder.ASCENDING);
 		out.write(intbuf);
 		
 		// write buffer to out
@@ -94,28 +99,38 @@ public class BinaryKeyDatumWriter<T> extends GenericDatumWriter<T>{
 	protected void writeRecord(Schema schema, Object datum, Encoder out) throws IOException {
 		EncodingStream stream = threadLocalStream.get();
 		stream.reset();
-		doWriteRecord(stream, schema, datum);
+		int groupLength = doWriteRecord(stream, schema, datum);
 		
-		// write length to out
+		// write key length to out
 		Bytes.putInt(intbuf, 0, stream.count(), SortOrder.ASCENDING);
+		out.writeFixed(intbuf);
+		
+		// write group length
+		Bytes.putInt(intbuf, 0, groupLength, SortOrder.ASCENDING);
 		out.writeFixed(intbuf);
 		
 		// write buffer to out
 		out.writeFixed(stream.buffer(), 0, stream.count());
 	}
 	
-	private void doWriteRecord(EncodingStream stream, Schema schema, Object datum) throws IOException {
-		// write fields to buffer
+	private int doWriteRecord(EncodingStream stream, Schema schema, Object datum) throws IOException {
+		int groupLength = 0;
+		
 		for (Field f : schema.getFields()) {
 			Object value = data.getField(datum, f.name(), f.pos());
 			try {
 				stream.setSortOrder(
 					f.order() == Order.DESCENDING ? SortOrder.DESCENDING : SortOrder.ASCENDING);
 				write(f.schema(), value, stream);
+				boolean isSort = "true".equals(f.getProp("x-sort")); // set in Phase.groupAndSort
+				if(isSort == false) {
+					groupLength = stream.count();
+				}
 			} catch (NullPointerException e) {
 				throw npe(e, " in field "+f.name());
 			}
 		}		
+		return groupLength;
 	}
 	
 }
