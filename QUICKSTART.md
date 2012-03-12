@@ -20,5 +20,5 @@ hadoop fs -mkdir /tmp/inputs
 hadoop fs -put ../share/*.txt /tmp/inputs
 hadoop jar target/tap-samples-1.0-SNAPSHOT.jar tap.sample.WordCount -i /tmp/inputs -o /tmp/wcoutput
 
-hadoop fs -get /tmp/wcoutput/part-00000 .
-cat part-00000 .
+hadoop fs -get /tmp/wcoutput/part-00000.avro .
+
