@@ -2,6 +2,12 @@
 ## git clone "tutorial"
 # We will show you here how to get tap code from github, build it and run a wordcount sample
 # 
+## Pre-requisites
+#
+# 1. Apache Hadoop 1.0
+# 2. jackson-core-asl-1.5.2.jar AND jackson-mapper-asl-1.5.2.jar installed into $HADOOP_HOME/lib
+# 3. git command line program
+#
 
 mkdir tap_0.2.0
 git clone -b tap_0.2.0 git@github.com:tap-git/tap.git
