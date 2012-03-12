@@ -30,14 +30,9 @@ public class WordCount {
             return;
         }
 
-        /*
         wordcount.createPhase().reads(o.input).writes(o.output).map(Mapper.class).
             groupBy("word").reduce(Reducer.class);
-        */
-        // just to manually test sort ordering
-        wordcount.createPhase().reads(o.input).writes(o.output).map(WordMapper.class).
-            sortBy("word desc").reduce(WordReducer.class);
-        
+
         wordcount.make();
     }
 

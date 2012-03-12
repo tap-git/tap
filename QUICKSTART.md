@@ -7,7 +7,7 @@ mkdir tap_0.2.0
 git clone -b tap_0.2.0 git@github.com:tap-git/tap.git
 cd tap
 mvn clean install
-cd samples-phase-2
+cd samples
 mvn clean install
 
 hadoop fs -mkdir /tmp/inputs
