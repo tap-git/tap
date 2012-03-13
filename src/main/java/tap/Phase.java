@@ -111,7 +111,7 @@ public class Phase {
     private Class<? extends TapReducer> reducerClass;
 	private Class<? extends TapReducer> combiner;
 
-	private Class<?> identityMRClass;
+	private Class<?> identityMRClass;  //if phase uses the identity mapper or reducer (TapMapper, TapReducer), user must set the IN/OUT class
 	
 	
     private Object inputPipeProto;
@@ -121,6 +121,7 @@ public class Phase {
     private int phaseID = -1;
 
 	private Tap tap = null;
+	private boolean noReducer;
 
 	/**
      * default constructor hidden to encourage use of the Tap.createPhase.
@@ -574,6 +575,11 @@ public class Phase {
 	    //if no mapper has been specified, use the identity mapper
 	    if(mappers == null)
 	    {
+	    	if(identityMRClass == null)
+	    	{
+	    		errors.add(new PhaseError("phase.of(Class<?> must be called if no mapper is specified"));
+	    		return;
+	    	}
 	    	map(TapMapper.class);
 	    }
 
@@ -790,8 +796,16 @@ public class Phase {
 		
 		//if no reducer has been specified, use an identity reducer.
 		if(reducers == null)
+		{
+
+	    	if(identityMRClass == null)
+	    	{
+	    		errors.add(new PhaseError("phase.of(Class<?> must be called if no reducer is specified"));
+	    		return;
+	    	}
+	    	
 			reduce(TapReducer.class);
-		
+		}
 		if (reducers == null || reducers.length != 1) {
 			errors.add(new PhaseError(
 					"Tap Phase currently requires exactly one reducer per process: "
@@ -1021,6 +1035,12 @@ public class Phase {
             conf.setStrings("io.serializations",
                     serializations.toArray(new String[0]));
         }
+        
+        if(noReducer)
+        {
+        	conf.setNumReduceTasks(0);
+        }
+        
     }
   
     /**
@@ -1031,7 +1051,14 @@ public class Phase {
     JobConf getConf() {
         return this.conf;
     }
-
+    
+    public Phase setNoReducer()
+    {
+    	
+    	noReducer = true;
+    	return this;
+    }
+    
     PhaseError submit() {
         try {
             System.out.println("Submitting job:");
