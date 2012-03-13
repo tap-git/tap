@@ -111,6 +111,9 @@ public class Phase {
     private Class<? extends TapReducer> reducerClass;
 	private Class<? extends TapReducer> combiner;
 
+	private Class<?> identityMRClass;
+	
+	
     private Object inputPipeProto;
     private Class<?> mapOutPipeType;
     private Class<Pipe> reduceOutPipeType;
@@ -137,6 +140,13 @@ public class Phase {
     	return input(0);
     }
     
+	public Phase of(Class<?> identityMapperInputType)
+	{
+		this.identityMRClass = identityMapperInputType;
+		return this;
+	}
+	
+	
     Pipe input(int n) {
 	   if (mainReads == null) {
            // this *should* set up a promise to get the nth output ...
@@ -560,7 +570,14 @@ public class Phase {
 	 */
 	private void mapperPlan(List<PhaseError> errors) {
 	    mapperClass = null;
-	
+
+	    //if no mapper has been specified, use the identity mapper
+	    if(mappers == null)
+	    {
+	    	map(TapMapper.class);
+	    }
+
+	    
 	    if (mappers == null || mappers.length != 1) {
 	        errors.add(new PhaseError(
 	                "Tap Phase currently requires exactly one mapper per process: "
@@ -580,7 +597,27 @@ public class Phase {
 	 */
 	private void findMapperMethod(List<PhaseError> errors,
 			Class<? extends TapMapperInterface> mapperClass, String methodName) {
+		
 		try {
+		//no map class has been specified, so we use the identity mapper, class type set by user.
+		if(mapperClass.equals(TapMapper.class))
+		{
+			
+			this.mapInClass = this.identityMRClass;
+			this.mapOutPipeType = Pipe.class;
+			this.mapOutClass = this.identityMRClass;
+			Pipe inpipe = mainReads.get(0);
+			Object readProto = inpipe.getPrototype();
+			if (readProto == null || readProto == "") {
+				readProto = ObjectFactory.newInstance(mapInClass);
+				inpipe.setPrototype(readProto);
+			}
+			
+			this.mapinSchema = ReflectUtils.getSchema(readProto);
+			return;
+		}
+		
+	
 			mapinSchema = null;
 			mapOutClass = null;
 			mapInClass = null;
@@ -751,6 +788,10 @@ public class Phase {
 		reduceout = null;
 		reduceOutClass = null;
 		
+		//if no reducer has been specified, use an identity reducer.
+		if(reducers == null)
+			reduce(TapReducer.class);
+		
 		if (reducers == null || reducers.length != 1) {
 			errors.add(new PhaseError(
 					"Tap Phase currently requires exactly one reducer per process: "
@@ -809,6 +850,17 @@ public class Phase {
 			Class<? extends TapReducerInterface> reducerClass,
 			String methodName) {
 		Class<?> foundIn = null;
+		
+		
+		if(reducerClass == TapReducer.class)
+		{
+			this.reduceInClass = this.identityMRClass;
+			this.reduceOutPipeType = Pipe.class;
+			this.reduceOutClass = this.identityMRClass;
+			return null;
+			
+		}
+		
 		for (Method m : reducerClass.getMethods()) {
 			foundIn = m.getDeclaringClass();
 			if (methodName.equals(m.getName())
