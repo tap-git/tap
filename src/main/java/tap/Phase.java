@@ -29,10 +29,12 @@ import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.mapred.*;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.RawComparator;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 
 import tap.core.BinaryKeyComparator;
+import tap.core.BinaryKeyGroupComparator;
 import tap.core.CombinerBridge;
 import tap.core.MapperBridge;
 import tap.core.ReducerBridge;
@@ -946,6 +948,9 @@ public class Phase {
             AvroJob.setOutputMeta(conf, SORT_BY, sortBy);
         }
 
+        conf.setOutputValueGroupingComparator(BinaryKeyGroupComparator.class);
+        
+        
         conf.setMapOutputKeyClass(AvroKey.class);
         conf.setMapOutputValueClass(AvroValue.class);
         conf.setOutputKeyComparatorClass(BinaryKeyComparator.class);

@@ -49,7 +49,7 @@ public class BinaryKeyComparator extends Configured implements RawComparator<Avr
     			k2.getBuffer(), 0, k2.getLength());
     }
     
-    private int compareBinary(byte[] b1, int s1, int l1, byte[] b2, int s2, int l2) {
+    protected int compareBinary(byte[] b1, int s1, int l1, byte[] b2, int s2, int l2) {
     	s1 += BinaryKey.KEY_BYTES_OFFSET;
     	s2 += BinaryKey.KEY_BYTES_OFFSET;
     	l1 -= BinaryKey.KEY_BYTES_OFFSET;
