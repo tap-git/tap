@@ -22,6 +22,7 @@ package tap.core;
 import java.io.IOException;
 
 import org.apache.avro.mapred.*;
+import org.apache.avro.Schema;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.mapred.lib.MultipleOutputs;
@@ -32,6 +33,7 @@ import tap.TapReducer;
 import tap.core.io.BinaryKey;
 import tap.core.mapreduce.io.ProtobufWritable;
 import tap.core.mapreduce.output.TapfileOutputFormat;
+import tap.util.ReflectUtils;
 
 /**
  * Bridge between a {@link org.apache.hadoop.mapred.Reducer} and an {@link AvroReducer}.
@@ -81,10 +83,12 @@ public class ReducerBridge<V, OUT> extends BaseAvroReducer<V, OUT, AvroWrapper<O
         private OutputCollector originalCollector;
         private ProtobufWritable protobufWritable = new ProtobufWritable();
         private BinaryKey binaryKey;
-
+        
+       
         public ReduceCollector(OutputCollector<?, NullWritable> out, Reporter reporter) {
             this.originalCollector = out;
             this.reporter = reporter;
+          
         }
 
         @SuppressWarnings("unchecked")
@@ -95,8 +99,10 @@ public class ReducerBridge<V, OUT> extends BaseAvroReducer<V, OUT, AvroWrapper<O
                 if(datum != null)
                     protobufWritable.setConverter(datum.getClass());
                 protobufWritable.set(datum);
-                // TODO: out.collect(binaryKey, protobufWritable);
-                out.collect(NullWritable.get(), protobufWritable);
+                //nb, this binaryKey is the key into the reducer, if we are writing to a tapproto file we need a key
+                //that makes sense for the output type which may be different than the input type.
+                out.collect(binaryKey, protobufWritable);
+               // out.collect(NullWritable.get(), protobufWritable);
             }
             else {
                 wrapper.datum((OUT) datum);

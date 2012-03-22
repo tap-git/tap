@@ -9,3 +9,8 @@ message TestMsg {
     required string   	data = 2;       
 }
 
+message TestRecord {
+  optional string group = 1;
+  optional string extra = 2;
+  optional string subsort = 3;
+  }

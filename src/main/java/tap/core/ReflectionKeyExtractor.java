@@ -64,6 +64,8 @@ public class ReflectionKeyExtractor<OUT> implements KeyExtractor<BinaryKey, OUT>
 
     @Override
     public void setKey(OUT value, BinaryKey key) {
+    	//if you are setting key, set key.dirty...otherwise if it is a null key, dirty doesn't get set
+    	key.dirty();
         if (inFields.isEmpty() && inGetters.isEmpty()) {
             Class<?> inClass = value.getClass();
 

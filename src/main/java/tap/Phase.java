@@ -40,6 +40,8 @@ import tap.core.MapperBridge;
 import tap.core.ReducerBridge;
 import tap.core.TapMapperInterface;
 import tap.core.TapReducerInterface;
+import tap.core.io.BinaryKey;
+import tap.core.mapreduce.io.ProtobufWritable;
 import tap.formats.avro.AvroGroupPartitioner;
 import tap.formats.avro.BinaryKeyPartitioner;
 import tap.formats.avro.TapAvroSerialization;
@@ -141,12 +143,27 @@ public class Phase {
     	return input(0);
     }
     
+	/*
+	 * if there is no mapper and no reducer identifyMapperInputType is mapIN, mapOUT, reduceIN, reduceOUT
+	 * if there is no mapper then identityMapperInputType is mapIN (and necessarily mapOUT and reduceIN)
+	 * if there is no reducer, infer type from mapOUT
+	 */
+	
 	public Phase of(Class<?> identityMapperInputType)
 	{
 		this.identityMRClass = identityMapperInputType;
 		return this;
 	}
 	
+	public Boolean isMapOnly()
+	{
+		return noReducer;
+	}
+	
+	public void setMapOnly()
+	{
+		noReducer = true;
+	}
 	
     Pipe input(int n) {
 	   if (mainReads == null) {
@@ -507,13 +524,31 @@ public class Phase {
         List<PhaseError> errors = new ArrayList<PhaseError>();
         conf = new JobConf(tap.getConf());
  
+        /*
+         * we need to determine if it is a map-only phase.
+         * If there is no reducer and no groupBy or sortBy, it is a map only phase.
+         * If there is no reducer but there is a groupBy or sortBy use an identity mapper.
+         * If there is no mapper use an identity mapper.  
+         * If no mapper and no groupby or sortby...error.
+         */
+        
+        if(reducerClass == null && groupBy == null && sortBy == null) 
+        {
+        	setMapOnly();
+        }
+        
+        
         addParameters(errors);
         inputPlan(errors);
         outputPlan(errors);
         
         mapperPlan(errors);
-        combinersPlan(errors);
-        reducerPlan(errors);
+        if(!isMapOnly())
+        {
+        	combinersPlan(errors);
+        	reducerPlan(errors);
+        }
+        
         formatPlan(errors);
         mapOutPlan(errors);
 		syntaxCheck(errors);
@@ -575,6 +610,7 @@ public class Phase {
 	    //if no mapper has been specified, use the identity mapper
 	    if(mappers == null)
 	    {
+	    	//if there's also no reducer, then we have no way of knowing 
 	    	if(identityMRClass == null)
 	    	{
 	    		errors.add(new PhaseError("phase.of(Class<?> must be called if no mapper is specified"));
@@ -723,19 +759,34 @@ public class Phase {
         } else {
             Pipe output = mainWrites.get(0);
             AvroOutputFormat.setOutputPath(conf, new Path(output.getPath()));
-
-            if (output.getPrototype() != null) {
-                valueSchema = ReflectUtils.getSchema(output.getPrototype());
-                if (reduceout != null) {
-                    assert reduceout.equals(valueSchema); // should make an
+            if(isMapOnly())
+            {
+            	//check if mapOutClass is null
+            	
+            	try {
+					output.setPrototype(ObjectFactory.newInstance(mapOutClass));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            	valueSchema = ReflectUtils.getSchema(output.getPrototype());
+            }
+            else
+            {
+            	if (output.getPrototype() != null) {
+            		valueSchema = ReflectUtils.getSchema(output.getPrototype());
+            		if (reduceout != null) {
+            			assert reduceout.equals(valueSchema); // should make an
                                                           // error not assert
                                                           // this!
-                }
-            } else {
-                if (reduceout == null) {
+            		}
+            	} 
+            	else {
+            		if (reduceout == null) {
                     errors.add(new PhaseError("No output format defined"));
-                }
-                valueSchema = reduceout;
+            		}
+            		valueSchema = reduceout;
+            	}
             }
             output.setupOutput(conf);
             if (null != valueSchema) {
@@ -798,12 +849,14 @@ public class Phase {
 		if(reducers == null)
 		{
 
+			/*
+			 * no, infer this from the map out.
 	    	if(identityMRClass == null)
 	    	{
 	    		errors.add(new PhaseError("phase.of(Class<?> must be called if no reducer is specified"));
 	    		return;
 	    	}
-	    	
+	    	*/
 			reduce(TapReducer.class);
 		}
 		if (reducers == null || reducers.length != 1) {
@@ -868,9 +921,9 @@ public class Phase {
 		
 		if(reducerClass == TapReducer.class)
 		{
-			this.reduceInClass = this.identityMRClass;
+			this.reduceInClass = this.mapOutClass;
 			this.reduceOutPipeType = Pipe.class;
-			this.reduceOutClass = this.identityMRClass;
+			this.reduceOutClass = this.mapOutClass;
 			return null;
 			
 		}
@@ -942,6 +995,8 @@ public class Phase {
 			errors.add(new PhaseError("No map input defined"));
 		}
 		
+		if(!isMapOnly())
+		{
 		if (null == this.reducerClass) {
 			errors.add(new PhaseError("Missing Reducer class"));
 		}
@@ -961,10 +1016,12 @@ public class Phase {
 		if (mapOutClass != reduceInClass) {
 			errors.add(new PhaseError("Mis-match in Mapper OUT class and Reducer IN Class"));
 		}
-	
+		
 		if (groupBy == null && sortBy == null) {
 			errors.add(new PhaseError("No groupBy or sortBy defined"));
 		}
+		}
+		
 		return errors.size();
 	}
 
@@ -982,10 +1039,12 @@ public class Phase {
         conf.set(MAP_IN_CLASS, mapInClass.getName());
         conf.set(MAP_OUT_CLASS, mapOutClass.getName());
         
-        conf.set(REDUCER_OUT_PIPE_CLASS, this.reduceOutPipeType.getName());
-        conf.set(REDUCER, reducerClass.getName());
-		conf.set(REDUCE_OUT_CLASS, reduceOutClass.getName());
-		
+        if(!isMapOnly())
+        {
+        	conf.set(REDUCER_OUT_PIPE_CLASS, this.reduceOutPipeType.getName());
+        	conf.set(REDUCER, reducerClass.getName());
+        	conf.set(REDUCE_OUT_CLASS, reduceOutClass.getName());
+        }
 		//Combiner is Optional
 		if (null != combiner) {
 	        conf.set(COMBINER, combiner.getName());
@@ -994,6 +1053,7 @@ public class Phase {
 		
         conf.set(AvroJob.INPUT_SCHEMA, ReflectUtils.getSchema(inputPipeProto).toString());
         conf.set(AvroJob.INPUT_SCHEMA, mapinSchema.toString());
+        
         conf.set(MAP_OUT_VALUE_SCHEMA, mapValueSchema.toString());
         conf.set(MAP_OUT_KEY_SCHEMA, groupAndSort(mapValueSchema, groupBy, sortBy)
                 .toString());
@@ -1017,8 +1077,27 @@ public class Phase {
         conf.setOutputValueGroupingComparator(BinaryKeyGroupComparator.class);
         
         
-        conf.setMapOutputKeyClass(AvroKey.class);
-        conf.setMapOutputValueClass(AvroValue.class);
+        /*
+         * if it is a map only phase and the output is a protobuf Message we need to set the 
+         * MapOutputKeyClass and MapOutputValueClass to BinaryKey and ProtobufWritable respectively.
+         * Alternatively, we could change TapFileRecordWriter class that would read AvroKey and AvroValues,
+         * but at the cost of losing native protobuf support.  NB if it is not a map only job, the output from the mapper is in avro format and we don't
+         * need to set the classes to BinaryKey and ProtobufWritable.
+         */
+        if(isMapOnly() &&  output().getPrototype() instanceof com.google.protobuf.Message)
+        {
+
+            conf.setMapOutputKeyClass(BinaryKey.class);
+            conf.setMapOutputValueClass(ProtobufWritable.class);
+        }
+        
+        else
+        {
+        	conf.setMapOutputKeyClass(AvroKey.class);
+            conf.setMapOutputValueClass(AvroValue.class);
+        }
+        
+        
         conf.setOutputKeyComparatorClass(BinaryKeyComparator.class);
 
         conf.setMapperClass(MapperBridge.class);
@@ -1052,13 +1131,7 @@ public class Phase {
         return this.conf;
     }
     
-    public Phase setNoReducer()
-    {
-    	
-    	noReducer = true;
-    	return this;
-    }
-    
+   
     PhaseError submit() {
         try {
             System.out.println("Submitting job:");

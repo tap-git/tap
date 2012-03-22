@@ -56,6 +56,12 @@ public class BinaryKey {
 		dirty = true;
 	}
 	
+	public void dirty()
+	{
+		dirty=true;
+	}
+	
+	
 	private void serializeIfNecessary() {
 		if(dirty == false)
 			return;
