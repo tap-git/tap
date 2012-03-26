@@ -19,6 +19,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import tap.formats.tapproto.Tapfile.IndexEntry;
+import tap.util.Protobufs;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedInputStream;
@@ -65,6 +66,9 @@ public class TapfileTests {
         Assert.assertEquals(5000, trailer.getMessageCount());
         
         System.out.println(trailer);
+      
+        Class t = Class.forName("tap.formats.tapproto.Testmsg$TestMsg");
+        
         
         // read index
         channel.position(trailer.getIndexOffset());
@@ -83,7 +87,7 @@ public class TapfileTests {
             limit = idx.pushLimit(idx.readRawVarint32());
             Tapfile.IndexEntry entry = Tapfile.IndexEntry.parseFrom(idx);
             idx.popLimit(limit);
-            System.out.println(entry);
+          
 
             int messageCount = entry.getMessageCount();
             // read data block
@@ -98,6 +102,7 @@ public class TapfileTests {
                 byte[] keyBytes = dataStream.readRawBytes(size);
                 limit = dataStream.pushLimit(dataStream.readRawVarint32());
                 Testmsg.TestMsg msg = Testmsg.TestMsg.parseFrom(dataStream);
+              
                 dataStream.popLimit(limit);
                 totalMessagesRead += 1;
             }

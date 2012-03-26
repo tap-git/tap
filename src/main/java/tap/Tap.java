@@ -19,17 +19,20 @@
  */
 package tap;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.*;
 
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
 
 import tap.core.InfeasiblePlanException;
 import tap.core.PipePlan;
 import tap.core.TapAlerter;
 import tap.core.TapInterface;
+import tap.core.mapreduce.input.TapfileRecordReader;
 import tap.util.TapAlerterInterface;
 
 public class Tap implements TapInterface {
@@ -137,6 +140,8 @@ public class Tap implements TapInterface {
     public int getParallelPhases() {
         return parallelPhases;
     }
+    
+    
 
     /**
      * Runs the plan from the Tap interface
@@ -435,8 +440,25 @@ public class Tap implements TapInterface {
 	 * Open file, assign to pipe, pipe will return an Iterator
 	 */
 	@Override
-	public Pipe subscribe(String URI) {
-		return null;
+	public  Pipe subscribe(String URI) {
+		TapfileRecordReader reader;
+		Path path;
+		try {
+			path = new Path(URI);
+			reader = new TapfileRecordReader(getConf(), new Path(URI));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		Pipe pipe = new Pipe(URI);  //don't really need to pass this in.
+		pipe.setRecordReader(reader);
+		System.out.println(path.getName());
+		return pipe;
+			
 	}
+	
+	
+	
 
 }

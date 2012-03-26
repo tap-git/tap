@@ -22,6 +22,8 @@ import tap.core.mapreduce.io.BinaryWritable;
 import tap.core.mapreduce.io.ProtobufConverter;
 import tap.core.mapreduce.io.ProtobufWritable;
 import tap.formats.tapproto.Tapfile;
+import tap.formats.tapproto.Testmsg.TestRecord;
+import tap.util.Protobufs;
 import tap.util.TypeRef;
 
 import com.google.protobuf.CodedInputStream;
@@ -49,6 +51,24 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Bina
         FileSystem fs = file.getFileSystem(job);
         FileStatus status = fs.getFileStatus(file);
         initialize(fs.open(file), status.getLen(), typeRef);
+    }
+    
+    //for tap.subscribe, need to determine the TypeRef from the file
+    public TapfileRecordReader(Configuration job, Path file) throws IOException {
+    	FileSystem fs = file.getFileSystem(job);
+        FileStatus status = fs.getFileStatus(file);
+        this.inputStream = fs.open(file);
+        this.totalSize = status.getLen();
+        readTrailer(totalSize);
+        Class<? extends Message> message = Protobufs.getProtobufClass(trailer.getMessageName());
+        //message is a class e.g., 
+        TypeRef typeRef = new TypeRef(message){}; 
+        this.converter = ProtobufConverter.newInstance(typeRef);
+        this.key = new BinaryKey();
+        this.value = new ProtobufWritable<M>(typeRef);
+        readIndexEntries();
+        moveToNextDataBlock();
+        
     }
     
     private void initialize(FSDataInputStream inputStream, long size, TypeRef<M> typeRef) throws IOException {
@@ -158,6 +178,22 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Bina
 
         return true;
     }
+    
+    //to implement subscribe
+    public boolean hasNext() 
+    {
+    	try {
+			if(messageCount <=0 && !moveToNextDataBlock())
+				return false;
+			else
+				return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+    }
+    
     
     private static void assertEquals(String expected, byte[] bytes) throws IOException {
         if(!expected.equals(new String(bytes, "ASCII")))

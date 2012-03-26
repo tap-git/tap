@@ -21,6 +21,9 @@ package tap;
 
 import tap.compression.Compressions;
 import tap.core.TapContext;
+import tap.core.io.BinaryKey;
+import tap.core.mapreduce.input.TapfileRecordReader;
+import tap.core.mapreduce.io.BinaryWritable;
 import tap.formats.*;
 import tap.util.ObjectFactory;
 
@@ -46,6 +49,14 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     protected boolean isCompressed = false;
     boolean isTempfile = false;
     private DFSStat stat;
+    
+    //to support subscribe API
+    boolean isDirectFileAccess = false;
+    TapfileRecordReader recordReader = null;
+	BinaryKey binaryKey = null; 
+    BinaryWritable writable = null; 
+
+    
     // Pipe's reference to the job configuration
     Configuration conf = null;
 
@@ -89,6 +100,8 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     	}
     	this.conf = conf;
     }
+    
+   
     
     /**
      * 
@@ -146,6 +159,17 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 		}
 		return true; // needs more work!
 
+	}
+	
+	//for subscribe
+	
+	public void setRecordReader(TapfileRecordReader reader)
+	{
+		this.recordReader = reader;
+		isDirectFileAccess = true;
+		binaryKey = reader.createKey();
+        writable = reader.createValue();
+    
 	}
 
     /**
@@ -325,7 +349,14 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     }
 
 	public boolean hasNext() {
-        return this.values.hasNext();
+		if(isDirectFileAccess)
+		{
+			return recordReader.hasNext();
+		}
+		else
+		{
+			return this.values.hasNext();
+		}
     }
 
     public Iterator<T> iterator() {
@@ -343,8 +374,25 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
      * @return Object value
      */
     public T next() {
-        T val = this.values.next().datum();
-        return (T) val;
+    	if(isDirectFileAccess)
+    	{
+    		try {
+				recordReader.next(binaryKey, writable);
+				return (T) writable.get();  //is there anyway to get the type?
+			}
+    		catch (IOException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return (T) null;
+			}
+    	}
+    	else
+    	{
+    		T val = this.values.next().datum();
+    		return (T) val;
+    	}
+		
     }
 
     /**
