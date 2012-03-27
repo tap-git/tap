@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import tap.*;
 import tap.core.MapOnlyTest.Record1;
+import tap.formats.tapproto.Testmsg;
 
 public class GroupingAndSortingTests {
 
@@ -31,7 +32,7 @@ public class GroupingAndSortingTests {
 	
 	@Test
 	public void Test2() {
-		String[] args = {"GroupingAndSortingTest1", "-i", "share/test_data2.avro", "-o", "/tmp/out", "-f"};
+		String[] args = {"GroupingAndSortingTest2", "-i", "share/test_data2.avro", "-o", "/tmp/out", "-f"};
 		CommandOptions o = new CommandOptions(args);
 		Tap tap = new Tap(o).named(o.program);
 		
@@ -52,16 +53,35 @@ public class GroupingAndSortingTests {
 	
 	@Test
 	public void Test3() {
-		String[] args = {"GroupingAndSortingTest2", "-i", "share/test_data2.avro", "-o", "/tmp/out", "-f"};
+		String[] args = {"GroupingAndSortingTest3", "-i", "share/test_data2.avro", "-o", "/tmp/out", "-f"};
 		CommandOptions o = new CommandOptions(args);
 		Tap tap = new Tap(o).named(o.program);
 		
-		Phase phase1 = tap.createPhase().of(Record.class).reads(o.input).reduce(Reducer.class).groupBy("group, extra");
+		Phase phase1 = tap.createPhase().of(Record.class).reads(o.input).reduce(Reducer.class).sortBy("group, extra, subsort").groupBy("group");
 		
 		int rc = tap.make();
 		
 		Assert.assertEquals(0, rc);
         File f = new File(o.output+"/part-00000.avro");
+        System.out.println(f.length());
+        Assert.assertTrue(f.exists());
+        //should compare against pre-defined output.
+
+		
+	}
+	
+	@Test
+	public void Test4() {
+		String[] args = {"GroupingAndSortingTest4", "-i", "share/test_data.tapproto", "-o", "/tmp/out", "-f"};
+		CommandOptions o = new CommandOptions(args);
+		Tap tap = new Tap(o).named(o.program);
+		
+		Phase phase1 = tap.createPhase().of(Testmsg.TestRecord.class).reads(o.input).reduce(Reducer2.class).groupBy("group, extra").sortBy("subsort");
+		
+		int rc = tap.make();
+		
+		Assert.assertEquals(0, rc);
+        File f = new File(o.output+"/part-00000.tapproto");
         System.out.println(f.length());
         Assert.assertTrue(f.exists());
         //should compare against pre-defined output.
@@ -98,9 +118,21 @@ public class GroupingAndSortingTests {
 				
 			}
 			out.put(outrec);
-			//System.out.println(outrec.group + " " + outrec.total);
+			System.out.println(outrec.group + " " + outrec.total);
 		}
 	}
 	
+	
+	public static class Reducer2 extends TapReducer<Testmsg.TestRecord, Testmsg.TestRecord>
+	{
+		public void reduce(Pipe<Testmsg.TestRecord> in, Pipe<Testmsg.TestRecord> out)
+		{
+			//System.out.println("**************");
+			for(Testmsg.TestRecord rec : in)
+			{
+				//System.out.println(rec.getGroup() + " " + rec.getExtra() + " " + rec.getSubsort());
+			}
+		}
+	}
 	
 }
