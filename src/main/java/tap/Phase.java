@@ -610,7 +610,7 @@ public class Phase {
 	    //if no mapper has been specified, use the identity mapper
 	    if(mappers == null)
 	    {
-	    	//if there's also no reducer, then we have no way of knowing 
+	    	//if there's not mapper, must specifiy the input class.
 	    	if(identityMRClass == null)
 	    	{
 	    		errors.add(new PhaseError("phase.of(Class<?> must be called if no mapper is specified"));
