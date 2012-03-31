@@ -11,6 +11,7 @@ import tap.formats.tapproto.Testmsg;
 
 public class GroupingAndSortingTests {
 
+	/*
 	@Test
 	public void Test1() {
 		String[] args = {"GroupingAndSortingTest1", "-i", "share/test_data2.avro", "-o", "/tmp/out", "-f"};
@@ -88,6 +89,29 @@ public class GroupingAndSortingTests {
 
 		
 	}
+	*/
+	
+	@Test
+	/*
+	 * nb can not put enums in the key for now
+	 */
+	public void Test5() {
+		String[] args = {"GroupingAndSortingTest5", "-i", "share/securities_data.tapproto", "-o", "/tmp/out", "-f"};
+		CommandOptions o = new CommandOptions(args);
+		Tap tap = new Tap(o).named(o.program);
+		
+		Phase phase1 = tap.createPhase().of(Testmsg.SecuritiesRecord.class).reads(o.input).reduce(Reducer3.class).sortBy("timestamp, exchange, id");
+		
+		int rc = tap.make();
+		
+		Assert.assertEquals(0, rc);
+        File f = new File(o.output+"/part-00000.tapproto");
+        System.out.println(f.length());
+        Assert.assertTrue(f.exists());
+        //should compare against pre-defined output.
+
+		
+	}
 	
 	
 	public static class Record {
@@ -133,6 +157,21 @@ public class GroupingAndSortingTests {
 				//System.out.println(rec.getGroup() + " " + rec.getExtra() + " " + rec.getSubsort());
 			}
 		}
+	}
+	
+	
+	public static class Reducer3 extends  TapReducer<Testmsg.SecuritiesRecord, Testmsg.SecuritiesRecord>
+	{
+		public void reduce(Pipe<Testmsg.SecuritiesRecord> in, Pipe<Testmsg.SecuritiesRecord> out)
+		{
+			for(Testmsg.SecuritiesRecord rec : in)
+			{
+				//System.out.println(rec.getTimestamp() + " " + rec.getExchange() + " " + rec.getId() + " " + rec.getDesc() + " " + rec.getStrike() + " " + 
+			//rec.getExpiry());
+				
+			}
+		}
+		
 	}
 	
 }
