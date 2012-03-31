@@ -20,6 +20,7 @@
 package tap;
 
 import tap.compression.Compressions;
+import tap.core.InfeasiblePlanException;
 import tap.core.TapContext;
 import tap.core.io.BinaryKey;
 import tap.core.mapreduce.input.TapfileRecordReader;
@@ -27,12 +28,16 @@ import tap.core.mapreduce.io.BinaryWritable;
 import tap.formats.*;
 import tap.util.ObjectFactory;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.avro.mapred.AvroValue;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
 
 @SuppressWarnings("deprecation")
@@ -461,11 +466,117 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     public T getPrototype() {
         return prototype;
     }
+    
+    public void setPrototypeForMapperInput(T prototype) throws IOException, IllegalArgumentException, InfeasiblePlanException {
+    	Formats sniffedFileFormat;
+    	
+    	if(path == null)
+    		throw new IllegalArgumentException("specify file or directory for mapper before setting prototype");
+    
+    	Path p = new Path(path);
+    	
+    	if(isSingleDir())
+    	{
+      		FileSystem f = FileSystem.get(getConf());
+			FileStatus[] status = f.listStatus(p);
+			if(status.length == 0)  //directory is empty
+    		{	this.prototype = prototype;
+    			return;
+    		}
+    		else //read the first file in directory
+    		{
+    			p = status[0].getPath();
+    			if(p.getName().equals("_SUCCESS"))
+    			{
+    				if(status.length == 1)  //directory is empty except for _SUCCESS file
+    				{
+    					this.prototype = prototype;
+    					return;
+    				}
+    				else
+    				{
+    					p = status[1].getPath();
+    				}
+    			}
+    		}
+			
+    	}
+    	
+    	try {
+    		sniffedFileFormat = sniffFileFormat(p);
+    	}
+    	
+    	catch(Exception e)
+    	{
+    		throw new InfeasiblePlanException(e.getMessage());
+    	}
+    	
+    	if(format != sniffedFileFormat) 
+    	{
+    		//alert user?
+    		//override file extension
+    		format = sniffedFileFormat;
+    	}
+    	
+    	
+    	
+    	if(format.getFileFormat().instanceOfCheck(prototype))
+		{
+			//can do additional checking i.e., read file to make sure it matches it file extension, make sure it contains the correct objects.
+			this.prototype = prototype;
+		}
+		else
+		{
+			
+			throw new InfeasiblePlanException("Pipe prototype and file type are not compatible");
+		}
+    	
+    			
+    	
+    	
+    }
+    
+    
+    private Formats sniffFileFormat(Path path) throws IOException, FileNotFoundException {
+
+    	byte[] header;
+    	
+    	
+    	FileSystem fs = path.getFileSystem(this.getConf());
+    	
+    	FSDataInputStream in = null;
+    	try {
+    		in = fs.open(path);
+    		header = new byte[1000];
+    		in.read(header);
+    		in.close();
+    		
+    	} finally {
+    		if(in != null)
+    			in.close();
+    	}
+    	return determineFileFormat(header);
+    	
+}
+
+
+private Formats determineFileFormat(byte[] header) {
+    for (Formats format : Formats.values()) {
+        if (format.getFileFormat().signature(header)) {
+            return format;
+
+        }
+    }
+    return Formats.UNKNOWN_FORMAT;
+}
+
 
     public void setPrototype(T prototype) {
-    	if (null == prototype) {
+    	
+    	if (prototype == null) {
     		return;
     	}
+    	
     	this.prototype = prototype;
         init();
     }
@@ -490,26 +601,20 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
         this.path = path;
     }
 
-    protected void determineFormat() {
-/*
-        if (this.prototype != null
-                && this.prototype instanceof com.google.protobuf.Message) {
-            this.protoFormat();
-            return;
-        }
-*/
+    protected Formats determineFormat() {
+
+  
+    	
         for (Formats f : Formats.values()) {
             FileFormat fileFormat = f.getFileFormat();
             if (fileFormat.matches(this)) {
-                this.setFormat(f);
-                break;
+                return f;
             }
         }
-        // set default
-        if (this.getFormat().equals(Formats.UNKNOWN_FORMAT)) {
-            // open file, read first couple lines
-            // this.setFormat(Formats.AVRO_FORMAT);
-        }
+        
+        return Formats.UNKNOWN_FORMAT;
+        
+    
     }
 
     /**
@@ -541,6 +646,8 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
 
     protected void init() {
         determineCompression();
-        determineFormat();
+        Formats format = determineFormat();
+        setFormat(format);
+        
     }
 }
