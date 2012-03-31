@@ -36,6 +36,7 @@ import org.apache.hadoop.mapred.JobConf;
 import tap.core.BinaryKeyComparator;
 import tap.core.BinaryKeyGroupComparator;
 import tap.core.CombinerBridge;
+import tap.core.InfeasiblePlanException;
 import tap.core.MapperBridge;
 import tap.core.ReducerBridge;
 import tap.core.TapMapperInterface;
@@ -551,6 +552,7 @@ public class Phase {
         
         formatPlan(errors);
         mapOutPlan(errors);
+        //check file here?
 		syntaxCheck(errors);
 		if (0 == errors.size()) {
 			configurationSetup(errors);
@@ -652,14 +654,13 @@ public class Phase {
 			Object readProto = inpipe.getPrototype();
 			if (readProto == null || readProto == "") {
 				readProto = ObjectFactory.newInstance(mapInClass);
-				inpipe.setPrototype(readProto);
+				inpipe.setPrototypeForMapperInput(readProto);
+				
 			}
 			
 			this.mapinSchema = ReflectUtils.getSchema(readProto);
 			return;
 		}
-		
-	
 			mapinSchema = null;
 			mapOutClass = null;
 			mapInClass = null;
@@ -690,16 +691,15 @@ public class Phase {
 						Object readProto = inpipe.getPrototype();
 						if (readProto == null || readProto == "") {
 							readProto = ObjectFactory.newInstance(mapInClass);
-							inpipe.setPrototype(readProto);
-						}
-						
+							inpipe.setPrototypeForMapperInput(readProto);
+							}
 						this.mapinSchema = ReflectUtils.getSchema(readProto);
 						break;
 					}
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			errors.add(new PhaseError(e.getMessage()));
 		}
 	}
@@ -881,12 +881,18 @@ public class Phase {
 				reduceOutProto = ObjectFactory.newInstance(reduceOutClass);
 				Object fileProto = mainWrites.get(0).getPrototype();
 				if (fileProto == null) {
+					try {
 					mainWrites.get(0).setPrototype(reduceOutProto); // store
 																	// output
 																	// type
 																	// inferred
 																	// from
 																	// input
+					}
+					catch(InfeasiblePlanException ifp) {
+						errors.add(new PhaseError(ifp.getMessage()));
+						return;
+					}
 				} else if (fileProto.getClass() != reduceOutClass) {
 					errors.add(new PhaseError(
 							"Inconsistency in reducer output classes: "
