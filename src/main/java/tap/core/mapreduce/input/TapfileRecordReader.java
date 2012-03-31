@@ -2,6 +2,7 @@ package tap.core.mapreduce.input;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import tap.core.io.BinaryKey;
 import tap.core.mapreduce.io.BinaryWritable;
 import tap.core.mapreduce.io.ProtobufConverter;
 import tap.core.mapreduce.io.ProtobufWritable;
+import tap.formats.Formats;
 import tap.formats.tapproto.Tapfile;
 import tap.formats.tapproto.Testmsg.TestRecord;
 import tap.util.Protobufs;
@@ -50,6 +52,13 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Bina
     public TapfileRecordReader(Configuration job, Path file, TypeRef<M> typeRef) throws IOException {
         FileSystem fs = file.getFileSystem(job);
         FileStatus status = fs.getFileStatus(file);
+        //late binding file format check
+        
+        Formats fileFormat = sniffFileFormat(fs, file);
+        if(fileFormat != Formats.TAPPROTO_FORMAT)
+        	throw new IOException("Tried to read a " + fileFormat.toString() + " .  Expecting tapproto.");
+        
+        
         initialize(fs.open(file), status.getLen(), typeRef);
     }
     
@@ -72,6 +81,7 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Bina
     }
     
     private void initialize(FSDataInputStream inputStream, long size, TypeRef<M> typeRef) throws IOException {
+    	
         this.inputStream = inputStream;
         this.totalSize = size;
         this.converter = ProtobufConverter.newInstance(typeRef);
@@ -82,6 +92,36 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Bina
         moveToNextDataBlock();
     }
     
+    
+    private Formats sniffFileFormat(FileSystem fs, Path path) throws IOException, FileNotFoundException {
+
+    	byte[] header;
+    	FSDataInputStream in = null;
+    	try {
+    		in = fs.open(path);
+    		header = new byte[1000];
+    		in.read(header);
+    		in.close();
+    		
+    	} finally {
+    		if(in != null)
+    			in.close();
+    	}
+    	return determineFileFormat(header);
+    	
+}
+
+
+private Formats determineFileFormat(byte[] header) {
+    for (Formats format : Formats.values()) {
+        if (format.getFileFormat().signature(header)) {
+            return format;
+
+        }
+    }
+    return Formats.UNKNOWN_FORMAT;
+}
+
     private Boolean moveToNextDataBlock() throws IOException {
         if(++currentIndex >= indexEntries.size()) {
             messageCount = 0;
