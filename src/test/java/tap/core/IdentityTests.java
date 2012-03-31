@@ -19,6 +19,7 @@ import tap.Pipe;
 import tap.Tap;
 import tap.TapMapper;
 import tap.TapReducer;
+import tap.formats.tapproto.Testmsg;
 
 
 public class IdentityTests {
