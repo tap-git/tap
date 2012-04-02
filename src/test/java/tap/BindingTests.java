@@ -243,14 +243,21 @@ public class BindingTests {
 		String args[] = { "BindingTests.directoryTest", "-i",
 				"share/multi/01", "-o", "/tmp/TapTestsOutput4", "--force" };
 	
-		Tap tap = new Tap(new CommandOptions(args));
-		tap.createPhase().map(WordCountMapper.class).groupBy("word")
-				.reduce(WordCountReducer.class);
+		CommandOptions o = new CommandOptions(args);
+		Tap tap = new Tap(o);
+		tap.createPhase().map(WordCountMapper.class).reads(o.input).groupBy("word")
+				.reduce(WordCountReducer.class).writes(o.output);
 	
 		// to automatically trap Hadoop exceptions
 		tap.alerter(new TapUnitTestAlerter());
 	
-		tap.make();
+		
+		
+		int rc = tap.make();
+		
+		Assert.assertEquals(0, rc);
+        File f = new File(o.output+"/part-00000.avro");
+        Assert.assertTrue(f.exists());
 	}
 	
 	@Test
