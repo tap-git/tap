@@ -135,7 +135,7 @@ public class PhaseTests {
         /* Set up a basic pipeline of map reduce */
         Tap assembly = new Tap(o).named("mapperTest");
 
-        Pipe<CountRec> p1 = new Pipe("share/wordcount.out.avro");
+        Pipe<CountRec> p1 = new Pipe("share/decameron.txt");
         Pipe<OutputLog> p2 = new Pipe("/tmp/out");
         assembly.produces(p2);
 
