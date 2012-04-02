@@ -11,7 +11,6 @@ import tap.formats.tapproto.Testmsg;
 
 public class GroupingAndSortingTests {
 
-	/*
 	@Test
 	public void Test1() {
 		String[] args = {"GroupingAndSortingTest1", "-i", "share/test_data2.avro", "-o", "/tmp/out", "-f"};
@@ -19,15 +18,16 @@ public class GroupingAndSortingTests {
 		Tap tap = new Tap(o).named(o.program);
 		
 		Phase phase1 = tap.createPhase().of(Record.class).reads(o.input).sortBy("group, extra, subsort");
-		
 		int rc = tap.make();
-		
 		Assert.assertEquals(0, rc);
-        File f = new File(o.output+"/part-00000.avro");
-        System.out.println(f.length());
-        Assert.assertTrue(f.exists());
-        //should compare against pre-defined output.
-
+        File f1 = new File(o.output+"/part-00000.avro");
+        File f2 = new File("share/results/sortby_group_extra_subsort.avro");
+        Assert.assertTrue(f1.exists());
+       
+       //file compare doesn't work for avro files...date? 
+       // Assert.assertTrue(f2.exists());
+       // Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
+        
 		
 	}
 	
@@ -40,13 +40,12 @@ public class GroupingAndSortingTests {
 		Phase phase1 = tap.createPhase().of(Record.class).reads(o.input).groupBy("group").sortBy("extra, subsort");
 		
 		int rc = tap.make();
-		
 		Assert.assertEquals(0, rc);
-        File f = new File(o.output+"/part-00000.avro");
-        System.out.println(f.length());
-        Assert.assertTrue(f.exists());
-        //should compare against pre-defined output.
-
+		 File f1 = new File(o.output+"/part-00000.avro");
+	     File f2 = new File("share/results/sortby_group_extra_subsort.avro");
+	     Assert.assertTrue(f1.exists());
+	    // Assert.assertTrue(f2.exists());
+	    // Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
 		
 	}
 	
@@ -61,13 +60,12 @@ public class GroupingAndSortingTests {
 		Phase phase1 = tap.createPhase().of(Record.class).reads(o.input).reduce(Reducer.class).sortBy("group, extra, subsort").groupBy("group");
 		
 		int rc = tap.make();
-		
 		Assert.assertEquals(0, rc);
-        File f = new File(o.output+"/part-00000.avro");
-        System.out.println(f.length());
-        Assert.assertTrue(f.exists());
-        //should compare against pre-defined output.
-
+		 File f1 = new File(o.output+"/part-00000.avro");
+	     File f2 = new File("share/results/summation_on_group.avro");
+	     Assert.assertTrue(f1.exists());
+	   //  Assert.assertTrue(f2.exists());
+	   //  Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
 		
 	}
 	
@@ -77,41 +75,105 @@ public class GroupingAndSortingTests {
 		CommandOptions o = new CommandOptions(args);
 		Tap tap = new Tap(o).named(o.program);
 		
-		Phase phase1 = tap.createPhase().of(Testmsg.TestRecord.class).reads(o.input).reduce(Reducer2.class).groupBy("group, extra").sortBy("subsort");
+		Phase phase1 = tap.createPhase().of(Testmsg.TestRecord.class).reads(o.input).reduce(Reducer2.class).groupBy("group, extra");
 		
 		int rc = tap.make();
-		
 		Assert.assertEquals(0, rc);
-        File f = new File(o.output+"/part-00000.tapproto");
-        System.out.println(f.length());
-        Assert.assertTrue(f.exists());
-        //should compare against pre-defined output.
 
+		 File f1 = new File(o.output+"/part-00000.tapproto");
+	     File f2 = new File("share/results/groupby_group_extra.tapproto");
+	     Assert.assertTrue(f1.exists());
+	     Assert.assertTrue(f2.exists());
+	     Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
 		
 	}
-	*/
 	
+
 	@Test
-	/*
-	 * nb can not put enums in the key for now
-	 */
 	public void Test5() {
 		String[] args = {"GroupingAndSortingTest5", "-i", "share/securities_data.tapproto", "-o", "/tmp/out", "-f"};
 		CommandOptions o = new CommandOptions(args);
 		Tap tap = new Tap(o).named(o.program);
 		
-		Phase phase1 = tap.createPhase().of(Testmsg.SecuritiesRecord.class).reads(o.input).reduce(Reducer3.class).sortBy("timestamp, exchange, id");
+		Phase phase1 = tap.createPhase().of(Testmsg.SecuritiesRecord.class).reads(o.input).reduce(Reducer3.class).sortBy("timestamp desc");
 		
 		int rc = tap.make();
 		
 		Assert.assertEquals(0, rc);
-        File f = new File(o.output+"/part-00000.tapproto");
-        System.out.println(f.length());
-        Assert.assertTrue(f.exists());
-        //should compare against pre-defined output.
+        File f1 = new File(o.output+"/part-00000.tapproto");
+        File f2 = new File("share/results/sortby_timestamp_desc.tapproto");
+        Assert.assertTrue(f1.exists());
+        Assert.assertTrue(f2.exists());
+        Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
+    
+     
+		
+	}
+	
+	@Test
+	public void Test6() {
+		String[] args = {"GroupingAndSortingTest5", "-i", "share/securities_data.tapproto", "-o", "/tmp/out", "-f"};
+		CommandOptions o = new CommandOptions(args);
+		Tap tap = new Tap(o).named(o.program);
+		
+		Phase phase1 = tap.createPhase().of(Testmsg.SecuritiesRecord.class).reads(o.input).reduce(Reducer3.class).groupBy("exchange").sortBy("id, timestamp");
+		
+		int rc = tap.make();
+		
+		Assert.assertEquals(0, rc);
+     
+		File f1 = new File(o.output+"/part-00000.tapproto");
+        File f2 = new File("share/results/groupby_exchange_sortby_id_timestamp.tapproto");
+        Assert.assertTrue(f1.exists());
+        Assert.assertTrue(f2.exists());
+        Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
+    
+       
+       
 
 		
 	}
+	
+	
+	@Test
+		public void Test7() {
+			String[] args = {"GroupingAndSortingTest5", "-i", "share/securities_data.tapproto", "-o", "/tmp/out", "-f"};
+			CommandOptions o = new CommandOptions(args);
+			Tap tap = new Tap(o).named(o.program);
+			
+			Phase phase1 = tap.createPhase().of(Testmsg.SecuritiesRecord.class).reads(o.input).reduce(Reducer3.class).sortBy("exchange desc, strike");
+			
+			int rc = tap.make();
+			
+			Assert.assertEquals(0, rc);
+	    
+			File f1 = new File(o.output+"/part-00000.tapproto");
+	        File f2 = new File("share/results/sortby_exchange_desc_strike.tapproto");
+	        Assert.assertTrue(f1.exists());
+	        Assert.assertTrue(f2.exists());
+	        Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
+		}
+	
+
+		@Test
+	public void Test8() {
+			String[] args = {"GroupingAndSortingTest5", "-i", "share/securities_data.tapproto", "-o", "/tmp/out", "-f"};
+			CommandOptions o = new CommandOptions(args);
+			Tap tap = new Tap(o).named(o.program);
+			
+			Phase phase1 = tap.createPhase().of(Testmsg.SecuritiesRecord.class).reads(o.input).reduce(Reducer3.class).groupBy("id").sortBy("expiry");
+			
+			int rc = tap.make();
+			
+			Assert.assertEquals(0, rc);
+	    
+			File f1 = new File(o.output+"/part-00000.tapproto");
+	        File f2 = new File("share/results/groupby_id_sortby_expiry.tapproto");
+	        Assert.assertTrue(f1.exists());
+	        Assert.assertTrue(f2.exists());
+	        Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
+	        
+		}
 	
 	
 	public static class Record {
@@ -142,7 +204,7 @@ public class GroupingAndSortingTests {
 				
 			}
 			out.put(outrec);
-			System.out.println(outrec.group + " " + outrec.total);
+	//		System.out.println(outrec.group + " " + outrec.total);
 		}
 	}
 	
@@ -155,6 +217,7 @@ public class GroupingAndSortingTests {
 			for(Testmsg.TestRecord rec : in)
 			{
 				//System.out.println(rec.getGroup() + " " + rec.getExtra() + " " + rec.getSubsort());
+				out.put(rec);
 			}
 		}
 	}
@@ -164,11 +227,12 @@ public class GroupingAndSortingTests {
 	{
 		public void reduce(Pipe<Testmsg.SecuritiesRecord> in, Pipe<Testmsg.SecuritiesRecord> out)
 		{
+			//System.out.println("************************");
 			for(Testmsg.SecuritiesRecord rec : in)
 			{
 				//System.out.println(rec.getTimestamp() + " " + rec.getExchange() + " " + rec.getId() + " " + rec.getDesc() + " " + rec.getStrike() + " " + 
 			//rec.getExpiry());
-				
+				out.put(rec);
 			}
 		}
 		
