@@ -230,10 +230,10 @@ public class BindingTests {
 		Tap tap = new Tap(o);
 		Phase phase = tap.createPhase().reads(o.input).map(Mapper.class).groupBy("group").reduce(Reducer.class).sortBy("extra, subsort").writes(o.output);
 		tap.make();
-		//tap.produces(phase.getOutputs());
-		//List<PhaseError> phaseErrors = phase.plan(tap);
-		//Assert.assertNotNull(phaseErrors);
-		//Assert.assertTrue("planning error", phaseErrors.size() != 0);
+		tap.produces(phase.getOutputs());
+		List<PhaseError> phaseErrors = phase.plan(tap);
+		Assert.assertNotNull(phaseErrors);
+		Assert.assertTrue("planning error", phaseErrors.size() != 0);
 	}
 	
 	@Test
@@ -268,7 +268,8 @@ public class BindingTests {
 		CommandOptions o = new CommandOptions(args);
 		Tap tap = new Tap(o);
 		Phase phase = tap.createPhase().reads(o.input).map(Mapper.class).groupBy("group").reduce(Reducer.class).sortBy("extra, subsort").writes(o.output);
-		tap.make();
+		int rc = tap.make();
+		Assert.assertFalse(rc == 0);
 		
 	}
 	
