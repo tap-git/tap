@@ -29,7 +29,8 @@ public class WordCount {
             System.err.println("Must specify output directory");
             return;
         }
-
+        wordcount.getConf().setJarByClass(WordCount.class);
+        
         wordcount.createPhase().reads(o.input).writes(o.output).map(Mapper.class).
             groupBy("word").reduce(Reducer.class);
 
