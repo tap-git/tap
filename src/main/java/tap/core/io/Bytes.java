@@ -151,6 +151,7 @@ public class Bytes {
 		return newLength;
 	}
 	
+	//nb, this will not give the string representation of non string types.
 	public static String toString(byte[] bytes, int offset, SortOrder order) {
 		byte[] out = new byte[bytes.length - offset];
 		int len = 0;
@@ -160,7 +161,8 @@ public class Bytes {
 		for(int i = offset; i < bytes.length; ++i) {
 			int val = bytes[i] & 0xff;
 			if(val == term && !lastWasEsc)
-				break;
+				//break;
+				continue;
 			if(val == esc && !lastWasEsc) {
 				lastWasEsc = true;
 				continue;

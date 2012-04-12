@@ -14,8 +14,15 @@ message TestRecord {
   optional string extra = 2;
   optional string subsort = 3;
   }
-  
 
+
+message TestRecordSubset {
+  optional string group = 1;
+  optional string subsort = 3;
+  }
+
+
+ 
 enum OptionType         {PUT=0; CALL=1;}
  
 message SecuritiesRecord {
@@ -28,7 +35,12 @@ message SecuritiesRecord {
 	optional sint64 expiry = 7;
 }
 
-
+message SecuritiesRecordSummary {
+   optional uint64 id = 1;
+   optional string desc = 2;
+   optional uint32 numTransactions = 3;
+   optional uint32 totalValue = 4;
+  }
 
 	
 	 

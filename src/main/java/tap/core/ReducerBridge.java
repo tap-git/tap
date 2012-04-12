@@ -33,6 +33,7 @@ import tap.TapReducer;
 import tap.core.io.BinaryKey;
 import tap.core.mapreduce.io.ProtobufWritable;
 import tap.core.mapreduce.output.TapfileOutputFormat;
+import tap.util.ObjectFactory;
 import tap.util.ReflectUtils;
 
 /**
@@ -42,22 +43,44 @@ public class ReducerBridge<V, OUT> extends BaseAvroReducer<V, OUT, AvroWrapper<O
     
     private boolean isTextOutput = false;
     private boolean isProtoOutput = false;
+    private boolean reduceOutKeyChanges = false;
+    private Schema  reduceOutSchema;
     
     private String multiOutputPrefix;
     private MultipleOutputs multiOutput;
-    
+    private Class<?> mapOutClass;
+    private Class<?> reduceOutClass;
+    ReflectionKeyExtractor extractor;
 
     @Override
     public void configure(JobConf conf) {
         super.configure(conf);
+      
         isTextOutput = conf.getOutputFormat() instanceof TextOutputFormat;
         isProtoOutput = conf.getOutputFormat() instanceof TapfileOutputFormat;
+        
+        if(isProtoOutput)
+        {
+        	try {
+				mapOutClass =  Class.forName(conf.get(Phase.MAP_OUT_CLASS));
+				reduceOutClass =  Class.forName(conf.get(Phase.REDUCE_OUT_CLASS));
+				if(mapOutClass != reduceOutClass)
+				{
+					reduceOutKeyChanges = true;
+					String groupBy = conf.get(Phase.GROUP_BY);
+			        String sortBy = conf.get(Phase.SORT_BY);
+					reduceOutSchema = ReflectUtils.getSchema(ObjectFactory.newInstance(reduceOutClass));
+					extractor =  ReflectionKeyExtractor.getReflectionKeyExtractorForReduceOutKey(reduceOutSchema, groupBy, sortBy);
+				}
+        	}
+        	catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+      
        
-        /*
-        System.out.println(conf.getOutputFormat().getClass());
-        System.out.println(conf.getOutputKeyClass());
-        System.out.println(conf.getOutputValueClass());
-        */
+        
         
         multiOutputPrefix = conf.get(Phase.MULTIPLE_OUTPUT_PREFIX);
         if(multiOutputPrefix == null)
@@ -83,6 +106,7 @@ public class ReducerBridge<V, OUT> extends BaseAvroReducer<V, OUT, AvroWrapper<O
         private OutputCollector originalCollector;
         private ProtobufWritable protobufWritable = new ProtobufWritable();
         private BinaryKey binaryKey;
+        BinaryKey reduceOutKey = null;
         
        
         public ReduceCollector(OutputCollector<?, NullWritable> out, Reporter reporter) {
@@ -95,14 +119,29 @@ public class ReducerBridge<V, OUT> extends BaseAvroReducer<V, OUT, AvroWrapper<O
         private void _collect(Object datum, OutputCollector out) throws IOException {
             if (isTextOutput) {
                 out.collect(datum, NullWritable.get());
-            } else if(isProtoOutput) {
+            } 
+            else if(isProtoOutput) 
+            {
                 if(datum != null)
                     protobufWritable.setConverter(datum.getClass());
+                
                 protobufWritable.set(datum);
-                //nb, this binaryKey is the key into the reducer, if we are writing to a tapproto file we need a key
-                //that makes sense for the output type which may be different than the input type.
-                out.collect(binaryKey, protobufWritable);
-               // out.collect(NullWritable.get(), protobufWritable);
+             
+                
+                if(reduceOutKeyChanges)
+                {  
+                	if(reduceOutKey ==null)
+                		reduceOutKey = extractor.getProtypeKey();
+                	extractor.setKey(datum, reduceOutKey);
+                	out.collect(reduceOutKey, protobufWritable);
+                	
+                }
+                else
+                {
+                	out.collect(binaryKey, protobufWritable);
+                	 // out.collect(NullWritable.get(), protobufWritable);
+                }
+               
             }
             else {
                 wrapper.datum((OUT) datum);

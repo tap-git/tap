@@ -13,8 +13,13 @@ import org.junit.Test;
 
 import tap.CommandOptions;
 import tap.Phase;
+import tap.Pipe;
 import tap.Tap;
+import tap.TapReducer;
+import tap.Utilities;
 import tap.core.WordCountReducer;
+import tap.core.GroupingAndSortingTests.Reducer3;
+import tap.formats.tapproto.Testmsg;
 /**
  *
  */
@@ -22,7 +27,7 @@ public class ChainingTests {
 
 	@Test
 	public void chainTestNoForce() {
-		String[] args = {"Phase.chainTest", "-i", "share/decameron.txt", "-o", "/tmp/out"};
+		String[] args = {"Phase.chainTest", "-i", "share/decameron.txt", "-o", "/tmp/chaintestsout"};
 		CommandOptions o = new CommandOptions(args);
 		File f = null;
 		for (int i = 0; i < 2; i++) {
@@ -62,7 +67,7 @@ public class ChainingTests {
 
 	@Test
 	public void chainTest() {
-		String[] args = {"Phase.chainTest", "-i", "share/decameron.txt", "-o", "/tmp/out", "--force"};
+		String[] args = {"Phase.chainTest", "-i", "share/decameron.txt", "-o", "/tmp/chaintestsout", "--force"};
     	CommandOptions o = new CommandOptions(args);
         /* Set up a basic pipeline of map reduce */
         Tap tap = new Tap(o).named(o.program);
@@ -99,7 +104,7 @@ public class ChainingTests {
 	public void chainTestNoForceTouchInitial() {
 		
 		{
-			String[] args = {"Phase.chainTest", "-i", "share/decameron.txt", "-o", "/tmp/out"};
+			String[] args = {"Phase.chainTest", "-i", "share/decameron.txt", "-o", "/tmp/chaintestsout"};
 			CommandOptions o = new CommandOptions(args);
 			/* Set up a basic pipeline of map reduce */
 			Tap tap = new Tap(o).named(o.program);
@@ -136,7 +141,7 @@ public class ChainingTests {
         f1.setLastModified(new Date().getTime()); // touch the file
         
 		{
-			String[] args = {"Phase.chainTest", "-i", "share/decameron.txt", "-o", "/tmp/out"};
+			String[] args = {"Phase.chainTest", "-i", "share/decameron.txt", "-o", "/tmp/chaintestsout"};
 			CommandOptions o = new CommandOptions(args);
 			/* Set up a basic pipeline of map reduce */
 			Tap tap = new Tap(o).named(o.program);
@@ -153,4 +158,40 @@ public class ChainingTests {
 			int rc = tap.make();
 		}
 	}
+	
+	@Test
+	public void tapfileChainTest()
+	{
+		
+			String[] args = {"tapfileChainTest", "-i", "share/securities_data.tapproto", "-o", "/tmp/chaintestsout", "-f"};
+			CommandOptions o = new CommandOptions(args);
+			Tap tap = new Tap(o).named(o.program);
+			
+			Phase phase1 = tap.createPhase().of(Testmsg.SecuritiesRecord.class).reads(o.input).reduce(Reducer.class).sortBy("timestamp desc");
+			Phase phase2 = tap.createPhase().reads(phase1).of(Testmsg.SecuritiesRecord.class).reduce(Reducer.class).sortBy("id").writes(o.output);
+			int rc = tap.make();
+			
+			Assert.assertEquals(0, rc);
+	    
+			File f1 = new File(o.output+"/part-00000.tapproto");
+	        Assert.assertTrue(f1.exists());
+	   
+
+	}
+	
+	public static class Reducer extends  TapReducer<Testmsg.SecuritiesRecord, Testmsg.SecuritiesRecord>
+	{
+		public void reduce(Pipe<Testmsg.SecuritiesRecord> in, Pipe<Testmsg.SecuritiesRecord> out)
+		{
+			//System.out.println("************************");
+			for(Testmsg.SecuritiesRecord rec : in)
+			{
+				//System.out.println(rec.getTimestamp() + " " + rec.getExchange() + " " + rec.getId() + " " + rec.getDesc() + " " + rec.getStrike() + " " + 
+			//rec.getExpiry());
+				out.put(rec);
+			}
+		}
+		
+	}
+	
 }

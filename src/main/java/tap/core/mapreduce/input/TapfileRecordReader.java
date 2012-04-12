@@ -28,6 +28,7 @@ import tap.formats.tapproto.Testmsg.TestRecord;
 import tap.util.Protobufs;
 import tap.util.TypeRef;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.Message;
 
@@ -79,6 +80,36 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Bina
         moveToNextDataBlock();
         
     }
+    //just a test
+    
+    public static Class readMessageClass(Configuration job, Path file) throws IOException
+    {
+    	FileSystem fs = file.getFileSystem(job);
+        FileStatus status = fs.getFileStatus(file);
+        FSDataInputStream inputStream = fs.open(file);
+        long totalSize = status.getLen();
+        byte[] sig = new byte[16];
+        
+        inputStream.read(totalSize - 16, sig, 0, 16);
+        CodedInputStream stream = CodedInputStream.newInstance(sig);
+        long trailerOffset = stream.readRawLittleEndian64();
+        byte[] bytes = stream.readRawBytes(8);
+        assertEquals("tapproto", bytes);
+        
+        inputStream.seek(trailerOffset);
+        stream = CodedInputStream.newInstance(inputStream);
+        bytes = stream.readRawBytes(8);
+        assertEquals("trainone", bytes);
+        
+        int limit = stream.pushLimit(stream.readRawVarint32());
+        Tapfile.Header trailer = Tapfile.Header.parseFrom(stream);
+        List<ByteString> f =  trailer.getFormatDescriptorList();
+        stream.popLimit(limit);
+        Class<? extends Message> message = Protobufs.getProtobufClass(trailer.getMessageName());
+        return message;
+    }
+    
+    
     
     private void initialize(FSDataInputStream inputStream, long size, TypeRef<M> typeRef) throws IOException {
     	
@@ -133,7 +164,7 @@ private Formats determineFileFormat(byte[] header) {
         
         byte[] bytes = new byte[8];
         inputStream.read(bytes);
-        assertEquals("datagzip", bytes);
+        //assertEquals("datagzip", bytes);
         
         inputStream.seek(e.getDataOffset()+8);
         

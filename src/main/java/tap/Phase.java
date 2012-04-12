@@ -1220,7 +1220,12 @@ public class Phase {
     	return createSchema(schema, groupFields, sortFields);
     }
     
-    private static class FieldDesc {
+    public static Schema groupAndSortSubset(Schema schema, String groupFields, String sortFields)
+    {
+    	return createSubsetBinaryKeySchema(schema, groupFields, sortFields);
+    }
+    
+    public static class FieldDesc {
     	final String name;
     	final boolean isSort;
     	Schema.Field.Order order;
@@ -1304,6 +1309,43 @@ public class Phase {
         return schema;
     }
 
+    //this code really doesn't belong here, should probably be moved to ReflectUtils.  This will involve a bit of re-factoring work.
+    
+    //If the reduce out type is different than the reduce in type and we are using tapproto files,
+    //we need to adjust the key so that it only contains fields that are present in the output type.
+    //We need to create a schema that corresponds to the the adjusted key, we then use, ReflectionKeyExtractor to generate the key.
+    //It might be easier to do if we could get our hands on the key schema used by the mapper and adjust it...but we don't have it.
+    
+    private static Schema createSubsetBinaryKeySchema(Schema schema, String groupFields, String sortFields) { 
+        List<FieldDesc> parsed = parseFields(groupFields, sortFields);
+        
+        ArrayList<Schema.Field> fieldList = new ArrayList<Schema.Field>();
+      
+        StringBuilder builder = new StringBuilder();
+        for(FieldDesc fd : parsed) {
+            Schema.Field field = schema.getField(fd.name);
+            if (field == null) {
+              break;
+            }
+            
+            Schema.Field copy = new Schema.Field(field.name(), field.schema(),
+                    field.doc(), field.defaultValue(), fd.order);
+            if(fd.isSort) {
+            	copy.addProp("x-sort", "true");
+            }
+            fieldList.add(copy);
+            builder.append('_');
+            builder.append(fd.name);
+        }
+      
+        schema = Schema.createRecord(
+                schema.getName() + "_proj" + builder.toString(), "generated",
+                schema.getNamespace(), false);
+        schema.setFields(fieldList);
+        return schema;
+    }
+    
+    
     public String getSummary() {
         return "mapper " + getMapName() + " reading " + phaseReads()
                 + " reducer " + getReduceName();
