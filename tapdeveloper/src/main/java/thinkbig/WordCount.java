@@ -8,6 +8,7 @@ import tap.Pipe;
 import tap.Tap;
 import tap.TapMapper;
 import tap.TapReducer;
+import tap.sample.WordCount;
 
 import thinkbig.examples.messages.*;
 
@@ -32,6 +33,8 @@ public class WordCount {
 	            return;
 	        }
 
+	        wordcount.getConf().setJarByClass(WordCount.class);
+	        
 	        wordcount.createPhase().reads(o.input).writes(o.output).map(Mapper.class).
 	            groupBy("word").reduce(Reducer.class);
 
