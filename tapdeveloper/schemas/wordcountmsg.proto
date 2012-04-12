@@ -1,0 +1,11 @@
+
+package thinkbig.examples.messages;
+
+
+message WordCountRecord
+{
+   optional string word=1;
+   optional uint32 count=2;
+}
+
+
