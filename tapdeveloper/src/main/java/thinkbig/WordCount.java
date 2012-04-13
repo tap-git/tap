@@ -8,7 +8,7 @@ import tap.Pipe;
 import tap.Tap;
 import tap.TapMapper;
 import tap.TapReducer;
-import tap.sample.WordCount;
+
 
 import thinkbig.examples.messages.*;
 
