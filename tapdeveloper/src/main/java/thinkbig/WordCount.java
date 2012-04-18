@@ -3,6 +3,8 @@ package thinkbig;
 
 import java.util.StringTokenizer;
 
+import org.apache.hadoop.util.GenericOptionsParser;
+
 import tap.CommandOptions;
 import tap.Pipe;
 import tap.Tap;
@@ -16,6 +18,7 @@ import thinkbig.examples.messages.*;
 public class WordCount {
 
 	public static void main(String[] args) throws Exception {
+	
 		
 		
 		 CommandOptions o = new CommandOptions(args);
