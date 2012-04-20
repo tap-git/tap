@@ -25,7 +25,7 @@ import tap.formats.tapproto.Testmsg;
 public class MapOnlyTest {
 
 	
-	@Test
+	//@Test
 	public void MapOnlyTest1() {
 		String[] args = {"MaponlyTest1", "-i", "share/test_data.avro", "-o", "/tmp/out", "-f"};
 		CommandOptions o = new CommandOptions(args);
@@ -44,7 +44,7 @@ public class MapOnlyTest {
 	}
 	
 	
-	@Test
+	//@Test
 	public void MapOnlyTest2() {
 		String[] args = {"MaponlyTest2", "-i", "share/test_data.avro", "-o", "/tmp/out", "-f"};
 		CommandOptions o = new CommandOptions(args);

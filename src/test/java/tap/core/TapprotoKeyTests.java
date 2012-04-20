@@ -24,6 +24,7 @@ public class TapprotoKeyTests {
 		CommandOptions o = new CommandOptions(args);
 		Tap tap = new Tap(o).named(o.program);
 		
+		 //key should only contain group
 		 tap.createPhase().of(Testmsg.TestRecord.class).reads(o.input).reduce(Reducer.class).groupBy("group, extra").writes(o.output);
 		
 		 int rc = tap.make();
@@ -34,12 +35,28 @@ public class TapprotoKeyTests {
 	}
 	@Test
 	public void Test2() {
-		String[] args = {"TapprotoKeyTests", "-i", "share/test_data.tapproto", "-o", "/tmp/out", "-f"};
+		String[] args = {"TapprotoKeyTests", "-i", "share/test_data.tapproto", "-o", "/tmp/out3", "-f"};
 		CommandOptions o = new CommandOptions(args);
 		Tap tap = new Tap(o).named(o.program);
 		
-		//should write a null key.
-		 tap.createPhase().of(Testmsg.TestRecord.class).reads(o.input).reduce(Reducer.class).groupBy("extra").writes(o.output);
+		 //no reducer but groupby specified, so key should be group, extra
+		 tap.createPhase().reads(o.input).groupBy("group, extra").writes(o.output);
+		
+		 int rc = tap.make();
+		 Assert.assertEquals(0, rc);
+
+		
+		
+	}
+	
+	@Test
+	public void Test3() {
+		String[] args = {"TapprotoKeyTests", "-i", "share/test_data.tapproto", "-o", "/tmp/out4", "-f"};
+		CommandOptions o = new CommandOptions(args);
+		Tap tap = new Tap(o).named(o.program);
+		
+		//key should be group, subsort
+		 tap.createPhase().reads(o.input).reduce(Reducer.class).sortBy("group, subsort, extra").writes(o.output);
 		
 		 int rc = tap.make();
 		 Assert.assertEquals(0, rc);

@@ -26,6 +26,7 @@ import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.util.Progressable;
 import org.mortbay.servlet.GzipFilter.GzipStream;
 
+import tap.Phase;
 import tap.core.io.BinaryKey;
 import tap.core.mapreduce.io.BinaryWritable;
 import tap.formats.tapproto.Tapfile;
@@ -36,6 +37,7 @@ import tap.util.TypeRef;
 import com.google.common.io.CountingOutputStream;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedOutputStream;
+import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -64,14 +66,21 @@ public class TapfileRecordWriter<M extends Message> implements RecordWriter<Bina
     private CountingOutputStream dataCountStream;
     private GZIPOutputStream dataGzipStream;
     private CodedOutputStream dataStream;
+    private String keyDescriptor;
     
     public TapfileRecordWriter(Configuration job, Path path, TypeRef<M> typeRef) throws IOException {
         FileSystem fs = path.getFileSystem(job);
+        keyDescriptor = job.get(Phase.TAPROTO_KEY_SCHEMA);
+        if(keyDescriptor == null)
+        	keyDescriptor = "";
         initialize(fs.create(path), typeRef);
     }
     
     public TapfileRecordWriter(Configuration job, Path path, Progressable progress, TypeRef<M> typeRef) throws IOException {
         FileSystem fs = path.getFileSystem(job);
+        keyDescriptor = job.get(Phase.TAPROTO_KEY_SCHEMA);
+        if(keyDescriptor == null)
+        	keyDescriptor = "";
         initialize(fs.create(path, progress), typeRef);
     }
     
@@ -79,6 +88,7 @@ public class TapfileRecordWriter<M extends Message> implements RecordWriter<Bina
         this.fsOutputStream = outputStream;
         this.typeRef = typeRef;
         this.outputStream = CodedOutputStream.newInstance(fsOutputStream);
+        
     }
 
     @Override
@@ -183,9 +193,15 @@ public class TapfileRecordWriter<M extends Message> implements RecordWriter<Bina
     private Tapfile.Header writeHeader() throws IOException {
         Tapfile.Header.Builder headerBuilder = Tapfile.Header.newBuilder(); 
         headerBuilder.setInitialPipeName("mapred.output");
-        headerBuilder.setKeyDescriptor("<NEEDS CODING>");
+        
+        
+        headerBuilder.setKeyDescriptor(keyDescriptor);
         
         headerBuilder.setMessageName(typeRef.getRawClass().getName());
+      
+        
+       //  String test = typeRef.getRawClass().getCanonicalName();
+       // String test2 = typeRef.getRawClass().getDeclaringClass().getSimpleName();
         headerBuilder.setTargetDecompSize(DEFAULT_TARGET_BLOCK_SIZE);
         
         writeRawBytes(outputStream, "tapproto");

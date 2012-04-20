@@ -467,7 +467,27 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
         return prototype;
     }
     
-    public void setPrototypeForMapperInput(T prototype) throws IOException, IllegalArgumentException, InfeasiblePlanException {
+    public Formats getPipeFormat() throws FileNotFoundException, IOException, IllegalArgumentException
+    {
+    	if(!isFile())
+    		throw new IllegalArgumentException("Pipe is not associated with a file, so has no format");
+    	Path p = new Path(path);
+    	
+    	return sniffFileFormat(p); 
+    }
+    
+    public Class  readPipeClassFromFile(Configuration job) throws IOException {
+    	
+    	if(path == null)
+    		throw new IllegalArgumentException("specify file or directory for mapper before setting prototype");
+    
+    	Path p = new Path(path);
+    	
+    	return TapfileRecordReader.readMessageClass(job, p);
+    }
+    	
+    
+    public void setPrototypeForMapperInput(T prototype) throws  InfeasiblePlanException {
     	Formats sniffedFileFormat;
     	
     	if(path == null)
@@ -477,8 +497,16 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     	
     	if(isSingleDir())
     	{
-      		FileSystem f = FileSystem.get(getConf());
-			FileStatus[] status = f.listStatus(p);
+    		FileStatus[] status;
+    		try {
+    			FileSystem f = FileSystem.get(getConf());
+    			 status = f.listStatus(p);
+    		}
+    		catch(IOException ioexception)
+    		{
+    			throw new InfeasiblePlanException("invalid path");
+    		}
+    				
 			if(status.length == 0)  //directory is empty
     		{	this.prototype = prototype;
     			return;
@@ -536,6 +564,7 @@ public class Pipe<T> implements Iterable<T>, Iterator<T> {
     	
     }
     
+    //NB this duplicates code found in TapfileRecodReader.  Need to re-factor.
     
     private Formats sniffFileFormat(Path path) throws IOException, FileNotFoundException {
 

@@ -39,10 +39,12 @@ import tap.core.CombinerBridge;
 import tap.core.InfeasiblePlanException;
 import tap.core.MapperBridge;
 import tap.core.ReducerBridge;
+import tap.core.ReflectionKeyExtractor;
 import tap.core.TapMapperInterface;
 import tap.core.TapReducerInterface;
 import tap.core.io.BinaryKey;
 import tap.core.mapreduce.io.ProtobufWritable;
+import tap.formats.Formats;
 import tap.formats.avro.AvroGroupPartitioner;
 import tap.formats.avro.BinaryKeyPartitioner;
 import tap.formats.avro.TapAvroSerialization;
@@ -66,6 +68,7 @@ public class Phase {
                                                                                        // OUT
                                                                                        // in
                                                                                        // Pipe<OUT>
+    public static final String TAPROTO_KEY_SCHEMA = "tap.phase.tapproto.key.schema";
     public static final String MAP_OUT_CLASS = "tap.phase.map.output.class";
     public static final String REDUCER_OUT_PIPE_CLASS = "tap.phase.reduce.output.pipe.class";
     public static final String REDUCER = "tap.phase.reducer";
@@ -73,6 +76,7 @@ public class Phase {
     public static final String GROUP_BY = "tap.phase.groupby";
     public static final String SORT_BY = "tap.phase.sortby";
     public static final String COMBINER = "tap.phase.combiner";
+   
     
     public static final String MULTIPLE_OUTPUT_PREFIX = "tap.phase.multiple.output.prefix";
 
@@ -605,19 +609,40 @@ public class Phase {
 	 * Find the correct Mapper class.
 	 * 
 	 * @param errors
+	 * @throws IOException 
 	 */
-	private void mapperPlan(List<PhaseError> errors) {
+	private void mapperPlan(List<PhaseError> errors)  {
 	    mapperClass = null;
 
 	    //if no mapper has been specified, use the identity mapper
 	    if(mappers == null)
 	    {
-	    	//if there's not mapper, must specifiy the input class.
+	    	//if there's no mapper, must specifiy the input class.
 	    	if(identityMRClass == null)
 	    	{
-	    		errors.add(new PhaseError("phase.of(Class<?> must be called if no mapper is specified"));
-	    		return;
+	    		
+	    		//if the input file is a protobuf file, we can read the message type from the file.
+	    		try 
+	    		{
+	    			if(mainReads != null && mainReads.size() > 0 &&  mainReads.get(0).getFormat() == Formats.TAPPROTO_FORMAT)
+	    			{
+	    				identityMRClass = mainReads.get(0).readPipeClassFromFile(getConf());
+	    			
+	    			}
+	    			else {
+		    			errors.add(new PhaseError("phase.of(Class<?> must be called if no mapper is specified if input file is not tapproto"));
+		    			return;
+		    		}
+	    		}
+	    		catch(Exception e)
+	        	{
+	    			errors.add(new PhaseError("phase.of(Class<?> must be called if no mapper is specified if input file is not tapproto"));
+	    			return;
+	        	}
 	    	}
+	    		
+	    	
+	    	
 	    	map(TapMapper.class);
 	    }
 
@@ -1051,6 +1076,29 @@ public class Phase {
         	conf.set(REDUCER, reducerClass.getName());
         	conf.set(REDUCE_OUT_CLASS, reduceOutClass.getName());
         }
+        
+        //configure the tap_proto_schema
+        
+        
+        
+        if(!isMapOnly() && mapOutClass != reduceOutClass)
+        {
+        	//Schema reduceOutSchema = ReflectUtils.getSchema(ObjectFactory.newInstance(reduceOutClass));
+        	Schema reduceOutKeySchema = groupAndSortSubset(reduceout, groupBy, sortBy);
+        	String reduceOutKeySchemaString = Phase.getMinimalSchemaDescription(reduceOutKeySchema);
+        	conf.set(Phase.TAPROTO_KEY_SCHEMA,reduceOutKeySchemaString);
+            AvroJob.setOutputMeta(conf, TAPROTO_KEY_SCHEMA, reduceOutKeySchemaString);
+        }
+        else 
+        {
+        	  Schema mapOutKeySchema = groupAndSort(mapValueSchema, groupBy, sortBy);
+              String mapOutKeySchemaString = Phase.getMinimalSchemaDescription(mapOutKeySchema);
+              conf.set(Phase.TAPROTO_KEY_SCHEMA,mapOutKeySchemaString);
+              AvroJob.setOutputMeta(conf, TAPROTO_KEY_SCHEMA, mapOutKeySchemaString);
+        }
+        
+        
+        
 		//Combiner is Optional
 		if (null != combiner) {
 	        conf.set(COMBINER, combiner.getName());
@@ -1061,9 +1109,16 @@ public class Phase {
         conf.set(AvroJob.INPUT_SCHEMA, mapinSchema.toString());
         
         conf.set(MAP_OUT_VALUE_SCHEMA, mapValueSchema.toString());
+        
         conf.set(MAP_OUT_KEY_SCHEMA, groupAndSort(mapValueSchema, groupBy, sortBy)
                 .toString());
+       
         
+        //we want to write the output key schema to the tap file.
+      
+        
+        
+       
 		
         // if we found piped map output type, set it here
         if (null != this.mapOutPipeType) {
@@ -1345,7 +1400,27 @@ public class Phase {
         return schema;
     }
     
-    
+    //used to record the key used in tapproto files.  We don't want to record Schema.toString(), since
+    //it is avro dependent and contains more information that we need.
+    public static String getMinimalSchemaDescription(Schema schema)
+    {
+    	List<Field> fields = schema.getFields();
+    	StringBuilder s = new StringBuilder();
+    	for(Field field : fields)
+    	{
+    		if(s.length() != 0)
+    		{
+    			s.append(",");
+    		}
+    		s.append(field.name());
+    		if(field.order() == Field.Order.DESCENDING)
+    		{
+    			s.append(" desc");
+    		}
+    	}
+    	
+    	return s.toString();
+    }
     public String getSummary() {
         return "mapper " + getMapName() + " reading " + phaseReads()
                 + " reducer " + getReduceName();
