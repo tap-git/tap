@@ -529,6 +529,12 @@ public class Phase {
         List<PhaseError> errors = new ArrayList<PhaseError>();
         conf = new JobConf(tap.getConf());
  
+        //error handling mechanism needs some work.  E.g, if the input file is invalid, a error messages will be added to the errors list
+        //but it will cascade and generate a null pointer somewhere, catch any exceptions and ignore for now, so that phase errors will be reported.
+        
+        
+     
+        
         /*
          * we need to determine if it is a map-only phase.
          * If there is no reducer and no groupBy or sortBy, it is a map only phase.
@@ -554,13 +560,23 @@ public class Phase {
         	reducerPlan(errors);
         }
         
+        //if the file name specified in the reads() method does not exist, we don't know the input class
+        //this will eventually generate a null pointer exception, so we need to stop now.
+        
+        if(errors.size() != 0)
+        	return errors;
+        
+        
         formatPlan(errors);
         mapOutPlan(errors);
         //check file here?
 		syntaxCheck(errors);
+        
+        
 		if (0 == errors.size()) {
 			configurationSetup(errors);
 		}
+        
         return errors;
     }
 
@@ -786,13 +802,12 @@ public class Phase {
             AvroOutputFormat.setOutputPath(conf, new Path(output.getPath()));
             if(isMapOnly())
             {
-            	//check if mapOutClass is null
             	
             	try {
 					output.setPrototype(ObjectFactory.newInstance(mapOutClass));
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					errors.add(new PhaseError(e.getMessage()));
+					return;
 				}
             	valueSchema = ReflectUtils.getSchema(output.getPrototype());
             }
@@ -855,7 +870,10 @@ public class Phase {
                     mapInClass = inputPipeProto.getClass();
                 }
             }
+            
+          
             mainReads.get(0).setupInput(conf);
+           
             if (conf.get("mapred.input.format.class") == null) {
                 conf.setInputFormat(AvroInputFormat.class);
             }
@@ -900,6 +918,11 @@ public class Phase {
 		if ((reduceOutClass == null || reduceOutClass == Object.class)
 				&& mainWrites != null && mainWrites.size() > 0) {
 			reduceOutProto = mainWrites.get(0).getPrototype();
+			if(reduceOutProto == null)
+			{
+				errors.add(new PhaseError("reduce out message prototype not defined"));
+				return;
+			}
 			reduceOutClass = reduceOutProto.getClass();
 		} else {
 			try {
