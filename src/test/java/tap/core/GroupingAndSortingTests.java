@@ -45,6 +45,8 @@ public class GroupingAndSortingTests {
 		 File f1 = new File(o.output+"/part-00000.avro");
 	     File f2 = new File("share/results/sortby_group_extra_subsort.avro");
 	     Assert.assertTrue(f1.exists());
+	   
+	     //file compare doesn't work for avro files...date? 
 	    // Assert.assertTrue(f2.exists());
 	    // Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
 		
@@ -65,8 +67,10 @@ public class GroupingAndSortingTests {
 		 File f1 = new File(o.output+"/part-00000.avro");
 	     File f2 = new File("share/results/summation_on_group.avro");
 	     Assert.assertTrue(f1.exists());
-	     Assert.assertTrue(f2.exists());
-	   // Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
+	   
+	     // file compare doesn't work for avro files...date? 
+	     // Assert.assertTrue(f2.exists());
+	     // Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
 		
 	}
 	
@@ -85,7 +89,7 @@ public class GroupingAndSortingTests {
 	     File f2 = new File("share/results/groupby_group_extra.tapproto");
 	     Assert.assertTrue(f1.exists());
 	     Assert.assertTrue(f2.exists());
-	     //Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
+	     Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
 		
 	}
 	
@@ -105,7 +109,7 @@ public class GroupingAndSortingTests {
         File f2 = new File("share/results/sortby_timestamp_desc.tapproto");
         Assert.assertTrue(f1.exists());
         Assert.assertTrue(f2.exists());
-        //Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
+        Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
     
      
 		
@@ -127,7 +131,7 @@ public class GroupingAndSortingTests {
         File f2 = new File("share/results/groupby_exchange_sortby_id_timestamp.tapproto");
         Assert.assertTrue(f1.exists());
         Assert.assertTrue(f2.exists());
-       //Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
+       Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
     
        
        
@@ -152,7 +156,7 @@ public class GroupingAndSortingTests {
 	        File f2 = new File("share/results/sortby_exchange_desc_strike.tapproto");
 	        Assert.assertTrue(f1.exists());
 	        Assert.assertTrue(f2.exists());
-	       // Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
+	        Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
 		}
 	
 
@@ -172,13 +176,13 @@ public class GroupingAndSortingTests {
 	        File f2 = new File("share/results/groupby_id_sortby_expiry.tapproto");
 	        Assert.assertTrue(f1.exists());
 	        Assert.assertTrue(f2.exists());
-	        //Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
+	        Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
 	        
 		}
 	
 	//no mapper, no reducer.  We read type from tapproto file.
 	@Test
-	public void Test9() throws IOException {
+	 public void Test9() throws IOException {
 		String[] args = {"GroupingAndSortingTest9", "-i", "share/test_data.tapproto", "-o", "/tmp/out", "-f"};
 		CommandOptions o = new CommandOptions(args);
 		Tap tap = new Tap(o).named(o.program);
@@ -191,7 +195,7 @@ public class GroupingAndSortingTests {
 		File f2 = new File("share/results/groupby_group_extra.tapproto");
 		Assert.assertTrue(f1.exists());
 		Assert.assertTrue(f2.exists());
-		//Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
+		Assert.assertTrue(Utilities.fileContentsEquals(f1, f2));
 
 		
 		
