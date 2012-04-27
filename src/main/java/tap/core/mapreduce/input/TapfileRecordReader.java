@@ -43,7 +43,7 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Bina
     private ProtobufWritable<M> value;
     private int currentIndex = -1;
     private long messageCount;
-    
+    private Class<? extends Message> messageClass;    
     private CodedInputStream dataStream;
     
     public TapfileRecordReader(Configuration job, FileSplit split, TypeRef<M> typeRef) throws IOException {
@@ -70,15 +70,20 @@ public class TapfileRecordReader<M extends Message> implements RecordReader<Bina
         this.inputStream = fs.open(file);
         this.totalSize = status.getLen();
         readTrailer(totalSize);
-        Class<? extends Message> message = Protobufs.getProtobufClass(trailer.getMessageName());
+        messageClass = Protobufs.getProtobufClass(trailer.getMessageName());
         //message is a class e.g., 
-        TypeRef typeRef = new TypeRef(message){}; 
+        TypeRef typeRef = new TypeRef(messageClass){}; 
         this.converter = ProtobufConverter.newInstance(typeRef);
         this.key = new BinaryKey();
         this.value = new ProtobufWritable<M>(typeRef);
         readIndexEntries();
         moveToNextDataBlock();
         
+    }
+    
+    public Class<? extends Message> getMessageClass()
+    {
+    	return messageClass;
     }
     //just a test
     
@@ -263,6 +268,10 @@ private Formats determineFileFormat(byte[] header) {
 			e.printStackTrace();
 			return false;
 		}
+    }
+    
+    public String getKeyDescriptor() {
+    	return trailer.getKeyDescriptor();
     }
     
     

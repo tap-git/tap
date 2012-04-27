@@ -451,7 +451,9 @@ public class Tap implements TapInterface {
 			e.printStackTrace();
 			return null;
 		}
-		Pipe pipe = new Pipe(URI);  //don't really need to pass this in.
+//		Pipe pipe = new Pipe(URI);  
+		
+		Pipe pipe = Pipe.of(reader.getMessageClass());
 		pipe.setRecordReader(reader);
 		System.out.println(path.getName());
 		return pipe;
