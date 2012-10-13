@@ -13,6 +13,7 @@ import org.apache.hadoop.mapred.JobConf;
 import org.junit.Before;
 import org.junit.Test;
 
+import tap.Phase;
 import tap.formats.avro.AvroGroupPartitioner;
 
 

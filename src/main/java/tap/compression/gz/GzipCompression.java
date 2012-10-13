@@ -5,16 +5,17 @@ import org.apache.hadoop.io.compress.GzipCodec;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.TextOutputFormat;
 
+import tap.Pipe;
 import tap.compression.Compressions;
 import tap.compression.FileCompression;
-import tap.core.Pipe;
 
-@SuppressWarnings("deprecation")
+
 public class GzipCompression extends FileCompression {
 
 	public GzipCompression() {
 		super(GzipCodec.class);
 	}
+	
 	@Override
 	public String fileExtension() {
 		return "gz";

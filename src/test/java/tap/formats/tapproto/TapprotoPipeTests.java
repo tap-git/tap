@@ -19,11 +19,23 @@
  */
 package tap.formats.tapproto;
 
+import java.util.List;
+import java.util.StringTokenizer;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
 
-import tap.core.Pipe;
+import tap.CommandOptions;
+import tap.CountRec;
+import tap.Phase;
+import tap.PhaseError;
+import tap.Pipe;
+import tap.Tap;
+import tap.TapMapper;
+import tap.TapReducer;
+import tap.core.WordCountMapper;
+import tap.core.WordCountReducer;
 import tap.formats.Formats;
 import tap.formats.tapproto.Testmsg;
 import tap.formats.tapproto.Testmsg.TestMsg;
@@ -40,5 +52,39 @@ public class TapprotoPipeTests {
         Assert.assertTrue("pipe type", pipe.getPrototype() instanceof com.google.protobuf.Message);
         Assert.assertEquals(Formats.TAPPROTO_FORMAT, pipe.getFormat());
     }
+    
+    @Test
+    public void willSetProtoOutputType() {
+		String args[] = { "BindingTests.mapOutTest", "-i", "share/decameron.txt", "-o",
+				"/tmp/TapTestsOutput", "--force" };
 
+		CommandOptions o = new CommandOptions(args);
+		Tap tap = new Tap(o);
+
+		Phase phase1 = tap.createPhase()
+				.reads(o.input)
+				.map(Mapper.class)
+				.groupBy("data")
+				.reduce(Reducer.class)
+				.writes(o.output);
+		tap.produces(phase1.output());
+		List<PhaseError> phaseErrors = phase1.plan(tap);
+		for(PhaseError e: phaseErrors) {
+			System.out.println(e.getMessage());
+		}
+		Assert.assertEquals(0, phaseErrors.size());
+		Assert.assertEquals("TAPPROTO_FORMAT", phase1.getOutputs().get(0).getFormat().toString());    	
+    }
+    
+    public static class Mapper extends TapMapper<String, Testmsg.TestMsg> {
+    	public void map(String line, Pipe<Testmsg.TestMsg> out) {
+    	}
+    }
+    
+    public static class Reducer extends TapReducer<Testmsg.TestMsg, Testmsg.TestMsg> {
+    	CountRec outrec = new CountRec();
+
+    	public void reduce(Pipe<Testmsg.TestMsg> in, Pipe<Testmsg.TestMsg> out) {
+    	}
+    }
 }

@@ -1,0 +1,46 @@
+//
+//  Copyright (c) 2011 Quantbench Corporation, All Rights Reserved.
+//
+
+package tap.formats.tapproto;
+
+message TestMsg {
+    optional int32   	size = 1;       
+    required string   	data = 2;       
+}
+
+message TestRecord {
+  optional string group = 1;
+  optional string extra = 2;
+  optional string subsort = 3;
+  }
+
+
+message TestRecordSubset {
+  optional string group = 1;
+  optional string subsort = 3;
+  }
+
+
+ 
+enum OptionType         {PUT=0; CALL=1;}
+ 
+message SecuritiesRecord {
+	optional sint64 timestamp = 1;
+	optional OptionType type = 2;
+	optional string exchange = 3;
+	optional uint64 id = 4;
+	optional string desc = 5;
+	optional uint32 strike = 6;
+	optional sint64 expiry = 7;
+}
+
+message SecuritiesRecordSummary {
+   optional uint64 id = 1;
+   optional string desc = 2;
+   optional uint32 numTransactions = 3;
+   optional uint32 totalValue = 4;
+  }
+
+	
+	 

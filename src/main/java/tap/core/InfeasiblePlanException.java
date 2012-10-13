@@ -21,6 +21,8 @@ package tap.core;
 
 import java.util.Set;
 
+import tap.PhaseError;
+
 public class InfeasiblePlanException extends RuntimeException {
 
     public InfeasiblePlanException() {

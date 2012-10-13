@@ -1,0 +1,172 @@
+Hello  Fri Feb 3 16:22:55 EST 2012 /System/Library/Address Book Plug-Ins/LocalSource.sourcebundle/Contents/_CodeSignature:
+Hello  Fri Feb 3 16:22:56 EST 2012 CodeResources
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle:
+Hello  Fri Feb 3 16:22:56 EST 2012 Contents
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents:
+Hello  Fri Feb 3 16:22:56 EST 2012 CodeResources
+Hello  Fri Feb 3 16:22:56 EST 2012 Info.plist
+Hello  Fri Feb 3 16:22:56 EST 2012 MacOS
+Hello  Fri Feb 3 16:22:56 EST 2012 Resources
+Hello  Fri Feb 3 16:22:56 EST 2012 _CodeSignature
+Hello  Fri Feb 3 16:22:56 EST 2012 version.plist
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/MacOS:
+Hello  Fri Feb 3 16:22:56 EST 2012 MobileMeSharing
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABSharedAll16.png
+Hello  Fri Feb 3 16:22:56 EST 2012 Dutch.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 English.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 French.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 German.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 Italian.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 Japanese.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 Spanish.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 da.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 fi.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 ko.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 no.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 pl.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 pt.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 pt_PT.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 ru.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 sv.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 zh_CN.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 zh_TW.lproj
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Dutch.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Dutch.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/English.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/English.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/French.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/French.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/German.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/German.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Italian.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Italian.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Japanese.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Japanese.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Spanish.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/Spanish.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/da.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/da.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/fi.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/fi.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/ko.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/ko.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/no.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/no.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/pl.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/pl.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/pt.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/pt.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/pt_PT.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/pt_PT.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/ru.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/ru.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/sv.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/sv.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/zh_CN.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/zh_CN.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/zh_TW.lproj:
+Hello  Fri Feb 3 16:22:56 EST 2012 ABMobileMeSharingSource.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 InfoPlist.strings
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/Resources/zh_TW.lproj/ABMobileMeSharingSource.nib:
+Hello  Fri Feb 3 16:22:56 EST 2012 keyedobjects.nib
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Address Book Plug-Ins/MobileMeSharing.sourcebundle/Contents/_CodeSignature:
+Hello  Fri Feb 3 16:22:56 EST 2012 CodeResources
+Hello  Fri Feb 3 16:22:56 EST 2012 /System/Library/Automator:
+Hello  Fri Feb 3 16:22:56 EST 2012 Activate Fonts.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Add Attachments to Front Message.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Add Color Profile.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Add Files to Playlist.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Add Grid to PDF Documents.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Add Movie to iDVD Menu.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Add Photos to Album.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Add Songs to Playlist.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Add Songs to iPod.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Add Spotlight Comments to Finder Items.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Add Thumbnail Icon to Image Files.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Add to Font Library.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Address Book.definition
+Hello  Fri Feb 3 16:22:56 EST 2012 Apply ColorSync Profile to Images.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Apply Quartz Composition Filter to Image Files.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Apply Quartz Filter to PDF Documents.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Apply SQL.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Ask For Servers.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Ask for Confirmation.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Ask for Finder Items.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Ask for Movies.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Ask for Photos.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Ask for Songs.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Ask for Text.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Automator.definition
+Hello  Fri Feb 3 16:22:56 EST 2012 Browse Movies.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Build Xcode Project.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Burn A Disc.action
+Hello  Fri Feb 3 16:22:56 EST 2012 CVS Add.action
+Hello  Fri Feb 3 16:22:56 EST 2012 CVS Checkout.action
+Hello  Fri Feb 3 16:22:56 EST 2012 CVS Commit.action
+Hello  Fri Feb 3 16:22:56 EST 2012 CVS Update.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Change Case of Song Names.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Change Type of Images.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Choose from List.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Combine Mail Messages.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Combine PDF Pages.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Combine Text Files.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Compress Images in PDF Documents.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Connect to Servers.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Convert Account object to Mailbox object.caction
+Hello  Fri Feb 3 16:22:56 EST 2012 Convert Album object to Photo object.caction
+Hello  Fri Feb 3 16:22:56 EST 2012 Convert Alias object to Finder object.caction
+Hello  Fri Feb 3 16:22:56 EST 2012 Convert Alias object to iPhoto photo object.caction
+Hello  Fri Feb 3 16:22:56 EST 2012 Convert CSV to SQL.action
+Hello  Fri Feb 3 16:22:56 EST 2012 Convert Calendar object to Event object.caction

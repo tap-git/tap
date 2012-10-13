@@ -3,9 +3,8 @@ package tap.compression;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapred.JobConf;
 
-import tap.core.Pipe;
+import tap.Pipe;
 
-@SuppressWarnings("deprecation")
 public abstract class FileCompression {
 
 	protected Class<? extends CompressionCodec> codec = null;

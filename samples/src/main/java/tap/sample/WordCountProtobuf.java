@@ -7,48 +7,37 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import tap.formats.Formats;
-import tap.core.mapreduce.io.ProtobufWritable;
+import tap.CommandOptions;
+import tap.Pipe;
+import tap.Tap;
+import tap.TapMapper;
+import tap.TapReducer;
 import tap.core.*;
 
-public class WordCountProtobuf extends Configured implements Tool {
+public class WordCountProtobuf {
 
-    @Override
-    public int run(String[] args) throws Exception {
-
+    public static void main(String[] args) throws Exception {
+    	CommandOptions o = new CommandOptions(args);
         /* Set up a basic pipeline of map reduce */
-        Tap wordcount = new Tap(getClass()).named("wordcount");
+        Tap wordcount = new Tap(o).named("wordcount");
         /* Parse options - just use the standard options - input and output location, time window, etc. */
-        BaseOptions o = new BaseOptions();
-        int result = o.parse(wordcount, args);
-        if (result != 0)
-            return result;
         if (o.input == null) {
             System.err.println("Must specify input directory");
-            return 1;
+            return;
         }
         if (o.output == null) {
             System.err.println("Must specify output directory");
-            return 1;
+            return;
         }
-
-        Pipe input = new Pipe(o.input);
-        Pipe counts = new Pipe(o.output);
-        counts.setFormat(Formats.TAPPROTO_FORMAT);
-        wordcount.produces(counts);
         
+        wordcount.createPhase().reads(o.input).writes(o.output).map(Mapper.class).
+            groupBy("word").reduce(Reducer.class);
+        
+        /* new style mapping - does not work, check with Doug
         Phase count = new Phase().reads(input).writes(counts).map(PipeMapper.class).
             groupBy("word").reduce(PipeReducer.class);
-        
-        if (o.forceRebuild) wordcount.forceRebuild();
-        if (o.dryRun) {
-            wordcount.dryRun();
-            return 0;
-        }
-        
-        wordcount.execute();
-        
-        return 0;
+        */
+        wordcount.make();
     }
 
     public static class CountRec {
@@ -57,19 +46,21 @@ public class WordCountProtobuf extends Configured implements Tool {
     }
     
 
-    public static class Mapper extends BaseMapper<String,CountRec> {
+    public static class Mapper extends TapMapper<String,CountRec> {
+    	CountRec outrec = new CountRec();
+ 
         @Override
-        public void map(String line, CountRec out, TapContext<CountRec> context) {
+        public void map(String line, Pipe<CountRec> out) {
             StringTokenizer tokenizer = new StringTokenizer(line);
             while (tokenizer.hasMoreTokens()) {
-                out.word = tokenizer.nextToken();
-                out.count = 1;
-                context.write(out);
+                outrec.word = tokenizer.nextToken();
+                outrec.count = 1;
+                out.put(outrec);
             }
         }        
     }
     
-    public static class PipeMapper extends BaseMapper<String,CountRec> {
+    public static class PipeMapper extends TapMapper<String,CountRec> {
         @Override
         public void map(String in, Pipe<CountRec> out) {
             StringTokenizer tokenizer = new StringTokenizer(in);
@@ -83,12 +74,12 @@ public class WordCountProtobuf extends Configured implements Tool {
     }
     
 
-    public static class Reducer extends BaseReducer<CountRec,Protos.CountRec> {
+    public static class Reducer extends TapReducer<CountRec,Protos.CountRec> {
         
         // ProtobufWritable<Protos.CountRec> protoWritable = ProtobufWritable.newInstance(Protos.CountRec.class);
         
         @Override
-        public void reduce(Iterable<CountRec> in, Protos.CountRec out, TapContext<Protos.CountRec> context) {
+        public void reduce(Pipe<CountRec> in, Pipe<Protos.CountRec> out) {
             
             String word = null;
             int count = 0;
@@ -98,16 +89,15 @@ public class WordCountProtobuf extends Configured implements Tool {
                 count += rec.count;
             }
             
-            out = Protos.CountRec.newBuilder()
+            out.put(Protos.CountRec.newBuilder()
                     .setWord(word)
                     .setCount(count)
-                    .build();
-            context.write(out);
+                    .build());
         }
         
     }
     
-    public static class PipeReducer extends BaseReducer<CountRec,Protos.CountRec> {
+    public static class PipeReducer extends TapReducer<CountRec,Protos.CountRec> {
         
         // ProtobufWritable<Protos.CountRec> protoWritable = ProtobufWritable.newInstance(Protos.CountRec.class);
         
@@ -129,11 +119,4 @@ public class WordCountProtobuf extends Configured implements Tool {
             out.put(rec);
         }
     }
-    
-    
-    public static void main(String[] args) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new WordCountProtobuf(), args);
-        System.exit(res);
-    }
-
 }

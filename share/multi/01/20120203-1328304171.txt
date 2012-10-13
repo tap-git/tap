@@ -1,0 +1,23 @@
+Hello  Fri Feb 3 16:22:51 EST 2012 Library
+Hello  Fri Feb 3 16:22:51 EST 2012 /System/Library:
+Hello  Fri Feb 3 16:22:51 EST 2012 Address Book Plug-Ins
+Hello  Fri Feb 3 16:22:51 EST 2012 Automator
+Hello  Fri Feb 3 16:22:51 EST 2012 BridgeSupport
+Hello  Fri Feb 3 16:22:51 EST 2012 CFMSupport
+Hello  Fri Feb 3 16:22:51 EST 2012 Caches
+Hello  Fri Feb 3 16:22:51 EST 2012 ColorPickers
+Hello  Fri Feb 3 16:22:51 EST 2012 ColorSync
+Hello  Fri Feb 3 16:22:51 EST 2012 Colors
+Hello  Fri Feb 3 16:22:51 EST 2012 Components
+Hello  Fri Feb 3 16:22:51 EST 2012 Compositions
+Hello  Fri Feb 3 16:22:51 EST 2012 CoreServices
+Hello  Fri Feb 3 16:22:51 EST 2012 DTDs
+Hello  Fri Feb 3 16:22:51 EST 2012 DirectoryServices
+Hello  Fri Feb 3 16:22:51 EST 2012 Displays
+Hello  Fri Feb 3 16:22:51 EST 2012 Extensions
+Hello  Fri Feb 3 16:22:51 EST 2012 Filesystems
+Hello  Fri Feb 3 16:22:51 EST 2012 Filters
+Hello  Fri Feb 3 16:22:51 EST 2012 Fonts
+Hello  Fri Feb 3 16:22:51 EST 2012 Frameworks
+Hello  Fri Feb 3 16:22:51 EST 2012 Graphics
+Hello  Fri Feb 3 16:22:51 EST 2012 Image Capture

@@ -1,13 +1,11 @@
 package tap.core.mapreduce.input;
 
-import java.io.File;
-
 import junit.framework.Assert;
+import tap.core.io.BinaryKey;
 import tap.core.mapreduce.io.BinaryWritable;
 import tap.formats.tapproto.Testmsg.TestMsg;
 import tap.util.TypeRef;
 
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapred.JobConf;
@@ -25,7 +23,7 @@ public class TapfileRecordReaderTests {
         
         TapfileRecordReader reader = new TapfileRecordReader<TestMsg>(job, path, typeRef);
         
-        LongWritable key = reader.createKey();
+        BinaryKey key = reader.createKey();
         BinaryWritable<TestMsg> value = reader.createValue();
         
         long numberOfMessages = 0;

@@ -2,10 +2,10 @@ package tap.sample;
 
 import org.apache.hadoop.conf.Configuration;
 
-import tap.core.BaseMapper;
-import tap.core.TapContext;
+import tap.Pipe;
+import tap.TapMapper;
 
-public class LogClean extends BaseMapper<LogRec,LogRec> {
+public class LogClean extends TapMapper<LogRec,LogRec> {
 
     @Override
     public void setConf(Configuration conf) {
@@ -16,9 +16,9 @@ public class LogClean extends BaseMapper<LogRec,LogRec> {
     }
     
     @Override
-    public void map(LogRec in, LogRec out, TapContext<LogRec> context) {
+    public void map(LogRec in, Pipe<LogRec> out) {
         if (!isDirty(in)) {
-            context.write(in);
+            out.put(in);
         }
     }
 

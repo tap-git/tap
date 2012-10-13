@@ -1,0 +1,8 @@
+// CountRec for the WordCount examples
+
+package tap.formats.tapproto;
+ 
+message CountRecMessage {
+    required string word = 1;
+    required int32 count = 2;
+}

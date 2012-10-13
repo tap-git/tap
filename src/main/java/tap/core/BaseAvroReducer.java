@@ -19,27 +19,34 @@
  */
 package tap.core;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.apache.avro.Schema;
 import org.apache.avro.mapred.*;
 import org.apache.hadoop.mapred.*;
 
+import tap.Phase;
+import tap.Pipe;
+import tap.core.io.BinaryKey;
+import tap.core.io.avro.BinaryKeyDatumWriter;
+import tap.core.io.avro.BinaryKeyEncoder;
 import tap.util.ObjectFactory;
 
 /** Base class for a combiner or a reducer */
 @SuppressWarnings("deprecation")
-abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implements Reducer<AvroKey<K>, AvroValue<V>, KO, VO> {
+abstract class BaseAvroReducer<V, OUT, KO, VO> extends MapReduceBase implements Reducer<AvroKey<BinaryKey>, AvroValue<V>, KO, VO> {
 
-    private TapReducer<V, OUT> reducer;
+    private TapReducerInterface<V, OUT> reducer;
     private AvroMultiCollector<OUT> collector;
     private ReduceIterable reduceIterable = new ReduceIterable();
     private TapContext<OUT> context;
     protected boolean isPipeReducer = false;
     protected OUT out;
     protected Pipe<OUT> outpipe = null;
-
-    protected abstract TapReducer<V, OUT> getReducer(JobConf conf);
+    
+    protected abstract TapReducerInterface<V, OUT> getReducer(JobConf conf);
 
     protected abstract AvroMultiCollector<OUT> getCollector(OutputCollector<KO, VO> c, Reporter reporter);
 
@@ -56,9 +63,12 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
             throw new RuntimeException(e);
         }
         // Determine if we are using legacy reduce signature or newer Pipe based signature
-        this.isPipeReducer = (null != conf.get(Phase.REDUCER_OUT_PIPE_CLASS));
+        isPipeReducer = (null != conf.get(Phase.REDUCER_OUT_PIPE_CLASS));
         if (isPipeReducer) {
-            this.outpipe = new Pipe<OUT>(out);
+            outpipe = new Pipe<OUT>(out);
+        }
+        if (null != reducer) {
+        	reducer.init(conf.get("mapred.output.dir"));
         }
     }
 
@@ -81,9 +91,19 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
             return this;
         }
     }
+    
+    class ReuseableByteArrayOutputStream extends ByteArrayOutputStream {
+    	public byte[] getBuffer() {
+    		return buf;
+    	}
+    	public int getCount() {
+    		return count;
+    	}
+    }
 
-    @Override
-    public final void reduce(AvroKey<K> key, Iterator<AvroValue<V>> values,
+    @SuppressWarnings("unchecked")
+	@Override
+    public final void reduce(AvroKey<BinaryKey> key, Iterator<AvroValue<V>> values,
             OutputCollector<KO, VO> collector, Reporter reporter)
             throws IOException {
         if (this.collector == null) {
@@ -96,18 +116,21 @@ abstract class BaseAvroReducer<K, V, OUT, KO, VO> extends MapReduceBase implemen
             if (null == this.outpipe.getContext()) {
                 this.outpipe.setContext(new TapContext<OUT>(this.collector, reporter));
             }
-            reducer.reduce(inPipe, this.outpipe);
-        } else {
-            if(this.context == null)
-                this.context = new TapContext<OUT>(this.collector, reporter);
-            reduceIterable.values = values;
-            reducer.reduce(reduceIterable, out, context);
+            
+            if(this.collector instanceof BinaryKeyAwareCollector) {
+            	((BinaryKeyAwareCollector) this.collector).setCurrentKey(key.datum());
+            }
+            reducer.reduce(inPipe, outpipe);
         }
     }
 
     @Override
     public void close() throws IOException {
-        reducer.close(out, context);
+        reducer.close(outpipe);
+    }
+    
+    interface BinaryKeyAwareCollector {
+    	void setCurrentKey(BinaryKey key);
     }
 
 }

@@ -7,7 +7,10 @@ public class ObjectFactory {
         if(Message.class.isAssignableFrom(cls)) {
             return (T) cls.getMethod("getDefaultInstance").invoke(null);
         }
-        else
+        else if (cls.getName().equals("java.lang.String")) {
+        	return (T) new String();
+        } else {
             return (T) cls.newInstance();
+        }
     }
 }

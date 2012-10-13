@@ -1,21 +1,25 @@
 package tap.core;
 
+import tap.CountRec;
+import tap.OutputLog;
+import tap.Pipe;
+import tap.TapReducer;
+
 
 /*
  * Add up all of the word counts to produce a sum of all of the word counts
  */
 public class SummationReducer extends
-		BaseReducer<CountRec, OutputLog> {
-
+		TapReducer<CountRec, OutputLog> {
+	private OutputLog outrec = new OutputLog();
 	@Override
-	public void reduce(Iterable<CountRec> in, OutputLog out,
-			TapContext<OutputLog> context) {
-		out.description = "sum of words";
-		out.count = 0;
+	public void reduce(Pipe<CountRec> in, Pipe<OutputLog> out) {
+		outrec.description = "sum of words";
+		outrec.count = 0;
 		for (CountRec rec : in) {
-			out.count += rec.count;
+			outrec.count += rec.count;
 		}
-		context.write(out);
+		out.put(outrec);
 	}
 
 }

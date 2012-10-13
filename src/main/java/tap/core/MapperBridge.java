@@ -20,12 +20,8 @@
 package tap.core;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.avro.Schema;
 import org.apache.avro.generic.*;
 import org.apache.avro.io.*;
@@ -40,21 +36,32 @@ import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.codehaus.jackson.JsonParseException;
 
+import tap.Phase;
+import tap.Pipe;
+import tap.TapMapper;
+import tap.core.io.BinaryKey;
 import tap.core.mapreduce.input.TapfileInputFormat;
 import tap.core.mapreduce.io.ProtobufWritable;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 import tap.formats.avro.JsonToGenericRecord;
-import tap.formats.text.TextFormat;
+import tap.util.ObjectFactory;
+import tap.util.ReflectUtils;
 
+
+/*      nb, KO, VO are set in Phase.  Since these values determine the types for the  OutputCollector,
+ * 	    we cannot have map-only tasks write to tap files, unless we change this.
+ *      conf.setMapOutputKeyClass(AvroKey.class);
+        conf.setMapOutputValueClass(AvroValue.class);
+*/
 @SuppressWarnings("deprecation")
 public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
         implements org.apache.hadoop.mapred.Mapper<KEY, VALUE, KO, VO> {
 
     private static final int SNIFF_HEADER_SIZE = 1000;
-    private Mapper<IN, OUT> mapper;
+    private TapMapper<IN, OUT> mapper;
     private boolean isMapOnly;
-    private OUT out;
+    //private OUT out;
     private TapContext<OUT> context;
     private Schema schema;
     private String groupBy;
@@ -70,13 +77,12 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     // TODO: make this configurable
     private int maxAllowedErrors = 1000;
     private Pipe<OUT> outPipe = null;
-    private boolean isPipeOutput = false;
-
+    
     @SuppressWarnings("unchecked")
     @Override
     public void configure(JobConf conf) {
         this.mapper = ReflectionUtils.newInstance(
-                conf.getClass(Phase.MAPPER, BaseMapper.class, Mapper.class),
+                conf.getClass(Phase.MAPPER, TapMapper.class, TapMapper.class),
                 conf);
         this.isMapOnly = conf.getNumReduceTasks() == 0;
         try {
@@ -91,6 +97,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
         }
 
         mapper.setConf(conf);
+        mapper.init(conf.get("map.input.file"));
     }
 
     @SuppressWarnings("unchecked")
@@ -99,7 +106,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
             OutputCollector<KO, VO> collector, Reporter reporter)
             throws IOException {
         if (this.context == null) {
-            KeyExtractor<GenericData.Record, OUT> extractor = new ReflectionKeyExtractor<OUT>(
+            KeyExtractor<BinaryKey, OUT> extractor = new ReflectionKeyExtractor<OUT>(
                     schema, groupBy, sortBy);
             this.context = new TapContext<OUT>(new Collector(collector,
                     extractor), reporter);
@@ -126,7 +133,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
             throw new IllegalArgumentException("Map input format not compatible with file format.");
         }
 
-        
+        //otherwise assume it is avro?
         if (conf.getInputFormat() instanceof TextInputFormat) {
             Class<?> inClass = conf.getClass(Phase.MAP_IN_CLASS, Object.class,
                     Object.class);
@@ -136,7 +143,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
                 isTextInput = true;
             } else {
                 isJsonInput = true;
-                inSchema = Phase.getSchema((IN) ReflectionUtils.newInstance(
+                inSchema = ReflectUtils.getSchema((IN) ReflectionUtils.newInstance(
                         inClass, conf));
             }
         }
@@ -146,15 +153,19 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     /**
      * @param conf
      */
-    private void determineOutputFormat(JobConf conf) {
-        this.out = (OUT) ReflectionUtils.newInstance(
+    @SuppressWarnings("unchecked")
+	private void determineOutputFormat(JobConf conf) throws Exception {
+    	
+    	Class<?> outClass = conf.getClass(Phase.MAP_OUT_CLASS, Object.class, Object.class);
+    	OUT out;
+		out = (OUT)ObjectFactory.newInstance(outClass);
+		
+        /*OUT out = (OUT) ReflectionUtils.newInstance(
                 conf.getClass(Phase.MAP_OUT_CLASS, Object.class, Object.class),
                 conf);
-        if (null != conf.get(Phase.MAP_OUT_PIPE_CLASS)) {
-            this.outPipe = new Pipe<OUT>(this.out);
-            this.isPipeOutput = true;
-        }
-        this.schema = Phase.getSchema(this.out);
+               */
+        outPipe = new Pipe<OUT>(out);
+        schema = ReflectUtils.getSchema(out);
     }
 
     @SuppressWarnings("unchecked")
@@ -165,6 +176,9 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
         private final KeyExtractor<K, OUT> extractor;
         private final K key;
         private OutputCollector<KO, VO> collector;
+        
+        //map only jobs that write to tapproto file
+        private ProtobufWritable protobufWritable = new ProtobufWritable();
 
         public Collector(OutputCollector<KO, VO> collector,
                 KeyExtractor<K, OUT> extractor) {
@@ -176,8 +190,23 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
 
         public void collect(OUT datum) throws IOException {
             if (isMapOnly) {
-                wrapper.datum(datum);
-                collector.collect((KO) wrapper, (VO) NullWritable.get());
+               
+                //if the the output from the mapper is a protobuf message, then KO is a BinaryKey and VO is a ProtobufWritable
+               if(datum instanceof com.google.protobuf.Message)
+               {
+            	   extractor.setKey(datum, key);
+            	   protobufWritable.setConverter(datum.getClass());
+                   protobufWritable.set(datum);
+                   collector.collect((KO)key, (VO)protobufWritable);
+                      
+               
+               }
+               else
+               {
+            	   wrapper.datum(datum);
+            	   collector.collect((KO) wrapper, (VO) NullWritable.get());
+               }
+              
             } else {
                 extractor.setKey(datum, key);
                 valueWrapper.datum(datum);
@@ -244,11 +273,7 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
     }
     
     private void map(IN value) {
-        if (this.isPipeOutput) {
-            mapper.map(value, this.outPipe);
-        } else {
-            mapper.map(value, out, context);
-        }
+            mapper.map(value, outPipe);
     }
 
     /**
@@ -261,12 +286,12 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
             Reporter reporter) {
         if (this.outPipe != null && this.outPipe.getContext() == null) {
             if (this.context == null) {
-                KeyExtractor<GenericData.Record, OUT> extractor = new ReflectionKeyExtractor<OUT>(
+                KeyExtractor<BinaryKey, OUT> extractor = new ReflectionKeyExtractor<OUT>(
                         schema, groupBy, sortBy);
-                this.outPipe.setContext(new TapContext<OUT>(new Collector(
+                outPipe.setContext(new TapContext<OUT>(new Collector(
                         collector, extractor), reporter));
             } else {
-                this.outPipe.setContext(this.context);
+                outPipe.setContext(this.context);
             }
         }
     }
@@ -354,6 +379,6 @@ public class MapperBridge<KEY, VALUE, IN, OUT, KO, VO> extends MapReduceBase
 
     @Override
     public void close() throws IOException {
-        mapper.close(out, context);
+        mapper.close(outPipe);
     }
 }

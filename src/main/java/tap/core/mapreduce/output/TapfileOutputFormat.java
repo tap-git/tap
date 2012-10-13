@@ -12,13 +12,14 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RecordWriter;
 import org.apache.hadoop.util.Progressable;
 
+import tap.core.io.BinaryKey;
 import tap.core.mapreduce.io.BinaryWritable;
 import tap.util.Protobufs;
 import tap.util.TypeRef;
 
 import com.google.protobuf.Message;
 
-public class TapfileOutputFormat<M extends Message> extends FileOutputFormat<NullWritable, BinaryWritable<M>>{
+public class TapfileOutputFormat<M extends Message> extends FileOutputFormat<BinaryKey, BinaryWritable<M>>{
 
     public static final String EXT = ".tapproto";
     
@@ -33,7 +34,7 @@ public class TapfileOutputFormat<M extends Message> extends FileOutputFormat<Nul
 
     @SuppressWarnings("deprecation")
     @Override
-    public RecordWriter<NullWritable, BinaryWritable<M>> getRecordWriter(
+    public RecordWriter<BinaryKey, BinaryWritable<M>> getRecordWriter(
             FileSystem fileSystem, JobConf job, String name, Progressable progressable)
             throws IOException {
         if (typeRef == null) {

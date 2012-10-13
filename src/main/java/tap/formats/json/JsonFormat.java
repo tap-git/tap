@@ -1,6 +1,6 @@
 package tap.formats.json;
 
-import tap.core.Pipe;
+import tap.Pipe;
 import tap.formats.Formats;
 import tap.formats.text.TextFormat;
 
@@ -27,6 +27,11 @@ public class JsonFormat extends TextFormat {
 				return true;
 			}
 		}
+		return false;
+	}
+	
+	@Override
+	public boolean instanceOfCheck(Object o) {
 		return false;
 	}
 

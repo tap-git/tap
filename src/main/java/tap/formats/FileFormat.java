@@ -3,9 +3,8 @@ package tap.formats;
 import org.apache.hadoop.mapred.InputFormat;
 import org.apache.hadoop.mapred.JobConf;
 
-import tap.core.Pipe;
+import tap.Pipe;
 
-@SuppressWarnings("deprecation")
 public abstract class FileFormat {
 
 	public abstract void setupOutput(JobConf conf, Class<?> protoClass);
@@ -33,7 +32,9 @@ public abstract class FileFormat {
 	 * @return true if a match
 	 */
 	public boolean matches(Pipe pipe) {
-	    return (null != pipe.getPrototype()) && instanceOfCheck(pipe.getPrototype()) || matches(pipe.getUncompressedPath());
+	    return (null != pipe.getPrototype()) && 
+	    		instanceOfCheck(pipe.getPrototype()) || 
+	    		matches(pipe.getUncompressedPath());
 	}
 
 	/**

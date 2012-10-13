@@ -1,16 +1,17 @@
 package tap.core;
 
-import static org.junit.Assert.*;
 import junit.framework.Assert;
 
 import org.apache.avro.mapred.AvroValue;
 import org.junit.Test;
 
+import tap.CountRec;
+
 public class AvroConversionTests {
 
     @Test
     public void testAvroConversion() {
-        CountRec value = new CountRec();
+        tap.CountRec value = new CountRec();
         value.count = 23;
         value.word = "Best";
         

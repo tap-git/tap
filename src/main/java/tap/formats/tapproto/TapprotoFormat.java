@@ -8,14 +8,13 @@ import org.apache.hadoop.mapred.OutputFormat;
 
 import com.google.protobuf.Message;
 
-import tap.core.Pipe;
+import tap.Pipe;
 import tap.core.mapreduce.input.TapfileInputFormat;
 import tap.core.mapreduce.output.TapfileOutputFormat;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 
-@SuppressWarnings("deprecation")
-public class TapprotoFormat extends FileFormat {
+public class TapprotoFormat extends FileFormat { 
 
 	private static final byte FILE_SIGNATURE[] = "tapproto".getBytes();
 		

@@ -31,11 +31,10 @@ import org.apache.hadoop.mapred.JobConf;
 
 import com.google.protobuf.GeneratedMessage;
 
-import tap.core.Pipe;
+import tap.Pipe;
 import tap.formats.FileFormat;
 import tap.formats.Formats;
 
-@SuppressWarnings("deprecation")
 public class AvroFormat extends FileFormat {
 
 	public static final byte FILE_SIGNATURE[] = {0x4F,0x62,0x6A,0x01};
@@ -77,7 +76,10 @@ public class AvroFormat extends FileFormat {
     @Override
     public boolean instanceOfCheck(Object o) {
         // TODO Find better way than listing all of the other types
-        return !(o instanceof String || o instanceof Text || o instanceof GeneratedMessage);
+    	boolean isString = o instanceof String;
+    	boolean isText = o instanceof Text;
+    	boolean isMessage = o instanceof GeneratedMessage;
+        return !(isString || isText || isMessage);
     }
 
 }

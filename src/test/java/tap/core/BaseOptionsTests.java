@@ -28,20 +28,19 @@ import org.joda.time.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import tap.core.BaseOptions;
-import tap.core.Tap;
+import tap.CommandOptions;
+import tap.Tap;
 
 
 
 public class BaseOptionsTests {
 
     private Tap pipe;
-    private BaseOptions options;
-
+    private CommandOptions options;
+    
     @Before
     public void setup() {
-        options = new BaseOptions();
-        pipe = new Tap();               
+    	           
     }
     
     @Test
@@ -51,8 +50,10 @@ public class BaseOptionsTests {
         PrintStream ps = new PrintStream(bos);
         System.setErr(ps);
         try {
-            int rc = options.parse(pipe, "-t=2010-09-07T13:00:00Z/2010-09-08T13:30:00Z");
-            assertEquals(1, rc);
+        	String[] args = {"myProgram", "-t=2010-09-07T13:00:00Z/2010-09-08T13:30:00Z"};
+            options = new CommandOptions(args);
+            pipe = new Tap(options);
+            
             ps.flush();
             String errText = new String(bos.toByteArray());
             //Error message is localized so check it carefully.
@@ -83,8 +84,10 @@ public class BaseOptionsTests {
         PrintStream ps = new PrintStream(bos);
         System.setErr(ps);
         try {
-            int rc = options.parse(pipe, "-time=2010-09-07T13:00:00Z/2010-09-08T13:30:00Z");
-            assertEquals(1, rc);
+        	String[] args = {"myProgram", "-time=2010-09-07T13:00:00Z/2010-09-08T13:30:00Z"};
+            options = new CommandOptions(args);
+            pipe = new Tap(options);
+     
         } finally {
             System.setErr(oldErr);
         }
@@ -92,8 +95,10 @@ public class BaseOptionsTests {
     
     @Test
     public void interval2() {
-        int rc = options.parse(pipe, "-time", "2010-09-07T13:00:00Z/2010-09-08T13:30:00Z");
-        assertEquals(0, rc);
+    	String[] args = {"myProgram", "-time","2010-09-07T13:00:00Z/2010-09-08T13:30:00Z"};
+        options = new CommandOptions(args);
+        pipe = new Tap(options);
+        assertNotNull(options.time);
         
         Interval interval = options.getInterval();
         DateTime expectedStart = new DateTime(2010, 9, 7, 13, 0, 0, 0).withZoneRetainFields(DateTimeZone.UTC); 
@@ -104,8 +109,9 @@ public class BaseOptionsTests {
     
     @Test
     public void interval3() {
-        int rc = options.parse(pipe, "-s", "2010-09-07T13:00:00Z", "-e", "2010-09-08T133000Z");
-        assertEquals(0, rc);
+    	String[] args = {"myProgram", "-s", "2010-09-07T13:00:00Z", "-e", "2010-09-08T133000Z"};
+        options = new CommandOptions(args);
+        pipe = new Tap(options);
         
         Interval interval = options.getInterval();
         DateTime expectedStart = new DateTime(2010, 9, 7, 13, 0, 0, 0).withZoneRetainFields(DateTimeZone.UTC); 
@@ -116,8 +122,9 @@ public class BaseOptionsTests {
     
     @Test
     public void interval4() {
-        int rc = options.parse(pipe, "-s", "2010-09-07T13:00:00Z", "-d", "1 hour");
-        assertEquals(0, rc);
+        String[] args = {"myProgram", "-s", "2010-09-07T13:00:00Z", "-d", "1 hour"};
+        options = new CommandOptions(args);
+        pipe = new Tap(options);
         
         Interval interval = options.getInterval();
         DateTime expectedStart = new DateTime(2010, 9, 7, 13, 0, 0, 0).withZoneRetainFields(DateTimeZone.UTC); 
@@ -128,8 +135,10 @@ public class BaseOptionsTests {
 
     @Test
     public void intervalBad() {
-        int rc = options.parse(pipe, "--start", "2010-09-07T13:00:00Z", "-d", "1 ziphoon");
-        assertEquals(0, rc);
+        String[] args = {"myProgram", "--start", "2010-09-07T13:00:00Z", "-d", "1 ziphoon"};
+        options = new CommandOptions(args);
+        pipe = new Tap(options);
+        
         try {
             options.getInterval();
             fail("invalid duration");
@@ -140,8 +149,10 @@ public class BaseOptionsTests {
 
     @Test
     public void intervalBad2() {
-        int rc = options.parse(pipe, "--start", "2010-09-07T13:00:00Z", "-d", "1hour");
-        assertEquals(0, rc);
+    	String[] args = {"myProgram", "--start", "2010-09-07T13:00:00Z", "-d", "1hour"};
+        options = new CommandOptions(args);
+        pipe = new Tap(options);
+        
         try {
             options.getInterval();
             fail("invalid duration");
